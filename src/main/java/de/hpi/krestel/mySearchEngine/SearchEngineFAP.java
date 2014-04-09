@@ -14,11 +14,11 @@ import java.util.ArrayList;
  */
 
 // Replace 'Y' with your search engine name
-public class SearchEngineY extends SearchEngine {
+public class SearchEngineFAP extends SearchEngine {
 
 	
 	// Replace 'Y' with your search engine name
-	public SearchEngineY() {
+	public SearchEngineFAP() {
 		// This should stay as is! Don't add anything here!
 		super();	
 	}
