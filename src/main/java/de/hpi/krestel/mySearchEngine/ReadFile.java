@@ -15,7 +15,7 @@ public class ReadFile {
 		
         String line;
         
-        int maxLines = 10000;
+        int maxLines = 700;
         int i = 0;
         while((line = br.readLine()) != null) {
         	if (i > maxLines) break;
