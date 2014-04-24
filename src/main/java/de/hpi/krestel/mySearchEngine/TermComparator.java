@@ -7,7 +7,9 @@ import java.util.Comparator;
  * @author fredrik
  *
  */
-public class TermComparator implements Comparator<Term> {
+public enum TermComparator implements Comparator<Term> {
+	INSTANCE;
+	
 	@Override
 	public int compare(Term o1, Term o2) {
 		return o1.getTerm().compareTo(o2.getTerm());

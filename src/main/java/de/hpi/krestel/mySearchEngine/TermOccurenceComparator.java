@@ -8,8 +8,9 @@ import java.util.Comparator;
  * @author fredrik
  *
  */
-public class TermOccurenceComparator implements Comparator<TermOccurence> {
-
+public enum TermOccurenceComparator implements Comparator<TermOccurence> {
+	INSTANCE;
+	
 	@Override
 	public int compare(TermOccurence o1, TermOccurence o2) {
 		int result = Integer.compare(o1.getDocumentId(), o2.getDocumentId());

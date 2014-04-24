@@ -12,9 +12,14 @@ public class Term {
 	 * a list of occurences, without any duplicates
 	 */
 	private SortedSet<TermOccurence> occurrences;
+	
 	public Term(String term) {
+		this(term, new TreeSet<TermOccurence>(TermOccurenceComparator.INSTANCE));
+	}
+	
+	public Term(String term, SortedSet<TermOccurence> occurrences) {
 		this.term = term;
-		this.occurrences = new TreeSet<TermOccurence>();
+		this.occurrences = occurrences;
 	}
 	
 	public String getTerm() {
