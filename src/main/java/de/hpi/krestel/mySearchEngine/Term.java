@@ -1,6 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
-import java.util.ArrayList;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class Term {
 	/** 
@@ -10,10 +11,10 @@ public class Term {
 	/**
 	 * a list of occurences, without any duplicates
 	 */
-	private ArrayList<TermOccurence> occurrences;
+	private SortedSet<TermOccurence> occurrences;
 	public Term(String term) {
 		this.term = term;
-		this.occurrences = new ArrayList<TermOccurence>();
+		this.occurrences = new TreeSet<TermOccurence>();
 	}
 	
 	public String getTerm() {
@@ -23,9 +24,14 @@ public class Term {
 		this.term = term;
 	}
 	
-	public ArrayList<TermOccurence> getOccurrences() {
+	/**
+	 * Returns a list of occurences, sorted first by document id and then by position within
+	 * that document.
+	 */
+	public SortedSet<TermOccurence> getOccurrences() {
 		return occurrences;
 	}
+	
 	public void addOccurence(TermOccurence occurence) {
 		this.occurrences.add(occurence);
 		// TODO: sort
