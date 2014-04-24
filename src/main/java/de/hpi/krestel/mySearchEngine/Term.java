@@ -11,13 +11,13 @@ public class Term {
 	/**
 	 * a list of occurences, without any duplicates
 	 */
-	private SortedSet<TermOccurence> occurrences;
+	private SortedSet<TermOccurrence> occurrences;
 	
 	public Term(String term) {
-		this(term, new TreeSet<TermOccurence>(TermOccurenceComparator.INSTANCE));
+		this(term, new TreeSet<TermOccurrence>(TermOccurrenceComparator.INSTANCE));
 	}
 	
-	public Term(String term, SortedSet<TermOccurence> occurrences) {
+	public Term(String term, SortedSet<TermOccurrence> occurrences) {
 		this.term = term;
 		this.occurrences = occurrences;
 	}
@@ -33,11 +33,11 @@ public class Term {
 	 * Returns a list of occurences, sorted first by document id and then by position within
 	 * that document.
 	 */
-	public SortedSet<TermOccurence> getOccurrences() {
+	public SortedSet<TermOccurrence> getOccurrences() {
 		return occurrences;
 	}
 	
-	public void addOccurence(TermOccurence occurence) {
+	public void addOccurence(TermOccurrence occurence) {
 		this.occurrences.add(occurence);
 		// TODO: sort
 	}
