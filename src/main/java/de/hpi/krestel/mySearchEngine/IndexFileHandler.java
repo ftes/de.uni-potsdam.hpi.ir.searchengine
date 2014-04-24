@@ -35,7 +35,7 @@ public class IndexFileHandler {
 	}
 	/**
 	 * Reads the next term
-	 * @return
+	 * @return The next term, or {@code null} if the end of the file is reached.
 	 */
 	public Term readNextTerm() {
 		return readTerm(0);
@@ -47,5 +47,12 @@ public class IndexFileHandler {
 	 */
 	public long storeTerm(Term term) {
 		return 0;
+	}
+	
+	/**
+	 * Closes the file access.
+	 */
+	public void close() {
+		
 	}
 }

@@ -44,4 +44,14 @@ public class SeekList {
 	protected String getTermAtPosition(long positionInSeeklist) {
 		return null;
 	}
+	
+	/**
+	 * Adds the term data to the seeklist by appending it to the file.
+	 * Take care to maintain the ordering of terms, as the binary search will otherwise break.
+	 * @param term
+	 * @param offset The byte offset of the data for this {@code term} within the index file
+	 */
+	public void storeTermOffset(String term, long offset) {
+		
+	}
 }
