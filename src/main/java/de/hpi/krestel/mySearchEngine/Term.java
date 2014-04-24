@@ -31,4 +31,8 @@ public class Term {
 		// TODO: sort
 	}
 	
+	@Override
+	public String toString() {
+		return "Term [term=" + term + ", occurrences=" + occurrences + "]";
+	}
 }
