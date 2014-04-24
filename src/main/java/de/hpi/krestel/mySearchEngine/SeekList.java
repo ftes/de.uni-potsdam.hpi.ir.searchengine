@@ -20,45 +20,23 @@ package de.hpi.krestel.mySearchEngine;
  * (probably 8 byte for long values).
  * 
  * @author fredrik
- *
  */
-public class SeekList {
-	/**
-	 * 
-	 * @param filename the filename of the seeklist file
-	 */
-	public SeekList(String filename) {
-		// TODO Auto-generated constructor stub
-	}
+public interface SeekList {
+
 	/**
 	 * Returns the offset of for the term data (position list of occurences) within the main index.
 	 * 
 	 * @param term The term (e.g. tokenized form of a word)
 	 * @return The byte offset within the index file of the line pertaining to this {@code term}.
 	 */
-	public long getTermOffsetInIndex(String term) throws TermLengthException {
-		return 0;
-	}
-	
-	/**
-	 * Returns the term found at the given position in the seeklist so that binary search can be implemented.
-	 * For this, the total number of words in the seeklist must be known, but this can be gleaned from the file
-	 * size, as the line length within the seeklist is constant (different from the index file).
-	 * 
-	 * @param positionInSeeklist The position in the seeklist, as an index. <b>Not</b> the byte offset!
-	 * @return The term found at this position.
-	 */
-	protected String getTermAtPosition(long positionInSeeklist) {
-		return null;
-	}
-	
+	long getTermOffsetInIndex(String term) throws TermLengthException;
+
 	/**
 	 * Adds the term data to the seeklist by appending it to the file.
 	 * Take care to maintain the ordering of terms, as the binary search will otherwise break.
 	 * @param term
 	 * @param offset The byte offset of the data for this {@code term} within the index file
 	 */
-	public void storeTermOffset(String term, long offset) {
-		
-	}
+	void storeTermOffset(String term, long offset);
+
 }
