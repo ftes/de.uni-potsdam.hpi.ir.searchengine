@@ -6,12 +6,12 @@ package de.hpi.krestel.mySearchEngine;
  * @author Alexander
  *
  */
-public class FileHandler {
+public class IndexFileHandler {
 	/**
 	 * The name of the file that is used for storage
 	 */
 	private String filename;
-	public FileHandler(String filename) {
+	public IndexFileHandler(String filename) {
 		this.filename = filename;
 		// TODO
 	}
