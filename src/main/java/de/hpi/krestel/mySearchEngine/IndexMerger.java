@@ -1,15 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.NavigableSet;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
 
 /**
  * Merge several partial index files into one large index files, while directly creating
@@ -28,10 +20,8 @@ import java.util.TreeSet;
  * @author fredrik
  *
  */
-public class IndexMerger {
-	private final SortedMap<Term, IndexFileHandler> currentTerms = new TreeMap<>(TermComparator.INSTANCE);
-	private Set<IndexFileHandler> handlers;
-	
+public interface IndexMerger {
+
 	/**
 	 * Merge the partial index files that are located in the {@code partialIndexDirectory} into
 	 * one file located at {@code mergedIndexPath}.
@@ -43,56 +33,14 @@ public class IndexMerger {
 	 * @param seekListPath The path to the seeklist file (is overwritten!)
 	 * @throws IOException 
 	 */
-	public void merge(SeekList seekList, String partialIndexDirectory, String mergedIndexPath, String seekListPath) throws IOException {
-		Set<IndexFileHandler> handlers = new HashSet<>();
-		IndexFileHandler indexHandler = new IndexFileHandler(mergedIndexPath);		
-		
-		for (File file : new File(partialIndexDirectory).listFiles()) {
-			if (file.isFile()) {
-				handlers.add(new IndexFileHandler(file.getAbsolutePath()));
-			}
-		}
-		
-		while (true) {
-			fillCurrentTermSet();
-			if (handlers.isEmpty()) {
-				break;
-			}
-			
-			//find as many occurrences of the same term in the set as possible, beginning with the first
-			String term = currentTerms.firstKey().getTerm();
-			NavigableSet<TermOccurence> occurrences = new TreeSet<TermOccurence>(TermOccurenceComparator.INSTANCE);
-			for (Iterator<Term> i = currentTerms.keySet().iterator(); i.hasNext();) {
-				Term checkTerm = i.next();
-				if (checkTerm.getTerm().equals(term)) {
-					occurrences.addAll(checkTerm.getOccurrences());
-					i.remove();
-				}
-			}
-			
-			//now these have been found, write them to the main index file and seeklist
-			Term combinedTerm = new Term(term, occurrences);
-			long offset = indexHandler.storeTerm(combinedTerm);
-			seekList.storeTermOffset(term, offset);
-		}
-	}
+	void merge(String seekListPath, String partialIndexDirectory,
+			String mergedIndexPath) throws IOException;
 	
 	/**
-	 * Reads the new terms from those files for which currently no term is placed in the
-	 * {@link #currentTermMap}.
-	 * If the end of one file is reached, it is removed from the {@link #handlers}.
-	 * @throws IOException 
+	 * Exposed for testing purposes.
+	 * @see IndexMerger#merge(String, String, String)
 	 */
-	private void fillCurrentTermSet() throws IOException {
-		Set<IndexFileHandler> missingHandlers = new HashSet<>(handlers);
-		missingHandlers.removeAll(currentTerms.values());
-		for (IndexFileHandler handler : missingHandlers) {
-			Term term = handler.readNextTerm();
-			if (term == null) {
-				handlers.remove(handler);
-			} else {
-				currentTerms.put(term, handler);
-			}
-		}
-	}
+	void merge(SeekList seekList, Set<IndexFileHandler> partialIndexHandlers, IndexFileHandler mainIndexHandler)
+			throws IOException;
+
 }
