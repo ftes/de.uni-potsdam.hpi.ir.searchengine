@@ -8,15 +8,24 @@ package de.hpi.krestel.mySearchEngine;
 public class Page {
 	private String title;
 	private int id;
-	private Revision revision;
+	private String text;
 	
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	public Page() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
 	public String toString() {
-		return "[Page] id=" + id + "; title=\"" + title + "\"";
+		return "[Page] id=" + id + "; title=\"" + title + "\""
+				+ "; text=\"" + text + "\"";
 	}
 
 	public String getTitle() {
@@ -33,14 +42,6 @@ public class Page {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public Revision getRevision() {
-		return revision;
-	}
-
-	public void setRevision(Revision revision) {
-		this.revision = revision;
 	}
 
 }

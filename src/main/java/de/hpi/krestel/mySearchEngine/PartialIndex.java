@@ -40,9 +40,10 @@ public class PartialIndex {
 	}
 	
 	/**
-	 * Stores the whole index to disk
+	 * Stores the whole index to disk to a file named "[getID()].dat"
+	 * @param the directory to store the file in.
 	 */
-	public void store() {
+	public void store(String directory) {
 		
 	}
 	

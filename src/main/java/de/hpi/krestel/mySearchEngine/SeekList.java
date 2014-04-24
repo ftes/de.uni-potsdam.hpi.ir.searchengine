@@ -24,6 +24,13 @@ package de.hpi.krestel.mySearchEngine;
  */
 public class SeekList {
 	/**
+	 * 
+	 * @param filename the filename of the seeklist file
+	 */
+	public SeekList(String filename) {
+		// TODO Auto-generated constructor stub
+	}
+	/**
 	 * Returns the offset of for the term data (position list of occurences) within the main index.
 	 * 
 	 * @param term The term (e.g. tokenized form of a word)

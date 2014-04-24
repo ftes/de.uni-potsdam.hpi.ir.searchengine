@@ -21,9 +21,8 @@ public class WikipediaExport {
 		Page page = null;
 		String characters = null;
 		String tag = null;
-		
+
 		boolean inRevision = false;
-		
 
 		while (parser.hasNext()) {
 
@@ -41,6 +40,9 @@ public class WikipediaExport {
 					page = new Page();
 				} else if (tag.equals("revision")) {
 					inRevision = true;
+				} else if (tag.equals("text")) {
+					characters = parser.getElementText(); // parses whole text and checks for end event
+					page.setText(characters);
 				}
 				break;
 

@@ -1,6 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NavigableSet;
@@ -40,8 +41,9 @@ public class IndexMerger {
 	 * @param partialIndexDirectory The directory where the partial index files reside
 	 * @param mergedIndexPath The path to the merged index file (is overwritten!)
 	 * @param seekListPath The path to the seeklist file (is overwritten!)
+	 * @throws IOException 
 	 */
-	public void merge(SeekList seekList, String partialIndexDirectory, String mergedIndexPath, String seekListPath) {
+	public void merge(SeekList seekList, String partialIndexDirectory, String mergedIndexPath, String seekListPath) throws IOException {
 		Set<IndexFileHandler> handlers = new HashSet<>();
 		IndexFileHandler indexHandler = new IndexFileHandler(mergedIndexPath);		
 		
@@ -79,8 +81,9 @@ public class IndexMerger {
 	 * Reads the new terms from those files for which currently no term is placed in the
 	 * {@link #currentTermMap}.
 	 * If the end of one file is reached, it is removed from the {@link #handlers}.
+	 * @throws IOException 
 	 */
-	private void fillCurrentTermSet() {
+	private void fillCurrentTermSet() throws IOException {
 		Set<IndexFileHandler> missingHandlers = new HashSet<>(handlers);
 		missingHandlers.removeAll(currentTerms.values());
 		for (IndexFileHandler handler : missingHandlers) {
