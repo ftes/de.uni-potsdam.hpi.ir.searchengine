@@ -1,7 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
 /**
- * The seeklist is a second-level index structure on top of the main {@link Index}.
+ * The seeklist is a second-level index structure on top of the main {@link PartialIndex}.
  * As the entire index is too large for main memory, the locations where the information
  * for each token can be found is stored as an offset in the seeklist.<p>
  * 

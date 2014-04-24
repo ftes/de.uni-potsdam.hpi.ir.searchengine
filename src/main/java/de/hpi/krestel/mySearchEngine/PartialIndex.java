@@ -1,20 +1,20 @@
 package de.hpi.krestel.mySearchEngine;
 
 /**
- * The index stores terms and their occurencies in main memory. At any given time we will only have parts
+ * The index stores terms and their occurrences in main memory. At any given time we will only have parts
  * of the whole index in main memory, so this class will for example only contain the terms for the first
- * few articles
+ * few articles.
  * 
  * @author Alexander
  *
  */
-public class Index {
-	public Index() {
+public class PartialIndex {
+	public PartialIndex() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	/**
-	 * returns a globally unique and constant ID that can be savely used for the filename.
+	 * returns a globally unique and constant ID that can be safely used for the filename.
 	 * @return
 	 */
 	public int getID() {
@@ -22,8 +22,8 @@ public class Index {
 	}
 	
 	/**
-	 * Adds a certain term with all it's occurencies to the index. If the term already exists,
-	 * occurencies are merged.
+	 * Adds a certain term with all it's occurrences to the index. If the term already exists,
+	 * Occurrences are merged.
 	 * @param term
 	 */
 	public void addTerm(Term term) {
@@ -31,7 +31,7 @@ public class Index {
 	}
 	
 	/**
-	 * Adds an occurence for a certain term.
+	 * Adds an occurrence for a certain term.
 	 * @param term
 	 * @param occurence
 	 */
@@ -44,13 +44,6 @@ public class Index {
 	 * @param the directory to store the file in.
 	 */
 	public void store(String directory) {
-		
-	}
-	
-	/**
-	 * Deletes the contents of the index to free up memory space.
-	 */
-	public void clear() {
 		
 	}
 	
