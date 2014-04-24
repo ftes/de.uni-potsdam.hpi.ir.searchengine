@@ -35,7 +35,7 @@ public class PartialIndex {
 	 * @param term
 	 * @param occurence
 	 */
-	public void addOccurenceForTerm(String term, TermOccurence occurence) {
+	public void addOccurenceForTerm(String term, TermOccurrence occurence) {
 		
 	}
 	
