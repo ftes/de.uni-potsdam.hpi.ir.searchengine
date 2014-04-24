@@ -8,7 +8,7 @@ public class Term {
 	 */
 	private String term;
 	/**
-	 * a list of occurences
+	 * a list of occurences, without any duplicates
 	 */
 	private ArrayList<TermOccurence> occurrences;
 	public Term(String term) {
