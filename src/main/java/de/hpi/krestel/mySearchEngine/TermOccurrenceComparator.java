@@ -8,11 +8,11 @@ import java.util.Comparator;
  * @author fredrik
  *
  */
-public enum TermOccurenceComparator implements Comparator<TermOccurence> {
+public enum TermOccurrenceComparator implements Comparator<TermOccurrence> {
 	INSTANCE;
 	
 	@Override
-	public int compare(TermOccurence o1, TermOccurence o2) {
+	public int compare(TermOccurrence o1, TermOccurrence o2) {
 		int result = Integer.compare(o1.getDocumentId(), o2.getDocumentId());
 		if (result != 0) return result;
 		

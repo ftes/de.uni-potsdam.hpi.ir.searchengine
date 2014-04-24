@@ -7,7 +7,7 @@ package de.hpi.krestel.mySearchEngine;
  * @author Alexander
  *
  */
-public class TermOccurence {
+public class TermOccurrence {
 	/**
 	 * The ID of the document as specified in the XML
 	 */
@@ -17,9 +17,9 @@ public class TermOccurence {
 	 */
 	private int position;
 	
-	public TermOccurence() {
+	public TermOccurrence() {
 	}
-	public TermOccurence(int documentId, int position) {
+	public TermOccurrence(int documentId, int position) {
 		super();
 		this.documentId = documentId;
 		this.position = position;
