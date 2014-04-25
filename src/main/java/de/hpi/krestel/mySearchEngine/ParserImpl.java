@@ -11,6 +11,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.tartarus.snowball.SnowballStemmer;
+import org.tartarus.snowball.ext.germanStemmer;
 
 public class ParserImpl extends Parser {
 
@@ -34,9 +35,8 @@ public class ParserImpl extends Parser {
 		boolean inRevision = false;
 
 		// initialize german stemmer
-		Class stemClass = Class.forName("org.tartarus.snowball.ext.germanStemmer");
-		SnowballStemmer stemmer = (SnowballStemmer) stemClass.newInstance();
-		
+		SnowballStemmer stemmer = new germanStemmer();
+		Tokenizer tokenizer = null;
 		PartialIndex index = new PartialIndex();
 
 		// read from stream
@@ -64,27 +64,18 @@ public class ParserImpl extends Parser {
 					page.setText(characters);
 					
 					int tokenPosition = 0;
-
-					// filter text
-					String[] tokens = characters.split("[\\s.]");
-
+					
+					tokenizer = new Tokenizer(characters);
+					ArrayList<String> tokens = tokenizer.tokenize();
+					
 					for (String token : tokens) {
-
-						token = token.toLowerCase();
-						token = token.replaceAll("[^a-zäöüß]", "");
-
-						if (token.length() > 2) { // only index terms with minimum length 2
-							stemmer.setCurrent(token);
-							stemmer.stem();
-							token = stemmer.getCurrent();
-
-							index.addOccurenceForTerm(token, new TermOccurrence(page.getId(), tokenPosition));
-							System.out.println("id: " + page.getId()
-									+ ", location: " + tokenPosition + ", "
-									+ token);
-							
-							tokenPosition++;
-						}
+					
+						index.addOccurenceForTerm(token, new TermOccurrence(page.getId(), tokenPosition));
+						System.out.println("id: " + page.getId()
+								+ ", location: " + tokenPosition + ", "
+								+ token);
+						
+						tokenPosition++;
 					}
 				}
 				break;
