@@ -31,6 +31,8 @@ public class AlexMain {
 		t = fileHandler2.readNextTerm();
 		System.out.println(t.toString());
 		t = fileHandler2.readNextTerm();
+		System.out.println(t.toString());
+		t = fileHandler2.readNextTerm();
 	}
 
 }
