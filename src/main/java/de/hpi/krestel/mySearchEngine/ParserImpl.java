@@ -10,9 +10,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.tartarus.snowball.SnowballStemmer;
-import org.tartarus.snowball.ext.germanStemmer;
-
 public class ParserImpl extends Parser {
 
 	public ParserImpl(String filename) throws XMLStreamException, InstantiationException, IllegalAccessException, ClassNotFoundException {

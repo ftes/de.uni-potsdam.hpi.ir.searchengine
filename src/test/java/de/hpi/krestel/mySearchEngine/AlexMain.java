@@ -10,7 +10,7 @@ public class AlexMain {
 		Parser p = new ParserImpl("/small.xml");
 		p.parseToPartialIndexes("/partials");
 		
-		IndexMerger m = new IndexMergerImpl();
+//		IndexMerger m = new IndexMergerImpl();
 	}
 
 }

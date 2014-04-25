@@ -31,7 +31,7 @@ public class WikipediaExport {
 		// initialize german stemmer
 		SnowballStemmer stemmer = new germanStemmer();
 		
-		int exhaustion = 10000;			
+//		int exhaustion = 10000;			
 
 		// read from stream
 		while (parser.hasNext()) {

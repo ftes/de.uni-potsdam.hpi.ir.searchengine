@@ -1,7 +1,5 @@
 package de.hpi.krestel.mySearchEngine;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
