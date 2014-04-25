@@ -8,7 +8,7 @@ public class AlexMain {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLStreamException {
 		Parser p = new ParserImpl("/small.xml");
-		p.parseToPartialIndexes("/partials");
+		p.parseToPartialIndexes("/partials", "title.dat");
 		
 //		IndexMerger m = new IndexMergerImpl();
 	}

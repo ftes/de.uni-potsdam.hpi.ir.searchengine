@@ -29,7 +29,8 @@ public abstract class Parser {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	public abstract void parseToPartialIndexes(String indexDirectory) throws IOException, XMLStreamException, ClassNotFoundException, InstantiationException, IllegalAccessException;
+	public abstract void parseToPartialIndexes(String indexDirectory, String titleIndexPath)
+			throws IOException, XMLStreamException, ClassNotFoundException, InstantiationException, IllegalAccessException;
 	
 	public String getFilename() {
 		return filename;

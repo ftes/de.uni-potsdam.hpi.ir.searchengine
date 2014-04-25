@@ -1,5 +1,6 @@
 package de.hpi.krestel.mySearchEngine;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 public class Util {
@@ -52,5 +53,19 @@ public class Util {
 	 */
 	public static void runGarbageCollector() {
 		Runtime.getRuntime().gc();
+	}
+	
+	public static <T> void print(Collection<T> collection) {
+		System.out.print("[");
+		int i = 0;
+		int size = collection.size();
+		for (T t : collection) {
+			System.out.print(t);
+			if (i < size - 1) {
+				System.out.print(", ");
+			}
+			i++;
+		}
+		System.out.println("]");
 	}
 }

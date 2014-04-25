@@ -11,12 +11,13 @@ public class ParseAndMergeNoDummyTest {
 		String partialIndexDir = "partials";
 		String mainIndexPath = "index.dat";
 		String seekListPath = "seeklist.dat";
+		String titlePath = "titles.dat";
 		
 		try {
 			File file = new File(partialIndexDir);
 			file.mkdir();
 
-			new ParserImpl("/small.xml").parseToPartialIndexes(partialIndexDir);
+			new ParserImpl("/small.xml").parseToPartialIndexes(partialIndexDir, titlePath);
 			new IndexMergerImpl().merge(seekListPath, partialIndexDir, mainIndexPath);
 
 			MainIndex index = new MainIndex(mainIndexPath, seekListPath);

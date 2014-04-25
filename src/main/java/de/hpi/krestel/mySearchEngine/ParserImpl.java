@@ -10,6 +10,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import de.hpi.krestel.mySearchEngine.Log.Level;
+
 public class ParserImpl extends Parser {
 
 	public ParserImpl(String filename) throws XMLStreamException, InstantiationException, IllegalAccessException, ClassNotFoundException {
@@ -17,7 +19,8 @@ public class ParserImpl extends Parser {
 	}
 
 	@Override
-	public void parseToPartialIndexes(String indexDirectory) throws XMLStreamException, ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, FactoryConfigurationError, IOException {
+	public void parseToPartialIndexes(String indexDirectory, String titleIndexPath)
+			throws XMLStreamException, ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, FactoryConfigurationError, IOException {
 		
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		XMLStreamReader parser = factory
@@ -71,7 +74,7 @@ public class ParserImpl extends Parser {
 						if (token.length() < SeekList.MAX_TERM_LENGTH-2) { 
 							index.addOccurenceForTerm(token, new TermOccurrence(page.getId(), tokenPosition));
 						} else {
-							System.out.println("Ignored: " + token);
+							Log.log(Level.DEBUG, "Ignored: " + token);
 						}
 //						System.out.println("id: " + page.getId()
 //								+ ", location: " + tokenPosition + ", "
@@ -115,7 +118,7 @@ public class ParserImpl extends Parser {
 			parser.next();
 		}
 		index.store(indexDirectory);
-		titleIndex.exportFile("titles.dat");
+		titleIndex.exportFile(titleIndexPath);
 	}
 
 }

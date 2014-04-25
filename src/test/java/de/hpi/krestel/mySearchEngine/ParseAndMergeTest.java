@@ -1,6 +1,6 @@
 package de.hpi.krestel.mySearchEngine;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
@@ -13,12 +13,13 @@ public class ParseAndMergeTest {
 		String partialIndexDir = "partials";
 		String mainIndexPath = "index.dat";
 		String seekListPath = "seeklist.dat";
+		String titlePath = "titles.dat";
 		
 		try {
 			File file = new File(partialIndexDir);
 			file.mkdir();
 
-			new ParserDummy().parseToPartialIndexes(partialIndexDir);
+			new ParserDummy().parseToPartialIndexes(partialIndexDir, titlePath);
 			new IndexMergerImpl().merge(seekListPath, partialIndexDir, mainIndexPath);
 
 			MainIndex index = new MainIndex(mainIndexPath, seekListPath);

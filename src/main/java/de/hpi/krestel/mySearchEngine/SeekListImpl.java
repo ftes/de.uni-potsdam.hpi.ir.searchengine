@@ -41,7 +41,7 @@ public class SeekListImpl implements SeekList {
 	@Override
 	public long getTermOffsetInIndex(String term) throws TermLengthException, TermNotFoundException, IOException {
 		if (term.length() > MAX_TERM_LENGTH) {
-			throw new TermLengthException();
+			throw new TermLengthException(term);
 		}
 		return binarySearch(term, 0, numberOfTerms-1);
 	}
@@ -56,7 +56,7 @@ public class SeekListImpl implements SeekList {
 	private long binarySearch(String searchTerm, long fromPosition, long toPosition) throws TermNotFoundException, IOException {
 		//could not find term
 		if (toPosition < fromPosition) {
-			throw new TermNotFoundException();
+			throw new TermNotFoundException(searchTerm);
 		}
 		
 		long middlePosition = (fromPosition + toPosition) / 2;
@@ -117,7 +117,7 @@ public class SeekListImpl implements SeekList {
 		file.seek(fileSize);
 		int termLength = term.length();
 		if (termLength > SeekList.MAX_TERM_LENGTH) {
-			throw new TermLengthException();
+			throw new TermLengthException(term);
 		}
 		file.writeChars(term);
 		if (termLength < SeekList.MAX_TERM_LENGTH) {

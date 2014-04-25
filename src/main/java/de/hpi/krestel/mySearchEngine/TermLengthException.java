@@ -8,11 +8,7 @@ package de.hpi.krestel.mySearchEngine;
 public class TermLengthException extends Exception {
 	private static final long serialVersionUID = 1L;
 	
-	public TermLengthException(String msg) {
-		super(msg);
-	}
-	
-	public TermLengthException() {
-		super();
+	public TermLengthException(String term) {
+		super("Term is too long: " + term);
 	}
 }

@@ -11,7 +11,7 @@ public class ParserDummy extends Parser {
 	}
 
 	@Override
-	public void parseToPartialIndexes(String indexDirectory) throws IOException {
+	public void parseToPartialIndexes(String indexDirectory, String titlePath) throws IOException {
 		PartialIndex index = new PartialIndex();
 		
 		// split long text
