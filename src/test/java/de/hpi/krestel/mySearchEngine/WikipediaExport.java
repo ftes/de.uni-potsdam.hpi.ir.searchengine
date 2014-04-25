@@ -9,9 +9,11 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.tartarus.snowball.SnowballStemmer;
+
 public class WikipediaExport {
 	public static void main(String[] args) throws XMLStreamException,
-			FileNotFoundException {
+			FileNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		XMLStreamReader parser = factory
 				.createXMLStreamReader(WikipediaExport.class
@@ -23,51 +25,89 @@ public class WikipediaExport {
 		String tag = null;
 
 		boolean inRevision = false;
-
-		while (parser.hasNext()) {
-
-			switch (parser.getEventType()) {
-			case XMLStreamConstants.START_DOCUMENT:
-				break;
-
-			case XMLStreamConstants.END_DOCUMENT:
-				parser.close();
-				break;
-
-			case XMLStreamConstants.START_ELEMENT:
-				tag = parser.getLocalName();
-				if (tag.equals("page")) {
-					page = new Page();
-				} else if (tag.equals("revision")) {
-					inRevision = true;
-				} else if (tag.equals("text")) {
-					characters = parser.getElementText(); // parses whole text and checks for end event
-					page.setText(characters);
+		
+		// initialize german stemmer
+		Class stemClass = Class.forName("org.tartarus.snowball.ext.germanStemmer");
+		SnowballStemmer stemmer = (SnowballStemmer) stemClass.newInstance();		
+		
+		int exhaustion = 10000;
+			
+			// read from stream
+			while (parser.hasNext()) {
+				
+				// check again
+				if (exhaustion == 0){
+					break;
 				}
-				break;
+				
+				switch (parser.getEventType()) {
+				case XMLStreamConstants.START_DOCUMENT:
+					break;
 
-			case XMLStreamConstants.CHARACTERS:
-				characters = parser.getText();
-				break;
+				case XMLStreamConstants.END_DOCUMENT:
+					parser.close();
+					break;
 
-			case XMLStreamConstants.END_ELEMENT:
-				tag = parser.getLocalName();
-				if (! inRevision && tag.equals("id")) {
-					page.setId(Integer.parseInt(characters));
-				} else if (! inRevision && tag.equals("title")) {
-					page.setTitle(characters);
-				} else if (tag.equals("page")) {
-					pages.add(page);
-					System.out.println(page);
-				} else if (tag.equals("revision")) {
-					inRevision = false;
+				case XMLStreamConstants.START_ELEMENT:
+					tag = parser.getLocalName();
+					if (tag.equals("page")) {
+						page = new Page();
+					} else if (tag.equals("revision")) {
+						inRevision = true;
+					} else if (tag.equals("text")) {
+						characters = parser.getElementText(); // parses whole text and checks for end event
+						page.setText(characters);
+						int tokenPosition = 0;
+						
+						// filter text
+						String[] tokens = characters.split("[\\s.]");
+						
+						for(String token : tokens){
+							
+							token = token.toLowerCase();
+							token = token.replaceAll("[^a-zäöüß]", "");
+							
+							if (token.length() > 2){ // only index terms with a minimum length
+								stemmer.setCurrent(token);
+								stemmer.stem();
+								token = stemmer.getCurrent(); 
+								
+								System.out.println("id: "+ page.getId() + ", location: " + tokenPosition + ", " + token);
+								tokenPosition++;
+							}
+
+						}
+						
+					}
+					break;
+
+				case XMLStreamConstants.CHARACTERS:
+					characters = parser.getText();
+					break;
+
+				case XMLStreamConstants.END_ELEMENT:
+					tag = parser.getLocalName();
+					if (! inRevision && tag.equals("id")) {
+						page.setId(Integer.parseInt(characters));
+					} else if (! inRevision && tag.equals("title")) {
+						page.setTitle(characters);
+					} else if (tag.equals("page")) {
+						pages.add(page);
+						//System.out.println(page);
+					} else if (tag.equals("revision")) {
+						inRevision = false;
+					}
+					break;
+
+				default:
+					break;
 				}
-				break;
-
-			default:
-				break;
+				
+				// TODO: after complete page check for memory exhaustion			
+				
+				exhaustion--;
+				parser.next();
 			}
-			parser.next();
-		}
+		
 	}
 }
