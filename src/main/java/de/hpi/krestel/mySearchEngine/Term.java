@@ -37,6 +37,10 @@ public class Term {
 		return occurrences;
 	}
 	
+	/**
+	 * Adds a occurence to the term, only if it doesn't exist yet.
+	 * @param occurence
+	 */
 	public void addOccurence(TermOccurrence occurence) {
 		this.occurrences.add(occurence);
 		// TODO: sort
@@ -44,6 +48,10 @@ public class Term {
 	
 	@Override
 	public String toString() {
-		return "Term [term=" + term + ", occurrences=" + occurrences + "]";
+		String s = "[Term] term=" + term;
+		for (TermOccurrence occurence : occurrences) {
+			s += "\n\t" + occurence.toString();
+		}
+		return s;
 	}
 }

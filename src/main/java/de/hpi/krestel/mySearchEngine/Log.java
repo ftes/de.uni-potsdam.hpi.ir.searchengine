@@ -5,7 +5,7 @@ public class Log {
 		DEBUG, ERROR
 	}
 	
-	public static Level LEVEL = Level.ERROR;
+	public static Level LEVEL = Level.DEBUG;
 	
 	public static void log(Level level, String msg) {
 		if (level.compareTo(LEVEL) >= 0) {

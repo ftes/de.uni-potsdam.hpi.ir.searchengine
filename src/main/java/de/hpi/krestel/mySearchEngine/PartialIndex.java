@@ -1,5 +1,10 @@
 package de.hpi.krestel.mySearchEngine;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
 /**
  * The index stores terms and their occurrences in main memory. At any given time we will only have parts
  * of the whole index in main memory, so this class will for example only contain the terms for the first
@@ -9,8 +14,18 @@ package de.hpi.krestel.mySearchEngine;
  *
  */
 public class PartialIndex {
+	private static int nextID = 0;
+	private int ID;
+	
+	/**
+	 * This key-sorted map stores the partial index. Keys are the Terms as Strings.
+	 * Values are the Term objects.
+	 */
+	private Map<String, Term> map = new TreeMap<>();
+	
 	public PartialIndex() {
-		// TODO Auto-generated constructor stub
+		this.ID = PartialIndex.nextID;
+		PartialIndex.nextID++;
 	}
 	
 	/**
@@ -18,7 +33,15 @@ public class PartialIndex {
 	 * @return
 	 */
 	public int getID() {
-		return 0;
+		return ID;
+	}
+	
+	/**
+	 * returns the filename this index would be written to
+	 * @return
+	 */
+	public String getFilename() {
+		return this.getID() + ".dat";
 	}
 	
 	/**
@@ -27,7 +50,14 @@ public class PartialIndex {
 	 * @param term
 	 */
 	public void addTerm(Term term) {
-		
+		if (map.containsKey(term.getTerm())) {
+			Term existingTerm = map.get(term.getTerm());
+			for (TermOccurrence occurence : term.getOccurrences()) {
+				existingTerm.addOccurence(occurence);
+			}
+		} else {
+			map.put(term.getTerm(), term);
+		}
 	}
 	
 	/**
@@ -36,15 +66,25 @@ public class PartialIndex {
 	 * @param occurence
 	 */
 	public void addOccurenceForTerm(String term, TermOccurrence occurence) {
-		
+		Term t = new Term(term);
+		t.addOccurence(occurence);
+		this.addTerm(t);
 	}
 	
 	/**
 	 * Stores the whole index to disk to a file named "[getID()].dat"
-	 * @param the directory to store the file in.
+	 * @param the directory to store the file in (no trailing slash)
+	 * @throws IOException 
 	 */
-	public void store(String directory) {
+	public void store(String directory) throws IOException {
+		String filename = directory + "/" + this.getFilename();
+		IndexFileHandler fileHandler = new IndexFileHandlerImpl(filename);
 		
+		for (Entry<String, Term> entry : map.entrySet()) {
+			Term term = entry.getValue();
+			fileHandler.storeTerm(term);			
+		}
+		fileHandler.close();		
 	}
 	
 	/**

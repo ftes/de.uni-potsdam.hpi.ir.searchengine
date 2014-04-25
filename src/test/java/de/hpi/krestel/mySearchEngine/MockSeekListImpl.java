@@ -20,4 +20,7 @@ public class MockSeekListImpl implements SeekList {
 		return offsets;
 	}
 
+	@Override
+	public void close() {}
+
 }

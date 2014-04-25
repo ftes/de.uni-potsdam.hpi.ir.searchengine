@@ -10,6 +10,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import de.hpi.krestel.mySearchEngine.Log.Level;
+
 
 public class IndexMergerImpl implements IndexMerger {
 	@Override
@@ -66,7 +68,12 @@ public class IndexMergerImpl implements IndexMerger {
 			//now these have been found, write them to the main index file and seeklist
 			Term combinedTerm = new Term(term, occurrences);
 			long offset = mainIndexHandler.storeTerm(combinedTerm);
-			seekList.storeTermOffset(term, offset);
+			try {
+				seekList.storeTermOffset(term, offset);
+			} catch (TermLengthException e) {
+				Log.log(Level.ERROR, "Did not store term offset in seeklist because it exceeded max length: " + term);
+				e.printStackTrace();
+			}
 		}
 	}
 	
