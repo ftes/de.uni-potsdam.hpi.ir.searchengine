@@ -20,9 +20,9 @@ public class MainIndex {
 	 * 
 	 * @param indexPath
 	 * @param seeklistPath
-	 * @throws FileNotFoundException
+	 * @throws IOException 
 	 */
-	public MainIndex(String indexPath, String seeklistPath) throws FileNotFoundException {
+	public MainIndex(String indexPath, String seeklistPath) throws IOException {
 		indexFile = new IndexFileHandlerImpl(indexPath);
 		seeklist = new SeekListImpl(seeklistPath);
 	}
