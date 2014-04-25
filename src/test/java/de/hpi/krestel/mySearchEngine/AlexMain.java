@@ -2,10 +2,12 @@ package de.hpi.krestel.mySearchEngine;
 
 import java.io.IOException;
 
+import de.hpi.krestel.mySearchEngine.Log.Level;
+
 public class AlexMain {
 
 	public static void main(String[] args) throws IOException {
-		IndexFileHandler fileHandler = new IndexFileHandlerImpl("test.dat");
+		PartialIndex index = new PartialIndex();
 		
 		Term term = new Term("Testing");
 		term.addOccurence(new TermOccurrence(3, 5));
@@ -17,22 +19,22 @@ public class AlexMain {
 		term2.addOccurence(new TermOccurrence(3000, 1));
 		term2.addOccurence(new TermOccurrence(3000, 1001));
 		
-		fileHandler.storeTerm(term);
-		fileHandler.storeTerm(term2);
-		fileHandler.close();
-		fileHandler = null;
-		
+		index.addTerm(term);
+		index.addTerm(term2);
+		index.addTerm(term2);
+		index.addOccurenceForTerm("HPI", new TermOccurrence(200, 4));
+
+		index.store(".");		
 		System.out.println("[DONE]");
 		
-		IndexFileHandler fileHandler2 = new IndexFileHandlerImpl("test.dat");
-		Term t;
-		t = fileHandler2.readNextTerm();
-		System.out.println(t.toString());
-		t = fileHandler2.readNextTerm();
-		System.out.println(t.toString());
-		t = fileHandler2.readNextTerm();
-		System.out.println(t.toString());
-		t = fileHandler2.readNextTerm();
+		// Read whole file
+		Log.log(Level.DEBUG, "Printing file " + index.getFilename());
+		IndexFileHandler fileHandler = new IndexFileHandlerImpl(index.getFilename());
+		Term t = fileHandler.readNextTerm();
+		while (t != null) {
+			System.out.println(t.toString());
+			t = fileHandler.readNextTerm();
+		}
 	}
 
 }
