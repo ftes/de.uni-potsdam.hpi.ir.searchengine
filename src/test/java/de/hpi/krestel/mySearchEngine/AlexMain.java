@@ -27,18 +27,31 @@ public class AlexMain {
 //		index.store(".");		
 //		System.out.println("[DONE]");
 		
-		Parser p = new ParserDummy("index.dat");
-		p.parseToPartialIndexes(".");
+		TitleIndex index = new TitleIndex();
+		index.addTitle(1, "test");
+		index.addTitle(3, "blaa df  asdf");
+		index.addTitle(4, "Test 3");
 		
-		// Read whole file
-		String filename = "10.dat";
-		Log.log(Level.DEBUG, "Printing file " + filename);
-		IndexFileHandler fileHandler = new IndexFileHandlerImpl(filename);
-		Term t = fileHandler.readNextTerm();
-		while (t != null) {
-			System.out.println(t.toString());
-			t = fileHandler.readNextTerm();
-		}
+		index.exportFile("titles.dat");
+		System.out.println(index.toString());
+		System.out.println("=====================");
+		
+		index = new TitleIndex();
+		index.importFile("titles.dat");
+		System.out.println(index.toString());
+		
+//		Parser p = new ParserDummy("index.dat");
+//		p.parseToPartialIndexes(".");
+//		
+//		// Read whole file
+//		String filename = "10.dat";
+//		Log.log(Level.DEBUG, "Printing file " + filename);
+//		IndexFileHandler fileHandler = new IndexFileHandlerImpl(filename);
+//		Term t = fileHandler.readNextTerm();
+//		while (t != null) {
+//			System.out.println(t.toString());
+//			t = fileHandler.readNextTerm();
+//		}
 	}
 
 }

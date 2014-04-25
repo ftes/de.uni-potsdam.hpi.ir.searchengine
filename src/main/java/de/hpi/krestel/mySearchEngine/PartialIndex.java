@@ -92,8 +92,11 @@ public class PartialIndex {
 	 */
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
+		String s = "";
+		for (Entry<String, Term> entry : map.entrySet()) {
+			s += entry.getValue().toString() + "\n";			
+		}
+		return s;
 	}
 
 }
