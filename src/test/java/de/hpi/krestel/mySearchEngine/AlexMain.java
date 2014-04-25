@@ -27,11 +27,11 @@ public class AlexMain {
 //		index.store(".");		
 //		System.out.println("[DONE]");
 		
-		Parser p = new ParserDummy("index.dat");
-		p.parseToPartialIndexes(".");
+//		Parser p = new ParserDummy();
+//		p.parseToPartialIndexes(".");
 		
 		// Read whole file
-		String filename = "10.dat";
+		String filename = "partials/0.dat";
 		Log.log(Level.DEBUG, "Printing file " + filename);
 		IndexFileHandler fileHandler = new IndexFileHandlerImpl(filename);
 		Term t = fileHandler.readNextTerm();

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class SeekListTest {
 	@Test
-	public void testWritingAndReading() throws IOException, TermLengthException {
+	public void testWritingAndReading() throws IOException, TermLengthException, TermNotFoundException {
 		String fileName = "seekListTest.dat";
 		
 		SeekList seekList = new SeekListImpl(fileName);

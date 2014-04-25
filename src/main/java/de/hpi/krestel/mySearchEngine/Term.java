@@ -43,7 +43,6 @@ public class Term {
 	 */
 	public void addOccurence(TermOccurrence occurence) {
 		this.occurrences.add(occurence);
-		// TODO: sort
 	}
 	
 	@Override
