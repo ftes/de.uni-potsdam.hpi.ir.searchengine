@@ -1,6 +1,5 @@
 package de.hpi.krestel.mySearchEngine;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import de.hpi.krestel.mySearchEngine.Log.Level;

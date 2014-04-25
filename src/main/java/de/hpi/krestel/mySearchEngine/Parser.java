@@ -1,5 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
+import java.io.IOException;
+
 /**
  * This Parser parses a given wikipedia xml file.
  * 
@@ -19,8 +21,9 @@ public abstract class Parser {
 	
 	/**
 	 * Parses the specified XML File and request the generation of the indexes.
+	 * @throws IOException 
 	 */
-	public abstract void parseToPartialIndexes(String indexDirectory);
+	public abstract void parseToPartialIndexes(String indexDirectory) throws IOException;
 	
 	public String getFilename() {
 		return filename;
