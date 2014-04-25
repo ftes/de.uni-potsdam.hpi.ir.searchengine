@@ -46,7 +46,7 @@ public interface IndexFileHandler {
 	 * after that the next term follows.
 	 * 
 	 * @param term
-	 * @return
+	 * @return returns the file offset of the written term
 	 * @throws IOException 
 	 */
 	long storeTerm(Term term) throws IOException;

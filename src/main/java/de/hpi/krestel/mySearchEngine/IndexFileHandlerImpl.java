@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.SortedSet;
 
+import de.hpi.krestel.mySearchEngine.Log.Level;
+
 public class IndexFileHandlerImpl implements IndexFileHandler {
 	/**
 	 * The name of the file that is used for storage
@@ -37,8 +39,13 @@ public class IndexFileHandlerImpl implements IndexFileHandler {
 
 	@Override
 	public Term readNextTerm() throws IOException {
-		String termString = "";
-		char c = file.readChar();
+		Log.log(Level.DEBUG, "[IndexFileHandlerImpl:readNextTerm] FilePointer = " + file.getFilePointer() + "; length: " + file.length());
+		if (file.getFilePointer() >= file.length()) {
+			return null;
+		}
+		
+		String termString = "";		
+		char c = file.readChar();		
 		while (c != '\0') {
 			termString += c;
 			c = file.readChar();
@@ -61,6 +68,7 @@ public class IndexFileHandlerImpl implements IndexFileHandler {
 	public long storeTerm(Term term) throws IOException {
 		// goto end of file
 		file.seek( file.length() );
+		long offset = file.getFilePointer();
 		
 		// write contents
 		file.writeChars(term.getTerm());
@@ -73,6 +81,6 @@ public class IndexFileHandlerImpl implements IndexFileHandler {
 			file.writeInt(occurence.getPosition());
 		}
 		
-		return file.getFilePointer();
+		return offset;
 	}
 }
