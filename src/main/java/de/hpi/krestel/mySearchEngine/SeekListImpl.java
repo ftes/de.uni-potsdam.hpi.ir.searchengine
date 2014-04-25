@@ -2,10 +2,23 @@ package de.hpi.krestel.mySearchEngine;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.HashMap;
+import java.util.Map;
 
-
+/**
+ * Attempts to cache until main memory is full. The terms for requested positions in the
+ * seeklist are simply cached until main memory is full. No bookkeeping is done to determine
+ * what can be removed from the cache. Instead, the behaviour of the binary search pretty much
+ * garuantees that certain "pivot" elements (e.g. the n/2 element) will be accessed most often,
+ * so that they will land in the cache automatically.
+ * 
+ * @author fredrik
+ *
+ */
 public class SeekListImpl implements SeekList {
 	private final RandomAccessFile file;
+	
+	private final Map<Long, String> positionToTermCache = new HashMap<>();
 	
 	/**
 	 * In bytes.
@@ -70,6 +83,10 @@ public class SeekListImpl implements SeekList {
 	 * @throws IOException 
 	 */
 	protected String getTermAtPosition(long position) throws IOException {
+		if (positionToTermCache.containsKey(position)) {
+			return positionToTermCache.get(position);
+		}
+		
 		file.seek(getOffset(position));
 		String termString = "";
 		char c = file.readChar();
@@ -79,6 +96,11 @@ public class SeekListImpl implements SeekList {
 			c = file.readChar();
 			i++;
 		}
+		
+		if (! Util.isMainMemoryFull()) {
+			positionToTermCache.put(position, termString);
+		}
+		
 		return termString;
 	}
 	

@@ -3,6 +3,15 @@ package de.hpi.krestel.mySearchEngine;
 import java.util.Iterator;
 
 public class Util {
+	public static class Pair<A, B> {
+		public final A a;
+		public final B b;
+		public Pair(A a, B b) {
+			this.a = a;
+			this.b = b;
+		}
+	}
+	
 	public static <T> T get(Iterable<T> iterable, int i) {
 		Iterator<T> iter = iterable.iterator();
 		T t = iter.next();
@@ -31,11 +40,11 @@ public class Util {
 	/**
 	 * Determine whether the main memory can be considered full.
 	 * If so, delete all references to large objects no longer needed (e.g. partial index) and
-	 * run the {@link #runGarbageCollector()}.
+	 * run the {@link #runGarbageCollector()}.<p>
+	 * TODO caching
 	 */
 	public static boolean isMainMemoryFull() {
-		long freeMemory = Runtime.getRuntime().freeMemory();
-		return freeMemory < MIN_FREE_MEMORY_BYTES;
+		return Runtime.getRuntime().freeMemory() < MIN_FREE_MEMORY_BYTES;
 	}
 	
 	/**

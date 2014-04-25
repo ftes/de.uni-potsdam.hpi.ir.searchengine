@@ -27,6 +27,11 @@ public class IndexMergerImpl implements IndexMerger {
 		}
 		
 		merge(seekList, handlers, indexHandler);
+		
+		for (IndexFileHandler handler : handlers) {
+			handler.close();
+		}
+		indexHandler.close();seekList.close();
 	}
 	
 //	private String getCurrentTermSet(SortedMap<Term, IndexFileHandler> currentTerms) {
