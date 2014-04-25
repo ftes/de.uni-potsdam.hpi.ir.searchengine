@@ -10,8 +10,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import de.hpi.krestel.mySearchEngine.Log.Level;
-
 
 public class IndexMergerImpl implements IndexMerger {
 	@Override
@@ -29,15 +27,15 @@ public class IndexMergerImpl implements IndexMerger {
 		merge(seekList, handlers, indexHandler);
 	}
 	
-	private String getCurrentTermSet(SortedMap<Term, IndexFileHandler> currentTerms) {
-		StringBuilder sb = new StringBuilder();
-		for (Term term : currentTerms.keySet()) {
-			IndexFileHandler handler = currentTerms.get(term);
-			sb.append(handler.getFilename() + ": " + term.getTerm());
-			sb.append(", ");
-		}
-		return sb.toString();
-	}
+//	private String getCurrentTermSet(SortedMap<Term, IndexFileHandler> currentTerms) {
+//		StringBuilder sb = new StringBuilder();
+//		for (Term term : currentTerms.keySet()) {
+//			IndexFileHandler handler = currentTerms.get(term);
+//			sb.append(handler.getFilename() + ": " + term.getTerm());
+//			sb.append(", ");
+//		}
+//		return sb.toString();
+//	}
 	
 	@Override
 	public void merge(SeekList seekList, Set<IndexFileHandler> partialIndexHandlers,
@@ -54,13 +52,11 @@ public class IndexMergerImpl implements IndexMerger {
 			//find as many occurrences of the same term in the set as possible, beginning with the first
 			String term = currentTerms.firstKey().getTerm();
 			NavigableSet<TermOccurrence> occurrences = new TreeSet<TermOccurrence>(TermOccurrenceComparator.INSTANCE);
-			int n = 0;
 			for (Iterator<Term> i = currentTerms.keySet().iterator(); i.hasNext();) {
 				Term checkTerm = i.next();
 				if (checkTerm.getTerm().equals(term)) {
 					occurrences.addAll(checkTerm.getOccurrences());
 					i.remove();
-					n++;
 				} else {
 					break;
 				}
