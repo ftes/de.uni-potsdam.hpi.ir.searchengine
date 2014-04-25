@@ -34,9 +34,8 @@ public class ParserImpl extends Parser {
 
 		boolean inRevision = false;
 
-		// initialize german stemmer
-		SnowballStemmer stemmer = new germanStemmer();
 		Tokenizer tokenizer = null;
+
 		PartialIndex index = new PartialIndex();
 
 		// read from stream

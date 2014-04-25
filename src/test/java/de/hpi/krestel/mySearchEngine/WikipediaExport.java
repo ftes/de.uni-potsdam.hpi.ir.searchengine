@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.tartarus.snowball.SnowballStemmer;
+import org.tartarus.snowball.ext.germanStemmer;
 
 public class WikipediaExport {
 	public static void main(String[] args) throws XMLStreamException,
@@ -28,8 +29,9 @@ public class WikipediaExport {
 		boolean inRevision = false;
 
 		// initialize german stemmer
-		Class stemClass = Class.forName("org.tartarus.snowball.ext.germanStemmer");
-		SnowballStemmer stemmer = (SnowballStemmer) stemClass.newInstance();
+		SnowballStemmer stemmer = new germanStemmer();
+		
+		int exhaustion = 10000;			
 
 		// read from stream
 		while (parser.hasNext()) {

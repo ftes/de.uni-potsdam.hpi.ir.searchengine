@@ -82,7 +82,7 @@ public class PartialIndex {
 		
 		for (Entry<String, Term> entry : map.entrySet()) {
 			Term term = entry.getValue();
-			fileHandler.storeTerm(term);			
+			fileHandler.storeTerm(term);	
 		}
 		fileHandler.close();		
 	}
@@ -92,8 +92,11 @@ public class PartialIndex {
 	 */
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
+		String s = "";
+		for (Entry<String, Term> entry : map.entrySet()) {
+			s += entry.getValue().toString() + "\n";			
+		}
+		return s;
 	}
 
 }
