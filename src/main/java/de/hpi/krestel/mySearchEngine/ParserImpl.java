@@ -37,6 +37,7 @@ public class ParserImpl extends Parser {
 		Tokenizer tokenizer = null;
 
 		PartialIndex index = new PartialIndex();
+		TitleIndex titleIndex = new TitleIndex();
 
 		// read from stream
 		while (parser.hasNext()) {
@@ -69,10 +70,15 @@ public class ParserImpl extends Parser {
 					
 					for (String token : tokens) {
 					
-						index.addOccurenceForTerm(token, new TermOccurrence(page.getId(), tokenPosition));
-						System.out.println("id: " + page.getId()
-								+ ", location: " + tokenPosition + ", "
-								+ token);
+						// FIXME: do something else ...
+						if (token.length() < SeekList.MAX_TERM_LENGTH-2) { 
+							index.addOccurenceForTerm(token, new TermOccurrence(page.getId(), tokenPosition));
+						} else {
+							System.out.println("Ignored: " + token);
+						}
+//						System.out.println("id: " + page.getId()
+//								+ ", location: " + tokenPosition + ", "
+//								+ token);
 						
 						tokenPosition++;
 					}
@@ -87,6 +93,7 @@ public class ParserImpl extends Parser {
 				tag = parser.getLocalName();
 				if (!inRevision && tag.equals("id")) {
 					page.setId(Integer.parseInt(characters));
+					titleIndex.addTitle(page.getId(), page.getTitle());
 				} else if (!inRevision && tag.equals("title")) {
 					page.setTitle(characters);
 				} else if (tag.equals("page")) {
@@ -111,6 +118,7 @@ public class ParserImpl extends Parser {
 			parser.next();
 		}
 		index.store(indexDirectory);
+		titleIndex.exportFile("titles.dat");
 	}
 
 }

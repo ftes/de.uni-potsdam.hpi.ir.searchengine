@@ -28,7 +28,7 @@ public interface SeekList {
 	 * The maximum length of a term, which is enforced to ensure equal size slots in
 	 * the seeklist file, so that binary search can be performed.
 	 */
-	int MAX_TERM_LENGTH = 20;
+	int MAX_TERM_LENGTH = 50;
 	int BYTES_PER_CHAR = 2;
 	int BYTES_PER_TERM = MAX_TERM_LENGTH * BYTES_PER_CHAR;
 	int BYTES_PER_OFFSET = 8;
