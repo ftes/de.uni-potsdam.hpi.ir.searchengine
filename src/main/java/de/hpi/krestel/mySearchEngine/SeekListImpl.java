@@ -2,10 +2,23 @@ package de.hpi.krestel.mySearchEngine;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.HashMap;
+import java.util.Map;
 
-
+/**
+ * Attempts to cache until main memory is full. The terms for requested positions in the
+ * seeklist are simply cached until main memory is full. No bookkeeping is done to determine
+ * what can be removed from the cache. Instead, the behaviour of the binary search pretty much
+ * garuantees that certain "pivot" elements (e.g. the n/2 element) will be accessed most often,
+ * so that they will land in the cache automatically.
+ * 
+ * @author fredrik
+ *
+ */
 public class SeekListImpl implements SeekList {
 	private final RandomAccessFile file;
+	
+	private final Map<Long, String> positionToTermCache = new HashMap<>();
 	
 	/**
 	 * In bytes.
@@ -26,8 +39,10 @@ public class SeekListImpl implements SeekList {
 	}
 	
 	@Override
-	public long getTermOffsetInIndex(String term) throws TermLengthException, IOException {
-		//TODO caching
+	public long getTermOffsetInIndex(String term) throws TermLengthException, TermNotFoundException, IOException {
+		if (term.length() > MAX_TERM_LENGTH) {
+			throw new TermLengthException();
+		}
 		return binarySearch(term, 0, numberOfTerms-1);
 	}
 	
@@ -38,10 +53,10 @@ public class SeekListImpl implements SeekList {
 	 * @return
 	 * @throws IOException
 	 */
-	private long binarySearch(String searchTerm, long fromPosition, long toPosition) throws IOException {
+	private long binarySearch(String searchTerm, long fromPosition, long toPosition) throws TermNotFoundException, IOException {
 		//could not find term
 		if (toPosition < fromPosition) {
-			return -1;
+			throw new TermNotFoundException();
 		}
 		
 		long middlePosition = (fromPosition + toPosition) / 2;
@@ -69,7 +84,11 @@ public class SeekListImpl implements SeekList {
 	 * @return The term found at this position.
 	 * @throws IOException 
 	 */
-	protected String getTermAtPosition(long position) throws IOException {
+	public String getTermAtPosition(long position) throws IOException {
+		if (positionToTermCache.containsKey(position)) {
+			return positionToTermCache.get(position);
+		}
+		
 		file.seek(getOffset(position));
 		String termString = "";
 		char c = file.readChar();
@@ -79,10 +98,15 @@ public class SeekListImpl implements SeekList {
 			c = file.readChar();
 			i++;
 		}
+		
+		if (! Util.isMainMemoryFull()) {
+			positionToTermCache.put(position, termString);
+		}
+		
 		return termString;
 	}
 	
-	protected long getOffsetAtPosition(long position) throws IOException {
+	public long getOffsetAtPosition(long position) throws IOException {
 		file.seek(getOffset(position) + SeekList.BYTES_PER_TERM);
 		return file.readLong();
 	}
@@ -108,8 +132,7 @@ public class SeekListImpl implements SeekList {
 	}
 	
 	@Override
-	public void close() {
-		// TODO Auto-generated method stub
-		
+	public void close() throws IOException {
+		file.close();
 	}
 }

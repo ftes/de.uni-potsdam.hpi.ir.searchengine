@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.SortedSet;
 
-import de.hpi.krestel.mySearchEngine.Log.Level;
-
+/**
+ * TODO compression / encoding (delta, ...gamma) *
+ */
 public class IndexFileHandlerImpl implements IndexFileHandler {
 	/**
 	 * The name of the file that is used for storage
@@ -39,7 +40,7 @@ public class IndexFileHandlerImpl implements IndexFileHandler {
 
 	@Override
 	public Term readNextTerm() throws IOException {
-		Log.log(Level.DEBUG, "[IndexFileHandlerImpl:readNextTerm] FilePointer = " + file.getFilePointer() + "; length: " + file.length());
+//		Log.log(Level.DEBUG, "[IndexFileHandlerImpl:readNextTerm] FilePointer = " + file.getFilePointer() + "; length: " + file.length());
 		if (file.getFilePointer() >= file.length()) {
 			return null;
 		}

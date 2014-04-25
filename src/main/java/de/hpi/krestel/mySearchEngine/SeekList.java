@@ -42,9 +42,9 @@ public interface SeekList {
 	 * Returns the offset of for the term data (position list of occurences) within the main index.
 	 * 
 	 * @param term The term (e.g. tokenized form of a word)
-	 * @return The byte offset within the index file of the line pertaining to this {@code term}, {@code -1} if the term cannot be found.
+	 * @return The byte offset within the index file of the line pertaining to this {@code term}.
 	 */
-	long getTermOffsetInIndex(String term) throws IOException, TermLengthException;
+	long getTermOffsetInIndex(String term) throws IOException, TermLengthException, TermNotFoundException;
 
 	/**
 	 * Adds the term data to the seeklist by appending it to the file.
@@ -57,5 +57,5 @@ public interface SeekList {
 	/**
 	 * Close the file backing the seeklist and clean up.
 	 */
-	void close();
+	void close() throws IOException;
 }
