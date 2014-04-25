@@ -7,6 +7,9 @@ import java.util.SortedSet;
 
 import de.hpi.krestel.mySearchEngine.Log.Level;
 
+/**
+ * TODO compression / encoding (delta, ...gamma) *
+ */
 public class IndexFileHandlerImpl implements IndexFileHandler {
 	/**
 	 * The name of the file that is used for storage
