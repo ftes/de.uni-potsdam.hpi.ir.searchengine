@@ -22,4 +22,26 @@ public class Util {
 		sb.append("]");
 		return sb.toString();
 	}
+	
+	/**
+	 * Leave at least 50 MBytes of memory free.
+	 */
+	public static final long MIN_FREE_MEMORY_BYTES = 50 * 1024 * 1024;
+	
+	/**
+	 * Determine whether the main memory can be considered full.
+	 * If so, delete all references to large objects no longer needed (e.g. partial index) and
+	 * run the {@link #runGarbageCollector()}.
+	 */
+	public static boolean isMainMemoryFull() {
+		long freeMemory = Runtime.getRuntime().freeMemory();
+		return freeMemory < MIN_FREE_MEMORY_BYTES;
+	}
+	
+	/**
+	 * Only suggest that the gc should run, but bettern than nothing.
+	 */
+	public static void runGarbageCollector() {
+		Runtime.getRuntime().gc();
+	}
 }
