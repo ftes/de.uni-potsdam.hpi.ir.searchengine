@@ -1,7 +1,6 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.io.FileNotFoundException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +9,11 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.tartarus.snowball.SnowballStemmer;
+
 public class WikipediaExport {
 	public static void main(String[] args) throws XMLStreamException,
-			FileNotFoundException {
+			FileNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		XMLStreamReader parser = factory
 				.createXMLStreamReader(WikipediaExport.class
@@ -25,36 +26,19 @@ public class WikipediaExport {
 
 		boolean inRevision = false;
 		
+		// initialize german stemmer
+		Class stemClass = Class.forName("org.tartarus.snowball.ext.germanStemmer");
+		SnowballStemmer stemmer = (SnowballStemmer) stemClass.newInstance();		
 		
-		Runtime runtime = Runtime.getRuntime();
-
-	    NumberFormat format = NumberFormat.getInstance();
-
-	    StringBuilder sb1 = new StringBuilder();
-	    long maxMemory = runtime.maxMemory();
-	    long allocatedMemory = runtime.totalMemory();
-	    long freeMemory = runtime.freeMemory();
-
-	    sb1.append("free memory: " + format.format(freeMemory / 1024) + "<br/>");
-	    sb1.append("allocated memory: " + format.format(allocatedMemory / 1024) + "<br/>");
-	    sb1.append("max memory: " + format.format(maxMemory / 1024) + "<br/>");
-	    sb1.append("total free memory: " + format.format((freeMemory + (maxMemory - allocatedMemory)) / 1024) + "<br/>");
-	    
-	    System.out.println(sb1.toString());
-	    
-		boolean memoryExhausted = false;
 		int exhaustion = 10000;
-		
-		while (!memoryExhausted){
-			
-			// check again
-			if (exhaustion == 0){
-				memoryExhausted = true;
-				break;
-			}
 			
 			// read from stream
 			while (parser.hasNext()) {
+				
+				// check again
+				if (exhaustion == 0){
+					break;
+				}
 				
 				switch (parser.getEventType()) {
 				case XMLStreamConstants.START_DOCUMENT:
@@ -73,19 +57,26 @@ public class WikipediaExport {
 					} else if (tag.equals("text")) {
 						characters = parser.getElementText(); // parses whole text and checks for end event
 						page.setText(characters);
-										
+						int tokenPosition = 0;
+						
 						// filter text
 						String[] tokens = characters.split("[\\s.]");
 						
 						for(String token : tokens){
+							
 							token = token.toLowerCase();
 							token = token.replaceAll("[^a-zäöüß]", "");
-							System.out.println(token);
 							
-							// TODO: use stemmer
-						}
-						
+							if (token.length() > 2){ // only index terms with a minimum length
+								stemmer.setCurrent(token);
+								stemmer.stem();
+								token = stemmer.getCurrent(); 
+								
+								System.out.println("id: "+ page.getId() + ", location: " + tokenPosition + ", " + token);
+								tokenPosition++;
+							}
 
+						}
 						
 					}
 					break;
@@ -112,17 +103,11 @@ public class WikipediaExport {
 					break;
 				}
 				
-				// TODO: after complete page check for memory exhaustion
+				// TODO: after complete page check for memory exhaustion			
 				
+				exhaustion--;
 				parser.next();
 			}
-			
-			// clean content
-			
-			// tokenize
-			
-			exhaustion--;
-		}
 		
 	}
 }
