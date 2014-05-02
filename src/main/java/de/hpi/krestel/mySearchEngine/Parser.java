@@ -23,13 +23,8 @@ public abstract class Parser {
 	
 	/**
 	 * Parses the specified XML File and request the generation of the indexes.
-	 * @throws IOException 
-	 * @throws XMLStreamException 
-	 * @throws ClassNotFoundException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
 	 */
-	public abstract void parseToPartialIndexes(String indexDirectory, String titleIndexPath)
+	public abstract void parseToPartialIndexes(String stemmedPartialDir, String unstemmedPartialDir, String titleIndexPath)
 			throws IOException, XMLStreamException, ClassNotFoundException, InstantiationException, IllegalAccessException;
 	
 	public String getFilename() {

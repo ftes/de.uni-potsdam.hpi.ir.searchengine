@@ -12,7 +12,7 @@ public class Tokenizer {
 		this.text = text;
 	}
 	
-	public ArrayList<String> tokenize(){
+	public ArrayList<String> tokenize(boolean stem){
 		SnowballStemmer stemmer = new germanStemmer();
 		ArrayList<String> resultTokens = new ArrayList<String>();
 		String token = null;
@@ -23,10 +23,14 @@ public class Tokenizer {
 			token = tokens[i].toLowerCase();
 			token = token.replaceAll("[^a-zäöüß]", "");
 
-			if (token.length() > 2) { // only index terms with minimum length 2
-				stemmer.setCurrent(token);
-				stemmer.stem();
-				resultTokens.add(stemmer.getCurrent());
+			if (stem) {
+				if (token.length() > 2) { // only index terms with minimum length 2
+					stemmer.setCurrent(token);
+					stemmer.stem();
+					resultTokens.add(stemmer.getCurrent());
+				}
+			} else {
+				resultTokens.add(token);
 			}
 		}
 

@@ -17,7 +17,7 @@ public class TermQuery implements BooleanSetOperation<Integer> {
 	
 	public TermQuery(MainIndex index, String term) throws QueryProcessingException {
 		this.index = index;
-		ArrayList<String> tokens = new Tokenizer(term).tokenize();
+		ArrayList<String> tokens = new Tokenizer(term).tokenize(true);
 		if (tokens.size() != 1) {
 			throw new QueryProcessingException(
 					"Can only handle exactly one token as part of a boolean op, but got " + term);

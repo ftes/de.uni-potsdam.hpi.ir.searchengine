@@ -27,11 +27,17 @@ public class SearchEngineFAP extends SearchEngine {
 	public static final String dir = "data";
 	public static final String partialDir = dir + File.separator + "partial";
 	
-	public static final String seeklistFile = dir + File.separator + "seeklist.dat";
-	public static final String indexFile = dir + File.separator + "index.dat";
+	public static final String stemmedSeeklistFile = dir + File.separator + "stemmed-seeklist.dat";
+	public static final String unstemmedSeeklistFile = dir + File.separator + "unstemmed-seeklist.dat";
+	public static final String stemmedIndexFile = dir + File.separator + "stemmed-index.dat";
+	public static final String unstemmedIndexFile = dir + File.separator + "unstemmed-index.dat";
 	public static final String titleFile = dir + File.separator + "titles.dat";
 	
-	private MainIndex mainIndex;
+	public static final String stemmedPartialDir = partialDir + File.separator + "stemmed";
+	public static final String unstemmedPartialDir = partialDir + File.separator + "unstemmed";
+	
+	private MainIndex stemmedMainIndex;
+	private MainIndex unstemmedMainIndex;
 	private TitleIndex titleIndex;
 	
 	// Replace 'Y' with your search engine name
@@ -44,8 +50,9 @@ public class SearchEngineFAP extends SearchEngine {
 	void index(String dir) {
 		new File(partialDir).mkdirs();
 		try {
-			new ParserImpl(dir).parseToPartialIndexes(partialDir, titleFile);
-			new IndexMergerImpl().merge(seeklistFile, partialDir, indexFile);
+			new ParserImpl(dir).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, titleFile);
+			new IndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
+					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
 		} catch (NumberFormatException | ClassNotFoundException
 				| InstantiationException | IllegalAccessException
 				| XMLStreamException | FactoryConfigurationError | IOException e) {
@@ -57,7 +64,8 @@ public class SearchEngineFAP extends SearchEngine {
 	boolean loadIndex(String directory) {
 		//TODO right now {@code directory} is ignored, what is it good for?
 		try {
-			mainIndex = new MainIndex(indexFile, seeklistFile);
+			stemmedMainIndex = new MainIndex(stemmedIndexFile, stemmedSeeklistFile);
+			unstemmedMainIndex = new MainIndex(unstemmedIndexFile, unstemmedSeeklistFile);
 			titleIndex = new TitleIndex();
 			titleIndex.importFile(titleFile);
 			return true;
@@ -71,7 +79,7 @@ public class SearchEngineFAP extends SearchEngine {
 	ArrayList<String> search(String query, int topK, int prf) {
 		BooleanSetOperation<Integer> op;
 		try {
-			op = new QueryParser(mainIndex, query).parse();
+			op = new QueryParser(stemmedMainIndex, unstemmedMainIndex, query).parse();
 			op.print(0, 3);
 			Set<Integer> docIds = op.execute();
 			ArrayList<String> titles = new ArrayList<>();

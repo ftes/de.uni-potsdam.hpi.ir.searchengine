@@ -15,10 +15,20 @@ import de.hpi.krestel.mySearchEngine.Log.Level;
 
 public class IndexMergerImpl implements IndexMerger {
 	@Override
-	public void merge(String seekListPath, String partialIndexDirectory, String mergedIndexPath) throws IOException {
+	public void merge(String stemmedSeekListPath, String unstemmedSeekListPath,
+			String stemmedPartialIndexDirectory, String unstemmedPartialIndexDirectory,
+			String stemmedMergedIndexPath, String ustemmedMergedIndexPath) throws IOException {
+		IndexFileHandler stemmedIndexHandler = new IndexFileHandlerImpl(stemmedMergedIndexPath);
+		IndexFileHandler unstemmedIndexHandler = new IndexFileHandlerImpl(ustemmedMergedIndexPath);
+		SeekList stemmedSeekList = new SeekListImpl(stemmedSeekListPath);
+		SeekList unstemmedSeekList = new SeekListImpl(unstemmedSeekListPath);
+		
+		merge(stemmedPartialIndexDirectory, stemmedIndexHandler, stemmedSeekList);
+		merge(unstemmedPartialIndexDirectory, unstemmedIndexHandler, unstemmedSeekList);
+	}
+	
+	private void merge(String partialIndexDirectory, IndexFileHandler indexHandler, SeekList seekList) throws IOException {
 		Set<IndexFileHandler> handlers = new HashSet<>();
-		IndexFileHandler indexHandler = new IndexFileHandlerImpl(mergedIndexPath);	
-		SeekList seekList = new SeekListImpl(seekListPath);
 		
 		for (File file : new File(partialIndexDirectory).listFiles()) {
 			if (file.isFile()) {
@@ -31,7 +41,8 @@ public class IndexMergerImpl implements IndexMerger {
 		for (IndexFileHandler handler : handlers) {
 			handler.close();
 		}
-		indexHandler.close();seekList.close();
+		indexHandler.close();
+		seekList.close();
 	}
 	
 //	private String getCurrentTermSet(SortedMap<Term, IndexFileHandler> currentTerms) {

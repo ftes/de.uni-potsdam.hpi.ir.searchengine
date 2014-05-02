@@ -10,6 +10,8 @@ public class Week3Assignment3 {
 		searchEngine.index("/small.xml");
 		searchEngine.loadIndex(null);
 		
+		System.out.println();
+		
 		String query = "Artikel AND Smithee";
 		System.out.println(searchEngine.search(query, 0, 0));
 		System.out.println();
@@ -24,5 +26,6 @@ public class Week3Assignment3 {
 		
 		query = "Filmfestspiele in Venedig";
 		System.out.println(searchEngine.search(query, 0, 0));
+		System.out.println();
 	}
 }

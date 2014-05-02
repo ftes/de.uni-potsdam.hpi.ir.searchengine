@@ -21,10 +21,12 @@ public class QueryParser {
 	private static final Pattern PATTERN = Pattern.compile("AND|BUT NOT|OR");
 
 	private final String queryString;
-	private final MainIndex index;
+	private final MainIndex stemmedIndex;
+	private final MainIndex unstemmedIndex;
 	
-	public QueryParser(MainIndex index, String queryString) {
-		this.index = index;
+	public QueryParser(MainIndex stemmedIndex, MainIndex unstemmedIndex, String queryString) {
+		this.stemmedIndex = stemmedIndex;
+		this.unstemmedIndex = unstemmedIndex;
 		this.queryString = queryString;
 	}
 	
@@ -51,11 +53,11 @@ public class QueryParser {
 			}
 		} else {
 			if (query.endsWith("*")) {
-				return new PrefixQuery(index, query.substring(0, query.length() - 1));
+				return new PrefixQuery(stemmedIndex, query.substring(0, query.length() - 1));
 			} else if (query.contains(" ")) {
-				return new PhraseQuery(index, query);
+				return new PhraseQuery(unstemmedIndex, query);
 			} else {
-				return new TermQuery(index, query);
+				return new TermQuery(stemmedIndex, query);
 			}
 		}
 	}

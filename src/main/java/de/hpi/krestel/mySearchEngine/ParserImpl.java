@@ -2,7 +2,6 @@ package de.hpi.krestel.mySearchEngine;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -13,13 +12,29 @@ import javax.xml.stream.XMLStreamReader;
 import de.hpi.krestel.mySearchEngine.Log.Level;
 
 public class ParserImpl extends Parser {
-
 	public ParserImpl(String filename) throws XMLStreamException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		super(filename);
 	}
+	
+	private void addToIndex(String characters, Page page, PartialIndex index, boolean stem) {
+		Tokenizer tokenizer = new Tokenizer(characters);
+		ArrayList<String> tokens = tokenizer.tokenize(stem);
+		
+		int tokenPosition = 0;
+		for (String token : tokens) {
+			// FIXME: do something else ...
+			//TODO why -2?
+			if (token.length() <= SeekList.MAX_TERM_LENGTH-2) { 
+				index.addOccurenceForTerm(token, new TermOccurrence(page.getId(), tokenPosition));
+			} else {
+				Log.log(Level.DEBUG, "Ignored: " + token);
+			}
+			tokenPosition++;
+		}
+	}
 
 	@Override
-	public void parseToPartialIndexes(String indexDirectory, String titleIndexPath)
+	public void parseToPartialIndexes(String stemmedPartialDir, String unstemmedPartialDir, String titleIndexPath)
 			throws XMLStreamException, ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, FactoryConfigurationError, IOException {
 		
 		XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -27,16 +42,15 @@ public class ParserImpl extends Parser {
 						.createXMLStreamReader(WikipediaExport.class
 						.getResourceAsStream(this.getFilename()));
 
-		List<Page> pages = new ArrayList<Page>();
+//		List<Page> pages = new ArrayList<Page>();
 		Page page = null;
 		String characters = null;
 		String tag = null;
 
 		boolean inRevision = false;
 
-		Tokenizer tokenizer = null;
-
-		PartialIndex index = new PartialIndex();
+		PartialIndex unstemmedIndex = new PartialIndex();
+		PartialIndex stemmedIndex = new PartialIndex();
 		TitleIndex titleIndex = new TitleIndex();
 
 		// read from stream
@@ -63,25 +77,8 @@ public class ParserImpl extends Parser {
 					
 					page.setText(characters);
 					
-					int tokenPosition = 0;
-					
-					tokenizer = new Tokenizer(characters);
-					ArrayList<String> tokens = tokenizer.tokenize();
-					
-					for (String token : tokens) {
-					
-						// FIXME: do something else ...
-						if (token.length() < SeekList.MAX_TERM_LENGTH-2) { 
-							index.addOccurenceForTerm(token, new TermOccurrence(page.getId(), tokenPosition));
-						} else {
-							Log.log(Level.DEBUG, "Ignored: " + token);
-						}
-//						System.out.println("id: " + page.getId()
-//								+ ", location: " + tokenPosition + ", "
-//								+ token);
-						
-						tokenPosition++;
-					}
+					addToIndex(characters, page, stemmedIndex, true);
+					addToIndex(characters, page, unstemmedIndex, false);
 				}
 				break;
 
@@ -96,9 +93,9 @@ public class ParserImpl extends Parser {
 					titleIndex.addTitle(page.getId(), page.getTitle());
 				} else if (!inRevision && tag.equals("title")) {
 					page.setTitle(characters);
-				} else if (tag.equals("page")) {
-					pages.add(page);
-					// System.out.println(page);
+//				} else if (tag.equals("page")) {
+//					pages.add(page);
+//					// System.out.println(page);
 				} else if (tag.equals("revision")) {
 					inRevision = false;
 				}
@@ -111,13 +108,17 @@ public class ParserImpl extends Parser {
 			if (Util.isMainMemoryFull()){
 				System.out.println("MEMORY FULL!");
 				// write to disk and remove references
-				index.store(indexDirectory);
-				index = new PartialIndex();
+				stemmedIndex.store(stemmedPartialDir);
+				unstemmedIndex.store(unstemmedPartialDir);
+				stemmedIndex = new PartialIndex();
+				unstemmedIndex = new PartialIndex();
+				Util.runGarbageCollector();
 			}
 			
 			parser.next();
 		}
-		index.store(indexDirectory);
+		stemmedIndex.store(stemmedPartialDir);
+		unstemmedIndex.store(unstemmedPartialDir);
 		titleIndex.exportFile(titleIndexPath);
 	}
 

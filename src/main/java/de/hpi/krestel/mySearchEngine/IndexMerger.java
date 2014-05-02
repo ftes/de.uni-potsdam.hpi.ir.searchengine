@@ -27,14 +27,11 @@ public interface IndexMerger {
 	 * one file located at {@code mergedIndexPath}.
 	 * The seeklist is written to the {@code seekListPath}.
 	 * 
-	 * @param seekList The seeklist handler
-	 * @param partialIndexDirectory The directory where the partial index files reside
-	 * @param mergedIndexPath The path to the merged index file (is overwritten!)
-	 * @param seekListPath The path to the seeklist file (is overwritten!)
 	 * @throws IOException 
 	 */
-	void merge(String seekListPath, String partialIndexDirectory,
-			String mergedIndexPath) throws IOException;
+	void merge(String stemmedSeekListPath, String unstemmedSeekListPath,
+			String stemmedPartialIndexDirectory, String unstemmedPartialIndexDirectory,
+			String stemmedMergedIndexPath, String ustemmedMergedIndexPath) throws IOException;
 	
 	/**
 	 * Exposed for testing purposes.

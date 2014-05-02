@@ -10,19 +10,25 @@ import org.junit.Test;
 public class ParseAndMergeTest {
 	@Test
 	public void parseAndMerge() throws Exception {
-		String partialIndexDir = "partials";
-		String mainIndexPath = "index.dat";
-		String seekListPath = "seeklist.dat";
+		String sPartialIndexDir = "spartials";
+		String uPartialIndexDir = "upartials";
+		String sMainIndexPath = "s-index.dat";
+		String uMainIndexPath = "u-index.dat";
+		String sSeekListPath = "s-seeklist.dat";
+		String uSeekListPath = "u-seeklist.dat";
 		String titlePath = "titles.dat";
 		
 		try {
-			File file = new File(partialIndexDir);
+			File file = new File(sPartialIndexDir);
+			file.mkdir();
+			file = new File(uPartialIndexDir);
 			file.mkdir();
 
-			new ParserDummy().parseToPartialIndexes(partialIndexDir, titlePath);
-			new IndexMergerImpl().merge(seekListPath, partialIndexDir, mainIndexPath);
+			new ParserDummy().parseToPartialIndexes(sPartialIndexDir, uPartialIndexDir, titlePath);
+			new IndexMergerImpl().merge(sSeekListPath, uSeekListPath, sPartialIndexDir, uPartialIndexDir,
+					sMainIndexPath, uMainIndexPath);
 
-			MainIndex index = new MainIndex(mainIndexPath, seekListPath);
+			MainIndex index = new MainIndex(sMainIndexPath, sSeekListPath);
 			Term term = index.getTerm("weit");
 			assertEquals(8, term.getOccurrences().size());
 			term = index.getTerm("blindtext");
@@ -30,9 +36,12 @@ public class ParseAndMergeTest {
 			
 			index.close();
 		} finally {
-			FileUtils.deleteDirectory(new File(partialIndexDir));
-			new File(mainIndexPath).delete();
-			new File(seekListPath).delete();
+			FileUtils.deleteDirectory(new File(sPartialIndexDir));
+			FileUtils.deleteDirectory(new File(uPartialIndexDir));
+			new File(sMainIndexPath).delete();
+			new File(uMainIndexPath).delete();
+			new File(sSeekListPath).delete();
+			new File(uSeekListPath).delete();
 		}
 	}
 }
