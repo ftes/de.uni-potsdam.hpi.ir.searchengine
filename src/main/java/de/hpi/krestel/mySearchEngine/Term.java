@@ -1,5 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -35,6 +37,14 @@ public class Term {
 	 */
 	public SortedSet<TermOccurrence> getOccurrences() {
 		return occurrences;
+	}
+	
+	public Set<Integer> getDocumentIds() {
+		Set<Integer> docIds = new HashSet<>();
+		for (TermOccurrence occ : occurrences) {
+			docIds.add(occ.getDocumentId());
+		}
+		return docIds;
 	}
 	
 	/**

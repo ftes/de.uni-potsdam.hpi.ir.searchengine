@@ -3,7 +3,9 @@ package de.hpi.krestel.mySearchEngine;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Attempts to cache until main memory is full. The terms for requested positions in the
@@ -43,20 +45,27 @@ public class SeekListImpl implements SeekList {
 		if (term.length() > MAX_TERM_LENGTH) {
 			throw new TermLengthException(term);
 		}
-		return binarySearch(term, 0, numberOfTerms-1);
+		return getOffsetAtPosition(binarySearch(term, 0, numberOfTerms-1, false));
 	}
 	
 	/**
 	 * @param searchTerm
 	 * @param fromPosition
 	 * @param toPosition inclusive
+	 * @param findClosest If {@code true}, return the closest term even if the exact term isn't found.
+	 * Then the position of the first term naturally ordered after the {@code searchTerm} is returned.
 	 * @return
 	 * @throws IOException
 	 */
-	private long binarySearch(String searchTerm, long fromPosition, long toPosition) throws TermNotFoundException, IOException {
+	private long binarySearch(String searchTerm, long fromPosition, long toPosition, boolean findClosest)
+			throws TermNotFoundException, IOException {
 		//could not find term
 		if (toPosition < fromPosition) {
-			throw new TermNotFoundException(searchTerm);
+			if (findClosest) {
+				return fromPosition;
+			} else {
+				throw new TermNotFoundException(searchTerm);
+			}
 		}
 		
 		long middlePosition = (fromPosition + toPosition) / 2;
@@ -65,13 +74,13 @@ public class SeekListImpl implements SeekList {
 		
 		if (comparison == 0) {
 			//found term
-			return getOffsetAtPosition(middlePosition);
+			return middlePosition;
 		} else if (comparison < 0) {
 			//search in left half
-			return binarySearch(searchTerm, fromPosition, middlePosition - 1);
+			return binarySearch(searchTerm, fromPosition, middlePosition - 1, findClosest);
 		} else {
 			//search in right half
-			return binarySearch(searchTerm, middlePosition + 1, toPosition);
+			return binarySearch(searchTerm, middlePosition + 1, toPosition, findClosest);
 		}
 	}
 	
@@ -134,5 +143,22 @@ public class SeekListImpl implements SeekList {
 	@Override
 	public void close() throws IOException {
 		file.close();
+	}
+
+	@Override
+	public Set<String> getTermsBeginningWith(String prefix) throws IOException {
+		long pos = numberOfTerms;
+		try {
+			pos = binarySearch(prefix, 0, numberOfTerms-1, true);
+		} catch (TermNotFoundException e) {} //shouldn't occur
+		Set<String> result = new HashSet<>();
+		for (long i=pos; i<numberOfTerms; i++) {
+			String term = getTermAtPosition(i);
+			if (! term.startsWith(prefix)) {
+				break;
+			}
+			result.add(term);
+		}
+		return result;
 	}
 }

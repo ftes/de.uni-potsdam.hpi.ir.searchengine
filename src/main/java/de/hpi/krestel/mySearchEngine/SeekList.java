@@ -1,6 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * The seeklist is a second-level index structure on top of the main {@link PartialIndex}.
@@ -58,4 +59,9 @@ public interface SeekList {
 	 * Close the file backing the seeklist and clean up.
 	 */
 	void close() throws IOException;
+	
+	/**
+	 * Return all terms in the seeklist that begin with the {@code prefix}.
+	 */
+	Set<String> getTermsBeginningWith(String prefix) throws IOException;
 }

@@ -1,7 +1,9 @@
 package de.hpi.krestel.mySearchEngine;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class MockSeekListImpl implements SeekList {
 	private final Map<String, Long> offsets = new HashMap<>();
@@ -22,5 +24,10 @@ public class MockSeekListImpl implements SeekList {
 
 	@Override
 	public void close() {}
+
+	@Override
+	public Set<String> getTermsBeginningWith(String prefix) throws IOException {
+		return null;
+	}
 
 }

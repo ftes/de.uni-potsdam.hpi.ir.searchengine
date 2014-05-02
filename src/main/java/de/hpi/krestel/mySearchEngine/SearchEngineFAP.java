@@ -3,12 +3,13 @@ package de.hpi.krestel.mySearchEngine;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
+
+import de.hpi.krestel.mySearchEngine.booleanQueries.BooleanSetOperation;
+import de.hpi.krestel.mySearchEngine.booleanQueries.QueryParser;
 
 /* This is your file! implement your search engine here!
  * 
@@ -65,54 +66,23 @@ public class SearchEngineFAP extends SearchEngine {
 			return false;
 		}
 	}
-	
-	/**
-	 * Returns the set of document ids in which the term occurs.
-	 */
-	private Set<Integer> getDocumentSet(Term term) {
-		Set<Integer> result = new HashSet<>();
-		for (TermOccurrence occurrence : term.getOccurrences()) {
-			result.add(occurrence.getDocumentId());
-		}
-		return result;
-	}
 
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
-		List<String> tokens = new Tokenizer(query).tokenize();
-
-		//TODO for now, just return random k documents that contain all the tokens found in the query
-		Set<Integer> documentsContainingAllTokens = new HashSet<>();
-		boolean firstToken = true;
-		for (String token : tokens) {
-			Term term = null;
-			try {
-				term = mainIndex.getTerm(token);
-				Set<Integer> documentSet = getDocumentSet(term);
-				if (firstToken) {
-					firstToken = false;
-					documentsContainingAllTokens.addAll(documentSet);
-				} else {
-					documentsContainingAllTokens.retainAll(documentSet);
-				}
-			} catch (IOException | TermLengthException e) {
-				System.err.println(e.getMessage());
-			} catch (TermNotFoundException e) {
-				//do nothing, just not found
+		BooleanSetOperation<Integer> op;
+		try {
+			op = new QueryParser(mainIndex, query).parse();
+			op.print(0, 3);
+			Set<Integer> docIds = op.execute();
+			ArrayList<String> titles = new ArrayList<>();
+			for (Integer docId : docIds) {
+				titles.add(titleIndex.getTitle(docId));
 			}
+			return titles;
+		} catch (IOException | TermLengthException | QueryProcessingException e) {
+			e.printStackTrace();
+			return null;
 		}
-		
-		ArrayList<String> titles = new ArrayList<>();
-		int i = 0;
-		for (Integer docId : documentsContainingAllTokens) {
-			if (i >= topK) {
-				break;
-			}
-			titles.add(titleIndex.getTitle(docId));
-			i++;
-		}
-		
-		return titles;
 	}
 	
 	@Override

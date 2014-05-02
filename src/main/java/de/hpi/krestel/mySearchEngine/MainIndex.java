@@ -10,8 +10,8 @@ import java.io.IOException;
  *
  */
 public class MainIndex {
-	IndexFileHandler indexFile;
-	SeekList seeklist;
+	private final IndexFileHandler indexFile;
+	private final SeekList seeklist;
 	
 	/**
 	 * 
@@ -44,5 +44,9 @@ public class MainIndex {
 	public void close() throws IOException {
 		indexFile.close();
 		seeklist.close();
+	}
+	
+	public SeekList getSeekList() {
+		return seeklist;
 	}
 }
