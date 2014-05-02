@@ -9,14 +9,17 @@ import de.hpi.krestel.mySearchEngine.TermLengthException;
 import de.hpi.krestel.mySearchEngine.TermNotFoundException;
 
 public class PrefixQuery implements BooleanSetOperation<Integer> {
-	private final MainIndex index;
+	private final MainIndex stemmedIndex;
+	private final MainIndex unstemmedIndex;
 	private final String prefix;
 	private final Set<String> terms;
 	
-	public PrefixQuery(MainIndex index, String prefix) throws IOException {
-		this.index = index;
+	public PrefixQuery(MainIndex stemmedIndex, MainIndex unstemmedIndex, String prefix) throws IOException {
+		this.stemmedIndex = stemmedIndex;
+		this.unstemmedIndex = unstemmedIndex;
 		this.prefix = prefix.toLowerCase();
-		terms = index.getSeekList().getTermsBeginningWith(this.prefix);
+		terms = stemmedIndex.getSeekList().getTermsBeginningWith(this.prefix);
+		terms.addAll(unstemmedIndex.getSeekList().getTermsBeginningWith(this.prefix));
 	}
 
 	@Override
@@ -24,7 +27,8 @@ public class PrefixQuery implements BooleanSetOperation<Integer> {
 		Set<Integer> result = new HashSet<>();
 		for (String term : terms) {
 			try {
-				result.addAll(index.getTerm(term).getDocumentIds());
+				result.addAll(stemmedIndex.getTerm(term).getDocumentIds());
+				result.addAll(unstemmedIndex.getTerm(term).getDocumentIds());
 			} catch (TermNotFoundException e) {} //shouldn't happen
 		}
 		return result;
@@ -33,11 +37,11 @@ public class PrefixQuery implements BooleanSetOperation<Integer> {
 	@Override
 	public void print(int indent, int step) {
 		String indentSpace  = new String(new char[indent]).replace('\0', ' ');
-		System.out.print(indentSpace + prefix + "* ( ");
+		System.out.print(indentSpace + prefix + "* { ");
 		for (String term : terms) {
 			System.out.print(term + " ");
 		}
-		System.out.println(")");
+		System.out.println("}");
 	}
 
 }

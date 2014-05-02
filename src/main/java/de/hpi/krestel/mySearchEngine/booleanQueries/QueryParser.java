@@ -53,7 +53,7 @@ public class QueryParser {
 			}
 		} else {
 			if (query.endsWith("*")) {
-				return new PrefixQuery(stemmedIndex, query.substring(0, query.length() - 1));
+				return new PrefixQuery(stemmedIndex, unstemmedIndex, query.substring(0, query.length() - 1));
 			} else if (query.contains(" ")) {
 				return new PhraseQuery(unstemmedIndex, query);
 			} else {
