@@ -2,6 +2,8 @@ package de.hpi.krestel.mySearchEngine;
 
 import java.io.IOException;
 
+import de.hpi.krestel.mySearchEngine.booleanQueries.PhraseQuery;
+
 
 public class Week3Assignment3 {	
 	public static void main(String[] args) throws IOException, QueryProcessingException {
@@ -24,7 +26,7 @@ public class Week3Assignment3 {
 		System.out.println(searchEngine.search(query, 0, 0));
 		System.out.println();
 		
-		query = "Filmfestspiele in Venedig";
+		query = PhraseQuery.SYMBOL + "Filmfestspiele in Venedig" + PhraseQuery.SYMBOL;
 		System.out.println(searchEngine.search(query, 0, 0));
 		System.out.println();
 	}

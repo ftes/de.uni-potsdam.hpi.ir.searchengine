@@ -52,10 +52,10 @@ public class QueryParser {
 				throw new IOException(e);
 			}
 		} else {
-			if (query.endsWith("*")) {
+			if (query.startsWith(PhraseQuery.SYMBOL) && query.endsWith(PhraseQuery.SYMBOL)) {
+				return new PhraseQuery(unstemmedIndex, query.substring(1, query.length() - 1));
+			} else if (query.endsWith("*")) {
 				return new PrefixQuery(stemmedIndex, unstemmedIndex, query.substring(0, query.length() - 1));
-			} else if (query.contains(" ")) {
-				return new PhraseQuery(unstemmedIndex, query);
 			} else {
 				return new TermQuery(stemmedIndex, query);
 			}

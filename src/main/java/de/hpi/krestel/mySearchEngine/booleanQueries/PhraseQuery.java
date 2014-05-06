@@ -17,6 +17,8 @@ import de.hpi.krestel.mySearchEngine.TermOccurrenceComparator;
 import de.hpi.krestel.mySearchEngine.Tokenizer;
 
 public class PhraseQuery implements BooleanSetOperation<Integer> {
+	public static final String SYMBOL = "´";
+	
 	private final MainIndex index;
 	private final List<String> tokens;
 	
@@ -101,11 +103,11 @@ public class PhraseQuery implements BooleanSetOperation<Integer> {
 	@Override
 	public void print(int indent, int step) {
 		String indentSpace  = new String(new char[indent]).replace('\0', ' ');
-		System.out.print(indentSpace);
+		System.out.print(indentSpace + SYMBOL + " ");
 		for (String token : tokens) {
 			System.out.print(token + " ");
 		}
-		System.out.println();
+		System.out.println(SYMBOL);
 	}
 
 }
