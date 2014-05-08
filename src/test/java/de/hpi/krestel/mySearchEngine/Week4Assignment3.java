@@ -13,19 +13,19 @@ public class Week4Assignment3 {
 		System.out.println();
 		
 		String query = "artikel regisseur";
-		System.out.println(searchEngine.search(query, 0, 0));
+		System.out.println(searchEngine.search(query, 5, 0));
 		System.out.println();
 		
 		query = "regisseur";
-		System.out.println(searchEngine.search(query, 0, 0));
+		System.out.println(searchEngine.search(query, 5, 0));
 		System.out.println();
 		
 		query = "deutsch";
-		System.out.println(searchEngine.search(query, 0, 0));
+		System.out.println(searchEngine.search(query, 5, 0));
 		System.out.println();
 		
 		query = "anschluss";
-		System.out.println(searchEngine.search(query, 0, 0));
+		System.out.println(searchEngine.search(query, 5, 0));
 		System.out.println();
 	}
 }

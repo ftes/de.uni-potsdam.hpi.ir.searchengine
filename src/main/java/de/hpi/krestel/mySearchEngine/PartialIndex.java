@@ -1,5 +1,6 @@
 package de.hpi.krestel.mySearchEngine;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -77,7 +78,7 @@ public class PartialIndex {
 	 * @throws IOException 
 	 */
 	public void store(String directory) throws IOException {
-		String filename = directory + "/" + this.getFilename();
+		String filename = directory + File.separator + this.getFilename();
 		IndexFileHandler fileHandler = new IndexFileHandlerImpl(filename);
 		
 		for (Entry<String, Term> entry : map.entrySet()) {

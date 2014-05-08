@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class RankedQuery implements SearchOperation<Integer> {
 	// for MP25
@@ -26,6 +26,22 @@ public class RankedQuery implements SearchOperation<Integer> {
 		this.index = stemmedIndex;
 		this.query = queryString;
 		this.titleIndex = titleIndex;
+	}
+	
+	private static class ScoreAndDocId implements Comparable<ScoreAndDocId> {
+		final float score;
+		final int docId;
+		
+		ScoreAndDocId(float score, int docId) {
+			this.score = score;
+			this.docId = docId;
+		}
+		
+		@Override
+		public int compareTo(ScoreAndDocId o) {
+			int floatComp = Float.compare(score, o.score);
+			return floatComp == 0 ? Integer.compare(docId, o.docId) : floatComp;
+		}
 	}
 
 	@Override
@@ -51,21 +67,25 @@ public class RankedQuery implements SearchOperation<Integer> {
 			documents.addAll(term.getDocumentIds());
 		}
 		
-		Map<Float, Integer> results = new TreeMap<Float, Integer>();
+		Set<ScoreAndDocId> results = new TreeSet<>();
 		for (Integer docId : documents) {
 			float score = calculateScore(docId, firstFactor, queryFactor, terms);
-			if (results.size() <= topK) {
-				results.put(score, docId);
+			System.out.println(score);
+			if (results.size() < topK) {
+				results.add(new ScoreAndDocId(score, docId));
 			} else {
-				float lowestScore = results.keySet().iterator().next();
-				if (score > lowestScore) {
+				ScoreAndDocId lowestScore = results.iterator().next();
+				if (score > lowestScore.score) {
 					results.remove(lowestScore);
-					results.put(score,  docId);
+					results.add(new ScoreAndDocId(score, docId));
 				}
 			}
 		}
 		
-		List<Integer> reverseList = new ArrayList<Integer>(results.values());
+		List<Integer> reverseList = new ArrayList<>();
+		for (ScoreAndDocId s : results) {
+			reverseList.add(s.docId);
+		}
 		Collections.reverse(reverseList);
 		return reverseList;
 	}
