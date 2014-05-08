@@ -91,6 +91,13 @@ public class TitleIndex {
 	}
 	
 	/**
+	 * Return size of Map / number of documents
+	 */
+	public int getSize() {
+		return map.size();
+	}
+	
+	/**
 	 * Print the whole index
 	 */
 	@Override

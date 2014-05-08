@@ -3,12 +3,11 @@ package de.hpi.krestel.mySearchEngine;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
-import de.hpi.krestel.mySearchEngine.booleanQueries.BooleanSetOperation;
 import de.hpi.krestel.mySearchEngine.booleanQueries.QueryParser;
 
 /* This is your file! implement your search engine here!
@@ -77,11 +76,11 @@ public class SearchEngineFAP extends SearchEngine {
 
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
-		BooleanSetOperation<Integer> op;
+		SearchOperation<Integer> op;
 		try {
-			op = new QueryParser(stemmedMainIndex, unstemmedMainIndex, query).parse();
+			op = new QueryParser(stemmedMainIndex, unstemmedMainIndex, titleIndex, query).parse();
 			op.print(0, 3);
-			Set<Integer> docIds = op.execute();
+			List<Integer> docIds = op.execute(topK);
 			ArrayList<String> titles = new ArrayList<>();
 			for (Integer docId : docIds) {
 				titles.add(titleIndex.getTitle(docId));

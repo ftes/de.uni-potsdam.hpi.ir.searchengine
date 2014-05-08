@@ -1,8 +1,7 @@
 package de.hpi.krestel.mySearchEngine.booleanQueries;
 
 import java.io.IOException;
-import java.util.Set;
-
+import java.util.List;
 import de.hpi.krestel.mySearchEngine.QueryProcessingException;
 import de.hpi.krestel.mySearchEngine.TermLengthException;
 
@@ -16,13 +15,13 @@ public abstract class BinaryBooleanSetOperation<T> implements BooleanSetOperatio
 	}
 	
 	@Override
-	public Set<T> execute() throws IOException, TermLengthException, QueryProcessingException {
-		Set<T> l = left.execute();
-		Set<T> r = right.execute();
+	public List<T> execute(int topK) throws IOException, TermLengthException, QueryProcessingException {
+		List<T> l = left.execute(topK);
+		List<T> r = right.execute(topK);
 		return processResult(l, r);
 	}
 	
-	protected abstract Set<T> processResult(Set<T> left, Set<T> right);
+	protected abstract List<T> processResult(List<T> left, List<T> right);
 	
 	@Override
 	public void print(int indent, int step) {

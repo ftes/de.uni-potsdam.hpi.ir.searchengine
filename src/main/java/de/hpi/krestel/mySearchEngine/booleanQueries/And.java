@@ -1,6 +1,6 @@
 package de.hpi.krestel.mySearchEngine.booleanQueries;
 
-import java.util.Set;
+import java.util.List;
 
 public class And<T> extends BinaryBooleanSetOperation<T> {
 	public And(BooleanSetOperation<T> left, BooleanSetOperation<T> right) {
@@ -8,7 +8,7 @@ public class And<T> extends BinaryBooleanSetOperation<T> {
 	}
 
 	@Override
-	protected Set<T> processResult(Set<T> left, Set<T> right) {
+	protected List<T> processResult(List<T> left, List<T> right) {
 		left.retainAll(right);
 		return left;
 	}	

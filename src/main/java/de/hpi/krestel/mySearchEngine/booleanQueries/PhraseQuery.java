@@ -1,6 +1,7 @@
 package de.hpi.krestel.mySearchEngine.booleanQueries;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,14 +36,14 @@ public class PhraseQuery implements BooleanSetOperation<Integer> {
 	 * afterward in the same respective documents, and so on.
 	 */
 	@Override
-	public Set<Integer> execute() throws IOException, TermLengthException {
+	public List<Integer> execute(int topK) throws IOException, TermLengthException {
 		SortedSet<TermOccurrence> occurrencesOfPreviousToken = null;
 		for (String token : tokens) {
 			SortedSet<TermOccurrence> occurrences = null;
 			try {
 				occurrences = index.getTerm(token).getOccurrences();
 			} catch (TermNotFoundException e) {
-				return Collections.emptySet();
+				return Collections.emptyList();
 			}
 
 			if (occurrencesOfPreviousToken == null) {
@@ -97,7 +98,7 @@ public class PhraseQuery implements BooleanSetOperation<Integer> {
 		for (TermOccurrence occurrence : occurrencesOfPreviousToken) {
 			documentIds.add(occurrence.getDocumentId());
 		}
-		return documentIds;
+		return new ArrayList<Integer>(documentIds);
 	}
 
 	@Override

@@ -1,7 +1,9 @@
 package de.hpi.krestel.mySearchEngine.booleanQueries;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import de.hpi.krestel.mySearchEngine.MainIndex;
@@ -23,7 +25,7 @@ public class PrefixQuery implements BooleanSetOperation<Integer> {
 	}
 
 	@Override
-	public Set<Integer> execute() throws IOException, TermLengthException {
+	public List<Integer> execute(int topK) throws IOException, TermLengthException {
 		Set<Integer> result = new HashSet<>();
 		for (String term : terms) {
 			try {
@@ -31,7 +33,7 @@ public class PrefixQuery implements BooleanSetOperation<Integer> {
 				result.addAll(unstemmedIndex.getTerm(term).getDocumentIds());
 			} catch (TermNotFoundException e) {} //shouldn't happen
 		}
-		return result;
+		return new ArrayList<Integer>(result);
 	}
 
 	@Override

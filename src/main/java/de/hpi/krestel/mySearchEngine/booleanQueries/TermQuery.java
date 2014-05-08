@@ -3,8 +3,7 @@ package de.hpi.krestel.mySearchEngine.booleanQueries;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Set;
-
+import java.util.List;
 import de.hpi.krestel.mySearchEngine.MainIndex;
 import de.hpi.krestel.mySearchEngine.QueryProcessingException;
 import de.hpi.krestel.mySearchEngine.TermLengthException;
@@ -26,11 +25,11 @@ public class TermQuery implements BooleanSetOperation<Integer> {
 	}
 
 	@Override
-	public Set<Integer> execute() throws IOException, TermLengthException {
+	public List<Integer> execute(int topK) throws IOException, TermLengthException {
 		try {
-			return index.getTerm(token).getDocumentIds();
+			return new ArrayList<Integer>(index.getTerm(token).getDocumentIds());
 		} catch (TermNotFoundException e) {
-			return Collections.emptySet();
+			return Collections.emptyList();
 		}
 	}
 

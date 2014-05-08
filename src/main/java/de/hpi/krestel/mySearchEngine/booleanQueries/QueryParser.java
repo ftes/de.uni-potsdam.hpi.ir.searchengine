@@ -9,6 +9,9 @@ import java.util.regex.Pattern;
 
 import de.hpi.krestel.mySearchEngine.MainIndex;
 import de.hpi.krestel.mySearchEngine.QueryProcessingException;
+import de.hpi.krestel.mySearchEngine.RankedQuery;
+import de.hpi.krestel.mySearchEngine.SearchOperation;
+import de.hpi.krestel.mySearchEngine.TitleIndex;
 
 public class QueryParser {
 	private static final Map<String, Class<?>> BINARY_OPS;
@@ -23,17 +26,25 @@ public class QueryParser {
 	private final String queryString;
 	private final MainIndex stemmedIndex;
 	private final MainIndex unstemmedIndex;
+	private final TitleIndex titleIndex;
 	
-	public QueryParser(MainIndex stemmedIndex, MainIndex unstemmedIndex, String queryString) {
+	public QueryParser(MainIndex stemmedIndex, MainIndex unstemmedIndex, TitleIndex titleIndex, String queryString) {
 		this.stemmedIndex = stemmedIndex;
 		this.unstemmedIndex = unstemmedIndex;
 		this.queryString = queryString;
+		this.titleIndex = titleIndex;
 	}
 	
-	public BooleanSetOperation<Integer> parse() throws IOException, QueryProcessingException {
-		return recursiveParse(queryString);
+	public SearchOperation<Integer> parse() throws IOException, QueryProcessingException {
+		Matcher m = PATTERN.matcher(queryString); 
+		if (m.find() || queryString.contains("*") || queryString.contains(PhraseQuery.SYMBOL)) {
+			// Boolean Query
+			return recursiveParse(queryString);
+		} else {
+			return new RankedQuery(stemmedIndex, titleIndex, queryString);
+		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private BooleanSetOperation<Integer> recursiveParse(String query) throws IOException, QueryProcessingException {
 		Matcher m = PATTERN.matcher(query);
@@ -55,7 +66,7 @@ public class QueryParser {
 			if (query.startsWith(PhraseQuery.SYMBOL) && query.endsWith(PhraseQuery.SYMBOL)) {
 				return new PhraseQuery(unstemmedIndex, query.substring(1, query.length() - 1));
 			} else if (query.endsWith("*")) {
-				return new PrefixQuery(stemmedIndex, unstemmedIndex, query.substring(0, query.length() - 1));
+				return new PrefixQuery(stemmedIndex, unstemmedIndex, query.substring(0, query.length() - 1));					
 			} else {
 				return new TermQuery(stemmedIndex, query);
 			}

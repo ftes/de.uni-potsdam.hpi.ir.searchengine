@@ -39,6 +39,15 @@ public class Term {
 		return occurrences;
 	}
 	
+	public int getOccurenceCountFor(int docId) {
+		int count = 0;
+		// TODO: Make that faster
+		for (TermOccurrence occurence : occurrences) {
+			if (occurence.getDocumentId() == docId) count++;
+		}
+		return count;
+	}
+	
 	public Set<Integer> getDocumentIds() {
 		Set<Integer> docIds = new HashSet<>();
 		for (TermOccurrence occ : occurrences) {
