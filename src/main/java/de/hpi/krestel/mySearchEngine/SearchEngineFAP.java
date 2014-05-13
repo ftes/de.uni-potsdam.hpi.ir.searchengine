@@ -48,7 +48,9 @@ public class SearchEngineFAP extends SearchEngine {
 
 	@Override
 	void index(String dir) {
-		new File(partialDir).mkdirs();
+		new File(dir).delete();
+		new File(stemmedPartialDir).mkdirs();
+		new File(unstemmedPartialDir).mkdirs();
 		try {
 			new ParserImpl(dir).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
 			new IndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
