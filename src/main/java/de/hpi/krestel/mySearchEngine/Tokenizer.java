@@ -38,6 +38,7 @@ public class Tokenizer {
 		
 		for (String token : tokens){
 			token = token.toLowerCase();
+			token = token.replaceAll("[^a-zäöüß]", "");
 
 			if (token.length() > SeekList.MAX_TERM_LENGTH) {
 				continue;
