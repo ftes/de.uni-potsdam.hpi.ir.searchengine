@@ -48,7 +48,9 @@ public class SearchEngineFAP extends SearchEngine {
 
 	@Override
 	void index(String dir) {
-		new File(partialDir).mkdirs();
+		new File(dir).delete();
+		new File(stemmedPartialDir).mkdirs();
+		new File(unstemmedPartialDir).mkdirs();
 		try {
 			new ParserImpl(dir).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
 			new IndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
@@ -77,10 +79,13 @@ public class SearchEngineFAP extends SearchEngine {
 
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
-		SearchOperation<Integer> op;
 		try {
-			op = new QueryParser(stemmedMainIndex, unstemmedMainIndex, pageIndex, query).parse();
-			op.print(0, 3);
+			SearchOperation<Integer> op;
+			if (prf > 0) {
+				op = new PseudoRelevanceFeedback(stemmedMainIndex, pageIndex, query, prf);
+			} else {
+				op = new QueryParser( stemmedMainIndex, unstemmedMainIndex, pageIndex, query).parse();
+			}
 			List<Integer> docIds = op.execute(topK);
 			ArrayList<String> titles = new ArrayList<>();
 			for (Integer docId : docIds) {

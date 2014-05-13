@@ -15,14 +15,17 @@ public class Tokenizer {
 	public ArrayList<String> tokenize(boolean stem){
 		SnowballStemmer stemmer = new germanStemmer();
 		ArrayList<String> resultTokens = new ArrayList<String>();
-		String token = null;
 		
 		String[] tokens = text.split("[\\s.]");
 		
-		for (int i = 0; i < tokens.length; i++){
-			token = tokens[i].toLowerCase();
+		for (String token : tokens){
+			token = token.toLowerCase();
 			token = token.replaceAll("[^a-zäöüß]", "");
 
+			if (token.length() > SeekList.MAX_TERM_LENGTH) {
+				continue;
+			}
+			
 			if (stem) {
 				if (token.length() > 2) { // only index terms with minimum length 2
 					stemmer.setCurrent(token);
