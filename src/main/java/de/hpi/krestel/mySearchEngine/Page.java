@@ -13,19 +13,6 @@ public class Page {
 	public String getText() {
 		return text;
 	}
-	
-	public String getCleanText() {
-		String text = getText();
-		// remove html escape sequencies
-		text = text.replaceAll("&\\w*?;", " ");
-		//remove html tags
-		text = text.replaceAll("(<.*?>)", ""); 
-		// remove non word characters
-		text = text.replaceAll("[^a-zA-ZäöüÄÖÜ0-9.,!:()-]+", " "); 
-		// remove unnecessary whitespace
-		text = text.replaceAll("\\s+", " "); 
-		return text;
-	}
 
 	public void setText(String text) {
 		this.text = text;
