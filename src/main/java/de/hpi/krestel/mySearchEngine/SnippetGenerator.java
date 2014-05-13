@@ -2,6 +2,9 @@ package de.hpi.krestel.mySearchEngine;
 
 import java.util.LinkedList;
 
+import org.tartarus.snowball.SnowballStemmer;
+import org.tartarus.snowball.ext.germanStemmer;
+
 public class SnippetGenerator {
 	private final int SNIPPET_SIZE = 21;
 	
@@ -16,6 +19,7 @@ public class SnippetGenerator {
 	public String generate() {
 		String[] queryTerms = userQuery.split("[\\s.]");
 		String[] doc = document.split("[\\s]");
+		SnowballStemmer stemmer = new germanStemmer();
 		
 		boolean foundMatch = false;
 		int addAfter = SNIPPET_SIZE / 2;
@@ -27,6 +31,12 @@ public class SnippetGenerator {
 		}
 		
 		for(String word : doc) {
+
+			String wordCopy = word.toLowerCase();
+			wordCopy = wordCopy.replaceAll("[^a-zäöüß]", "");
+			stemmer.setCurrent(wordCopy);
+			stemmer.stem();
+			wordCopy = stemmer.getCurrent();
 			
 			if (foundMatch) {
 				// only append the X words following the query term
@@ -47,7 +57,7 @@ public class SnippetGenerator {
 				snippet.add(word); // append word to the end
 				
 				for (String qTerm : queryTerms) {
-					if (word.equals(qTerm)) {
+					if (wordCopy.equals(qTerm)) {
 						// found a match, now construct snippet
 						foundMatch = true;
 						break;

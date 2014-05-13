@@ -16,6 +16,9 @@ public class AlexMain {
 		String query = "";
 		SnippetGenerator gen = new SnippetGenerator(document, query);
 		System.out.println(gen.generate());
+		
+		Tokenizer tk = new Tokenizer("entnommen.");
+		System.out.println(tk.tokenize(true));
 	}
 
 }
