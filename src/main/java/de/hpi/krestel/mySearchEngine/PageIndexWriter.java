@@ -35,7 +35,7 @@ public class PageIndexWriter {
 		
 		file.writeChars(page.getTitle());
 		file.writeChar('\0');
-		file.writeChars(page.getText());
+		file.writeChars(page.getCleanText());
 		file.writeChar('\0');
 
 		return offset;
