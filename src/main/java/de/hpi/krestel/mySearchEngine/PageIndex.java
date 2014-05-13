@@ -143,7 +143,7 @@ public class PageIndex {
 		pageFile = new RandomAccessFile(pageFilename, "r");
 	}
 	
-	public void closePageFile(String filenameRawData) throws IOException {
+	public void closePageFile() throws IOException {
 		pageFile.close();
 		pageFile = null;
 	}
