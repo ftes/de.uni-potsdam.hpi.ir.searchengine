@@ -1,7 +1,9 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Map;
 
 public class Util {
 	public static class Pair<A, B> {
@@ -41,6 +43,20 @@ public class Util {
 			} else if (!b.equals(other.b))
 				return false;
 			return true;
+		}
+	}
+	
+	public static class PairAComparator <C extends Comparable<C>, T extends Pair<C, ?>> implements Comparator<T> {
+		@Override
+		public int compare(T o1, T o2) {
+			return o1.a.compareTo(o2.a);
+		}
+	}
+	
+	public static class PairBComparator <C extends Comparable<C>, T extends Pair<?, C>> implements Comparator<T> {
+		@Override
+		public int compare(T o1, T o2) {
+			return o1.b.compareTo(o2.b);
 		}
 	}
 	
@@ -98,5 +114,16 @@ public class Util {
 			i++;
 		}
 		System.out.println("]");
+	}
+	
+	public static <K, V> V get(Map<K, V> map, K key, V defaultValue) {
+		if (! map.containsKey(key)) {
+			return defaultValue;
+		}
+		return map.get(key);
+	}
+	
+	public static <K> void increment(Map<K, Integer> map, K key) {
+		map.put(key, get(map, key, 0) + 1);
 	}
 }
