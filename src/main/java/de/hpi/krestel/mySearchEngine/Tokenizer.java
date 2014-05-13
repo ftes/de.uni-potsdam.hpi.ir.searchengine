@@ -23,7 +23,7 @@ public class Tokenizer {
 		//remove html tags
 		text = text.replaceAll("(<.*?>)", ""); 
 		// remove non word characters
-		text = text.replaceAll("[^a-zA-ZäöüÄÖÜß0-9.,!:()-]+", " "); 
+		text = text.replaceAll("[^a-zA-ZäöüÄÖÜß0-9.,!:\\(\\)-]+", " "); 
 		// remove unnecessary whitespace
 		text = text.replaceAll("\\s+", " "); 
 		return text;
@@ -38,7 +38,6 @@ public class Tokenizer {
 		
 		for (String token : tokens){
 			token = token.toLowerCase();
-			token = token.replaceAll("[^a-zäöüß]", "");
 
 			if (token.length() > SeekList.MAX_TERM_LENGTH) {
 				continue;
