@@ -11,6 +11,11 @@ public class AlexMain {
 //		p.parseToPartialIndexes("/partials", "title.dat");
 		
 //		IndexMerger m = new IndexMergerImpl();
+		
+		String document = "this is a lame document that is very short. Another sentence should make this whole thing long enough to actually show some result!";
+		String query = "";
+		SnippetGenerator gen = new SnippetGenerator(document, query);
+		System.out.println(gen.generate());
 	}
 
 }
