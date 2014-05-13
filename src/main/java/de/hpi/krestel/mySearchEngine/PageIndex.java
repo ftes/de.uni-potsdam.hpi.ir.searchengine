@@ -86,7 +86,7 @@ public class PageIndex {
 		String text = "";		
 		c = pageFile.readChar();		
 		while (c != '\0') {
-			title += c;
+			text += c;
 			c = pageFile.readChar();
 		}
 		page.setText(text);
