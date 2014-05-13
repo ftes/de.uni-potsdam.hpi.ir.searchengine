@@ -16,7 +16,8 @@ public class ParseAndMergeTest {
 		String uMainIndexPath = "u-index.dat";
 		String sSeekListPath = "s-seeklist.dat";
 		String uSeekListPath = "u-seeklist.dat";
-		String titlePath = "titles.dat";
+		String pageIndexFile = "pagesIndex.dat";
+		String pageFile = "pages.dat";
 		
 		try {
 			File file = new File(sPartialIndexDir);
@@ -24,7 +25,7 @@ public class ParseAndMergeTest {
 			file = new File(uPartialIndexDir);
 			file.mkdir();
 
-			new ParserDummy().parseToPartialIndexes(sPartialIndexDir, uPartialIndexDir, titlePath);
+			new ParserDummy().parseToPartialIndexes(sPartialIndexDir, uPartialIndexDir, pageIndexFile, pageFile);
 			new IndexMergerImpl().merge(sSeekListPath, uSeekListPath, sPartialIndexDir, uPartialIndexDir,
 					sMainIndexPath, uMainIndexPath);
 

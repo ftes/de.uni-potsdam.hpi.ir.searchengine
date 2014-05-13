@@ -123,6 +123,7 @@ public class ParserImpl extends Parser {
 		stemmedIndex.store(stemmedPartialDir);
 		unstemmedIndex.store(unstemmedPartialDir);
 		pageIndex.exportFile(pageIndexFile);
+		pageWriter.close();
 	}
 
 }

@@ -14,7 +14,8 @@ public class ParseAndMergeNoDummyTest {
 		String uMainIndexPath = "u-index.dat";
 		String sSeekListPath = "s-seeklist.dat";
 		String uSeekListPath = "u-seeklist.dat";
-		String titlePath = "titles.dat";
+		String pageIndexFile = "pagesIndex.dat";
+		String pageFile = "pages.dat";
 		
 		try {
 			File file = new File(sPartialIndexDir);
@@ -22,13 +23,13 @@ public class ParseAndMergeNoDummyTest {
 			file = new File(uPartialIndexDir);
 			file.mkdir();
 
-			new ParserImpl("/small.xml").parseToPartialIndexes(sPartialIndexDir, uPartialIndexDir, titlePath);
+			new ParserImpl("/small.xml").parseToPartialIndexes(sPartialIndexDir, uPartialIndexDir, pageIndexFile, pageFile);
 			new IndexMergerImpl().merge(sSeekListPath, uSeekListPath, sPartialIndexDir, uPartialIndexDir,
 					sMainIndexPath, uMainIndexPath);
 
 			MainIndex index = new MainIndex(sMainIndexPath, sSeekListPath);
 			PageIndex titleindex = new PageIndex();
-			titleindex.importFile("titles.dat");
+			titleindex.importFile(pageIndexFile, pageFile);
 			
 			Term term = index.getTerm("auf");
 			

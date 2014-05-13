@@ -1,6 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class PageIndex {
 	 * value is the offset in the pageindex file
 	 */
 	private Map<Integer, Long> map = new TreeMap<>();
+	private RandomAccessFile pageFile = null;
 	
 	public PageIndex() {
 		
@@ -36,22 +38,60 @@ public class PageIndex {
 	 * Gets the text for a certain document ID
 	 * @param documentId
 	 * @return the text or null if not found
+	 * @throws IOException 
 	 */
-	public String getText(Integer documentId) {
-		long offset = map.get(documentId);
-		// Do something
-		return "";
+	public String getText(Integer documentId) throws IOException {
+		Page p = getPage(documentId);
+		if (p == null) return null;
+		else return p.getText();
 	}
 	
 	/**
 	 * Gets the title for a certain document ID
 	 * @param documentId
 	 * @return the title or null if not found
+	 * @throws IOException 
 	 */
-	public String getTitle(Integer documentId) {
-		long offset = map.get(documentId);
-		// Do something
-		return "";
+	public String getTitle(Integer documentId) throws IOException {
+		Page p = getPage(documentId);
+		if (p == null) return null;
+		else return p.getTitle();
+	}
+	
+	/**
+	 * Gets the page for a certain document ID
+	 * @param documentId
+	 * @return the page or null if not found
+	 * @throws IOException 
+	 */
+	public Page getPage(Integer documentId) throws IOException {
+		if (pageFile == null) {
+			throw new IllegalStateException("No page file open");
+		}
+		Long offset = map.get(documentId);
+		if (offset == null) return null;
+		
+		pageFile.seek(offset);
+		Page page = new Page();
+		page.setId(documentId);
+		
+		String title = "";		
+		char c = pageFile.readChar();		
+		while (c != '\0') {
+			title += c;
+			c = pageFile.readChar();
+		}
+		page.setTitle(title);
+		
+		String text = "";		
+		c = pageFile.readChar();		
+		while (c != '\0') {
+			text += c;
+			c = pageFile.readChar();
+		}
+		page.setText(text);
+		
+		return page;
 	}
 	
 	/**
@@ -72,20 +112,19 @@ public class PageIndex {
 			long offset = entry.getValue();
 			file.writeInt(documentId);
 			file.writeLong(offset);
-			file.writeChar('\0');
 		}
 
 		file.close();
 	}
 	
 	/**
-	 * Imports the whole index from a certain file
+	 * Imports the whole index from a certain file and opens the page file
 	 * @param the filename to import the file from
 	 * @throws IOException 
 	 */
-	public void importFile(String filename, String filenameRawData) throws IOException {
+	public void importFile(String pageIndexFile, String pageFile) throws IOException {
 		// open the file
-		RandomAccessFile file = new RandomAccessFile(filename, "r");
+		RandomAccessFile file = new RandomAccessFile(pageIndexFile, "r");
 		
 		while (file.getFilePointer() < file.length()) {
 			int documentId = file.readInt();
@@ -96,6 +135,17 @@ public class PageIndex {
 		}
 		
 		file.close();
+		
+		openPageFile(pageFile);
+	}
+	
+	public void openPageFile(String pageFilename) throws FileNotFoundException {
+		pageFile = new RandomAccessFile(pageFilename, "r");
+	}
+	
+	public void closePageFile(String filenameRawData) throws IOException {
+		pageFile.close();
+		pageFile = null;
 	}
 	
 	/**
