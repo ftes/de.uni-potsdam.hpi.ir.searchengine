@@ -12,10 +12,28 @@ public class Tokenizer {
 		this.text = text;
 	}
 	
+	public String getText() {
+		return text;
+	}
+	
+	public String getCleanText() {
+		String text = getText();
+		// remove html escape sequencies
+		text = text.replaceAll("&\\w*?;", " ");
+		//remove html tags
+		text = text.replaceAll("(<.*?>)", ""); 
+		// remove non word characters
+		text = text.replaceAll("[^a-zA-ZäöüÄÖÜß0-9.,!:\\(\\)-]+", " "); 
+		// remove unnecessary whitespace
+		text = text.replaceAll("\\s+", " "); 
+		return text;
+	}
+	
 	public ArrayList<String> tokenize(boolean stem){
 		SnowballStemmer stemmer = new germanStemmer();
 		ArrayList<String> resultTokens = new ArrayList<String>();
 		
+		String text = getCleanText();
 		String[] tokens = text.split("[\\s.]");
 		
 		for (String token : tokens){
@@ -26,13 +44,13 @@ public class Tokenizer {
 				continue;
 			}
 			
-			if (stem) {
-				if (token.length() > 2) { // only index terms with minimum length 2
+			if (stem) { // only index terms with minimum length 2
+				if (token.length() > 2) {
 					stemmer.setCurrent(token);
 					stemmer.stem();
 					resultTokens.add(stemmer.getCurrent());
 				}
-			} else {
+			} else if (token.length() > 0) {
 				resultTokens.add(token);
 			}
 		}
