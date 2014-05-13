@@ -6,47 +6,49 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 public class ParseAndMergeNoDummyTest {
+	public static final String dir = "data";
+	public static final String partialDir = dir + File.separator + "partial";
+	
+	public static final String stemmedSeeklistFile = dir + File.separator + "stemmed-seeklist.dat";
+	public static final String unstemmedSeeklistFile = dir + File.separator + "unstemmed-seeklist.dat";
+	public static final String stemmedIndexFile = dir + File.separator + "stemmed-index.dat";
+	public static final String unstemmedIndexFile = dir + File.separator + "unstemmed-index.dat";
+	public static final String pageFile = dir + File.separator + "pages.dat";
+	public static final String pageIndexFile = dir + File.separator + "pagesIndex.dat";
+	
+	public static final String stemmedPartialDir = partialDir + File.separator + "stemmed";
+	public static final String unstemmedPartialDir = partialDir + File.separator + "unstemmed";
+	
 	@Test
-	public void parseAndMerge() throws Exception {
-		String sPartialIndexDir = "spartials";
-		String uPartialIndexDir = "upartials";
-		String sMainIndexPath = "s-index.dat";
-		String uMainIndexPath = "u-index.dat";
-		String sSeekListPath = "s-seeklist.dat";
-		String uSeekListPath = "u-seeklist.dat";
-		String pageIndexFile = "pagesIndex.dat";
-		String pageFile = "pages.dat";
-		
+	public void parseAndMerge() throws Exception {		
 		try {
-			File file = new File(sPartialIndexDir);
+			File file = new File(dir);
 			file.mkdir();
-			file = new File(uPartialIndexDir);
+			file = new File(partialDir);
 			file.mkdir();
 
-			new ParserImpl("/small.xml").parseToPartialIndexes(sPartialIndexDir, uPartialIndexDir, pageIndexFile, pageFile);
-			new IndexMergerImpl().merge(sSeekListPath, uSeekListPath, sPartialIndexDir, uPartialIndexDir,
-					sMainIndexPath, uMainIndexPath);
+			new ParserImpl("/small.xml").parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
+			new IndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
+					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
 
-			MainIndex index = new MainIndex(sMainIndexPath, sSeekListPath);
-			PageIndex titleindex = new PageIndex();
-			titleindex.importFile(pageIndexFile, pageFile);
+			MainIndex stemmedMainIndex = new MainIndex(stemmedIndexFile, stemmedSeeklistFile);
+			MainIndex unstemmedMainIndex = new MainIndex(unstemmedIndexFile, unstemmedSeeklistFile);
+			PageIndex pageIndex = new PageIndex();
+			pageIndex.importFile(pageIndexFile, pageFile);
 			
-			Term term = index.getTerm("auf");
+			Term term = stemmedMainIndex.getTerm("auf");
 			
 			System.out.println("Term: " + term.getTerm());
 			for (TermOccurrence occurence : term.getOccurrences()) {
 				int documentId = occurence.getDocumentId();
-				System.out.println("\t documentId= " + documentId + "; title= " + titleindex.getTitle(documentId) + "; position= " + occurence.getPosition());
+				System.out.println("\t documentId= " + documentId + "; title= " + pageIndex.getTitle(documentId) + "; position= " + occurence.getPosition());
 			}
 			
-			index.close();
+			stemmedMainIndex.close();
+			unstemmedMainIndex.close();
+			pageIndex.closePageFile();
 		} finally {
-			FileUtils.deleteDirectory(new File(sPartialIndexDir));
-			FileUtils.deleteDirectory(new File(uPartialIndexDir));
-			new File(sMainIndexPath).delete();
-			new File(uMainIndexPath).delete();
-			new File(sSeekListPath).delete();
-			new File(uSeekListPath).delete();
+
 		}
 	}
 }
