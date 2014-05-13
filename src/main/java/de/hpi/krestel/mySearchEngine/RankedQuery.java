@@ -20,11 +20,15 @@ public class RankedQuery implements SearchOperation<Integer> {
 	
 	final MainIndex index;
 	final PageIndex titleIndex;
-	final String query;
+	final ArrayList<String> tokens;
 	
 	public RankedQuery(MainIndex stemmedIndex, PageIndex titleIndex, String queryString) {
+		this(stemmedIndex, titleIndex, new Tokenizer(queryString).tokenize(true));
+	}
+	
+	public RankedQuery(MainIndex stemmedIndex, PageIndex titleIndex, ArrayList<String> tokens) {
 		this.index = stemmedIndex;
-		this.query = queryString;
+		this.tokens = tokens;
 		this.titleIndex = titleIndex;
 	}
 	
@@ -46,9 +50,7 @@ public class RankedQuery implements SearchOperation<Integer> {
 
 	@Override
 	public List<Integer> execute(int topK) throws IOException, TermLengthException,
-			QueryProcessingException {
-		ArrayList<String> tokens = new Tokenizer(query).tokenize(true);
-		
+			QueryProcessingException {		
 		Map<String, Term> terms = new HashMap<>();
 		for (String token : tokens) {
 			if (! terms.containsKey(token) ) {
