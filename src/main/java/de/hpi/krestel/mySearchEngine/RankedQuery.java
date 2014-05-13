@@ -70,7 +70,6 @@ public class RankedQuery implements SearchOperation<Integer> {
 		Set<ScoreAndDocId> results = new TreeSet<>();
 		for (Integer docId : documents) {
 			float score = calculateScore(docId, firstFactor, queryFactor, terms);
-			System.out.println(score);
 			if (results.size() < topK) {
 				results.add(new ScoreAndDocId(score, docId));
 			} else {
