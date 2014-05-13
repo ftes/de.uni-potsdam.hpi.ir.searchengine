@@ -93,16 +93,14 @@ public class SearchEngineFAP extends SearchEngine {
 				op = new QueryParser( stemmedMainIndex, unstemmedMainIndex, pageIndex, query).parse();
 			}
 			List<Integer> docIds = op.execute(topK);
-			ArrayList<String> titles = new ArrayList<>();
-			
-			SnippetGenerator gen = null;
+			ArrayList<String> results = new ArrayList<>();
 			
 			for (Integer docId : docIds) {
-				titles.add(pageIndex.getTitle(docId));
-				gen = new SnippetGenerator(pageIndex.getText(docId), query);
-				System.out.println("Snippet: " + gen.generate());
+				String result = "\n" + pageIndex.getTitle(docId) + "\n";
+				result += new SnippetGenerator(pageIndex.getText(docId), query).generate();
+				results.add(result);
 			}
-			return titles;
+			return results;
 		} catch (IOException | TermLengthException | QueryProcessingException e) {
 			e.printStackTrace();
 			return null;
