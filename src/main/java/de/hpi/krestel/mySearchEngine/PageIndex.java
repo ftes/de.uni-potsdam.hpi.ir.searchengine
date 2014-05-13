@@ -8,28 +8,39 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
- * The title index stores for every document id the corresponding title
+ * The index stores for every document id the corresponding title and text
  * 
  * @author Alexander
  *
  */
-public class TitleIndex {	
+public class PageIndex {	
 	/**
-	 * This key-sorted map stores the title index. Key is the document id
-	 * value is the title
+	 * This key-sorted map stores the index. Key is the document id
+	 * value is the offset in the pageindex file
 	 */
-	private Map<Integer, String> map = new TreeMap<>();
+	private Map<Integer, Long> map = new TreeMap<>();
 	
-	public TitleIndex() {
+	public PageIndex() {
 		
 	}	
 	
 	/**
-	 * Adds a title for a specific document id
+	 * Adds an offset for a specific document id
 	 * @param term
 	 */
-	public void addTitle(Integer documentId, String title) {
-		map.put(documentId, title);
+	public void addOffset(Integer documentId, Long offset) {
+		map.put(documentId, offset);
+	}
+	
+	/**
+	 * Gets the text for a certain document ID
+	 * @param documentId
+	 * @return the text or null if not found
+	 */
+	public String getText(Integer documentId) {
+		long offset = map.get(documentId);
+		// Do something
+		return "";
 	}
 	
 	/**
@@ -38,7 +49,9 @@ public class TitleIndex {
 	 * @return the title or null if not found
 	 */
 	public String getTitle(Integer documentId) {
-		return map.get(documentId);
+		long offset = map.get(documentId);
+		// Do something
+		return "";
 	}
 	
 	/**
@@ -54,11 +67,11 @@ public class TitleIndex {
 				
 		file.seek( file.length() ); // goto end of file
 		
-		for (Entry<Integer, String> entry : map.entrySet()) {
+		for (Entry<Integer, Long> entry : map.entrySet()) {
 			Integer documentId = entry.getKey();
-			String title = entry.getValue();
+			long offset = entry.getValue();
 			file.writeInt(documentId);
-			file.writeChars(title);
+			file.writeLong(offset);
 			file.writeChar('\0');
 		}
 
@@ -70,21 +83,16 @@ public class TitleIndex {
 	 * @param the filename to import the file from
 	 * @throws IOException 
 	 */
-	public void importFile(String filename) throws IOException {
+	public void importFile(String filename, String filenameRawData) throws IOException {
 		// open the file
 		RandomAccessFile file = new RandomAccessFile(filename, "r");
 		
 		while (file.getFilePointer() < file.length()) {
 			int documentId = file.readInt();
-			String title = "";		
-			char c = file.readChar();		
-			while (c != '\0') {
-				title += c;
-				c = file.readChar();
-			}
+			long offset = file.readLong();		
 			
 			// add to the index
-			map.put(documentId, title);
+			map.put(documentId, offset);
 		}
 		
 		file.close();
@@ -103,8 +111,8 @@ public class TitleIndex {
 	@Override
 	public String toString() {
 		String s = "[TitleIndex]\n";
-		for (Entry<Integer, String> entry : map.entrySet()) {
-			s += "\tdoc: " + entry.getKey() + " -> title: " + entry.getValue() + "\n";			
+		for (Entry<Integer, Long> entry : map.entrySet()) {
+			s += "\tdoc: " + entry.getKey() + " -> offset: " + entry.getValue() + "\n";			
 		}
 		return s;
 	}

@@ -27,7 +27,7 @@ public class ParseAndMergeNoDummyTest {
 					sMainIndexPath, uMainIndexPath);
 
 			MainIndex index = new MainIndex(sMainIndexPath, sSeekListPath);
-			TitleIndex titleindex = new TitleIndex();
+			PageIndex titleindex = new PageIndex();
 			titleindex.importFile("titles.dat");
 			
 			Term term = index.getTerm("auf");

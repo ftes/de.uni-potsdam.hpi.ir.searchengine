@@ -30,14 +30,15 @@ public class SearchEngineFAP extends SearchEngine {
 	public static final String unstemmedSeeklistFile = dir + File.separator + "unstemmed-seeklist.dat";
 	public static final String stemmedIndexFile = dir + File.separator + "stemmed-index.dat";
 	public static final String unstemmedIndexFile = dir + File.separator + "unstemmed-index.dat";
-	public static final String titleFile = dir + File.separator + "titles.dat";
+	public static final String pageFile = dir + File.separator + "pages.dat";
+	public static final String pageIndexFile = dir + File.separator + "pagesIndex.dat";
 	
 	public static final String stemmedPartialDir = partialDir + File.separator + "stemmed";
 	public static final String unstemmedPartialDir = partialDir + File.separator + "unstemmed";
 	
 	private MainIndex stemmedMainIndex;
 	private MainIndex unstemmedMainIndex;
-	private TitleIndex titleIndex;
+	private PageIndex pageIndex;
 	
 	// Replace 'Y' with your search engine name
 	public SearchEngineFAP() {
@@ -49,7 +50,7 @@ public class SearchEngineFAP extends SearchEngine {
 	void index(String dir) {
 		new File(partialDir).mkdirs();
 		try {
-			new ParserImpl(dir).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, titleFile);
+			new ParserImpl(dir).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
 			new IndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
 					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
 		} catch (NumberFormatException | ClassNotFoundException
@@ -65,8 +66,8 @@ public class SearchEngineFAP extends SearchEngine {
 		try {
 			stemmedMainIndex = new MainIndex(stemmedIndexFile, stemmedSeeklistFile);
 			unstemmedMainIndex = new MainIndex(unstemmedIndexFile, unstemmedSeeklistFile);
-			titleIndex = new TitleIndex();
-			titleIndex.importFile(titleFile);
+			pageIndex = new PageIndex();
+			pageIndex.importFile(pageIndexFile, pageFile);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -78,12 +79,12 @@ public class SearchEngineFAP extends SearchEngine {
 	ArrayList<String> search(String query, int topK, int prf) {
 		SearchOperation<Integer> op;
 		try {
-			op = new QueryParser(stemmedMainIndex, unstemmedMainIndex, titleIndex, query).parse();
+			op = new QueryParser(stemmedMainIndex, unstemmedMainIndex, pageIndex, query).parse();
 			op.print(0, 3);
 			List<Integer> docIds = op.execute(topK);
 			ArrayList<String> titles = new ArrayList<>();
 			for (Integer docId : docIds) {
-				titles.add(titleIndex.getTitle(docId));
+				titles.add(pageIndex.getTitle(docId));
 			}
 			return titles;
 		} catch (IOException | TermLengthException | QueryProcessingException e) {

@@ -34,7 +34,7 @@ public class ParserImpl extends Parser {
 	}
 
 	@Override
-	public void parseToPartialIndexes(String stemmedPartialDir, String unstemmedPartialDir, String titleIndexPath)
+	public void parseToPartialIndexes(String stemmedPartialDir, String unstemmedPartialDir, String pageIndexFile, String pageFile)
 			throws XMLStreamException, ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, FactoryConfigurationError, IOException {
 		
 		XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -51,7 +51,8 @@ public class ParserImpl extends Parser {
 
 		PartialIndex unstemmedIndex = new PartialIndex();
 		PartialIndex stemmedIndex = new PartialIndex();
-		TitleIndex titleIndex = new TitleIndex();
+		PageIndexWriter pageWriter = new PageIndexWriter(pageFile);
+		PageIndex pageIndex = new PageIndex();
 
 		// read from stream
 		while (parser.hasNext()) {
@@ -79,6 +80,9 @@ public class ParserImpl extends Parser {
 					
 					addToIndex(characters, page, stemmedIndex, true);
 					addToIndex(characters, page, unstemmedIndex, false);
+					
+					long offset = pageWriter.store(page);
+					pageIndex.addOffset(page.getId(), offset);
 				}
 				break;
 
@@ -90,7 +94,6 @@ public class ParserImpl extends Parser {
 				tag = parser.getLocalName();
 				if (!inRevision && tag.equals("id")) {
 					page.setId(Integer.parseInt(characters));
-					titleIndex.addTitle(page.getId(), page.getTitle());
 				} else if (!inRevision && tag.equals("title")) {
 					page.setTitle(characters);
 //				} else if (tag.equals("page")) {
@@ -119,7 +122,7 @@ public class ParserImpl extends Parser {
 		}
 		stemmedIndex.store(stemmedPartialDir);
 		unstemmedIndex.store(unstemmedPartialDir);
-		titleIndex.exportFile(titleIndexPath);
+		pageIndex.exportFile(pageIndexFile);
 	}
 
 }

@@ -2,6 +2,7 @@ package de.hpi.krestel.mySearchEngine;
 
 import java.io.IOException;
 
+import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -24,8 +25,11 @@ public abstract class Parser {
 	/**
 	 * Parses the specified XML File and request the generation of the indexes.
 	 */
-	public abstract void parseToPartialIndexes(String stemmedPartialDir, String unstemmedPartialDir, String titleIndexPath)
-			throws IOException, XMLStreamException, ClassNotFoundException, InstantiationException, IllegalAccessException;
+	public abstract void parseToPartialIndexes(String stemmedPartialDir,
+			String unstemmedPartialDir, String pageIndexFile, String pageFile)
+			throws XMLStreamException, ClassNotFoundException,
+			InstantiationException, IllegalAccessException,
+			NumberFormatException, FactoryConfigurationError, IOException;
 	
 	public String getFilename() {
 		return filename;

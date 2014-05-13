@@ -19,10 +19,10 @@ public class RankedQuery implements SearchOperation<Integer> {
 	final float K = k_1; // no normalization
 	
 	final MainIndex index;
-	final TitleIndex titleIndex;
+	final PageIndex titleIndex;
 	final String query;
 	
-	public RankedQuery(MainIndex stemmedIndex, TitleIndex titleIndex, String queryString) {
+	public RankedQuery(MainIndex stemmedIndex, PageIndex titleIndex, String queryString) {
 		this.index = stemmedIndex;
 		this.query = queryString;
 		this.titleIndex = titleIndex;

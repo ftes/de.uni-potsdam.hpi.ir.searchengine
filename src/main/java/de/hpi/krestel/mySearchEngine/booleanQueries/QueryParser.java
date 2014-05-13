@@ -11,7 +11,7 @@ import de.hpi.krestel.mySearchEngine.MainIndex;
 import de.hpi.krestel.mySearchEngine.QueryProcessingException;
 import de.hpi.krestel.mySearchEngine.RankedQuery;
 import de.hpi.krestel.mySearchEngine.SearchOperation;
-import de.hpi.krestel.mySearchEngine.TitleIndex;
+import de.hpi.krestel.mySearchEngine.PageIndex;
 
 public class QueryParser {
 	private static final Map<String, Class<?>> BINARY_OPS;
@@ -26,9 +26,9 @@ public class QueryParser {
 	private final String queryString;
 	private final MainIndex stemmedIndex;
 	private final MainIndex unstemmedIndex;
-	private final TitleIndex titleIndex;
+	private final PageIndex titleIndex;
 	
-	public QueryParser(MainIndex stemmedIndex, MainIndex unstemmedIndex, TitleIndex titleIndex, String queryString) {
+	public QueryParser(MainIndex stemmedIndex, MainIndex unstemmedIndex, PageIndex titleIndex, String queryString) {
 		this.stemmedIndex = stemmedIndex;
 		this.unstemmedIndex = unstemmedIndex;
 		this.queryString = queryString;
