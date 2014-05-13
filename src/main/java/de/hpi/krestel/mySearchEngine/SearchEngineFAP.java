@@ -8,6 +8,8 @@ import java.util.List;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.commons.io.FileUtils;
+
 import de.hpi.krestel.mySearchEngine.booleanQueries.QueryParser;
 
 /* This is your file! implement your search engine here!
@@ -48,7 +50,11 @@ public class SearchEngineFAP extends SearchEngine {
 
 	@Override
 	void index(String dir) {
-		new File(dir).delete();
+		try {
+			FileUtils.deleteDirectory(new File(dir));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		new File(stemmedPartialDir).mkdirs();
 		new File(unstemmedPartialDir).mkdirs();
 		try {
