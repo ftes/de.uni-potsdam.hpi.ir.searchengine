@@ -43,10 +43,12 @@ public class Tokenizer {
 				continue;
 			}
 			
-			if (stem && token.length() > 2) { // only index terms with minimum length 2
-				stemmer.setCurrent(token);
-				stemmer.stem();
-				resultTokens.add(stemmer.getCurrent());
+			if (stem) { // only index terms with minimum length 2
+				if (token.length() > 2) {
+					stemmer.setCurrent(token);
+					stemmer.stem();
+					resultTokens.add(stemmer.getCurrent());
+				}
 			} else if (token.length() > 0) {
 				resultTokens.add(token);
 			}

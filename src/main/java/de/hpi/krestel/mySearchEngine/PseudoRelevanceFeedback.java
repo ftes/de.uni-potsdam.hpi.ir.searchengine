@@ -68,7 +68,17 @@ public class PseudoRelevanceFeedback implements SearchOperation<Integer> {
 			newQuery.add(termsWithTfIdf.get(i).a);
 		}
 		
+		printQuery(newQuery);
+		
 		return new RankedQuery(stemmedIndex, pageIndex, newQuery).execute(topK);
+	}
+	
+	private void printQuery(ArrayList<String> newQuery) {
+		System.out.print("New generated query:");
+		for (String term : newQuery) {
+			System.out.print(" " + term);
+		}
+		System.out.println();
 	}
 
 	@Override
