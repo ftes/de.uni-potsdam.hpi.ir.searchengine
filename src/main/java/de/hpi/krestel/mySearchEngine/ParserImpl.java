@@ -9,8 +9,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import de.hpi.krestel.mySearchEngine.Log.Level;
-
 public class ParserImpl extends Parser {
 	public ParserImpl(String filename) throws XMLStreamException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		super(filename);
@@ -22,13 +20,7 @@ public class ParserImpl extends Parser {
 		
 		int tokenPosition = 0;
 		for (String token : tokens) {
-			// FIXME: do something else ...
-			//TODO why -2?
-			if (token.length() <= SeekList.MAX_TERM_LENGTH-2) { 
-				index.addOccurenceForTerm(token, new TermOccurrence(page.getId(), tokenPosition));
-			} else {
-				Log.log(Level.DEBUG, "Ignored: " + token);
-			}
+			index.addOccurenceForTerm(token, new TermOccurrence(page.getId(), tokenPosition));
 			tokenPosition++;
 		}
 	}
