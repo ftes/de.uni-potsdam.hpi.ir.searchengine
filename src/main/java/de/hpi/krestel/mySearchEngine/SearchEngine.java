@@ -29,11 +29,11 @@ public abstract class SearchEngine {
 
 		// Directory to store index and result logs
 		this.directory = this.baseDirectory +this.getClass().getSimpleName().toString();
-		new File(this.directory).mkdirs();
+		// new File(this.directory).mkdirs();
 		this.logFile = this.directory +"/" +System.currentTimeMillis() +".log";
 		// Directory to store wikipedia results
 		this.wikiDirectory = this.baseDirectory +"wikiQueryResults/";
-		new File(this.wikiDirectory).mkdirs();
+		// new File(this.wikiDirectory).mkdirs();
 
 	}
 
