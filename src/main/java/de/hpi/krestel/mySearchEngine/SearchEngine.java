@@ -76,6 +76,8 @@ public abstract class SearchEngine {
 		ArrayList<String> gold;
 		String queryTerms = query.replaceAll(" ", "+");
 		try{
+			if (0!=1)
+				throw new Exception(); // don't do this
 			FileInputStream streamIn = new FileInputStream(this.wikiDirectory +queryTerms +".ser");
 			ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
 			gold = (ArrayList<String>) objectinputstream.readObject();
@@ -98,13 +100,15 @@ public abstract class SearchEngine {
 		for(int i=0;i<lines.length;i++){
 			//if(lines[i].startsWith("<li><div class='mw-search-results-heading'>")){
 			if(lines[i].startsWith("<li>")){
-				Pattern p = Pattern.compile("title=\"(.*)\"");
+				Pattern p = Pattern.compile("title=\"(.*?)\"");
 				Matcher m = p.matcher(lines[i]);
 				m.find();
 				gold.add(m.group(1));
 			}
 		}		
 		try {
+			if (0!=1)
+				throw new Exception(); // don't do this
 			FileOutputStream fout = new FileOutputStream(this.wikiDirectory +queryTerms +".ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
 			oos.writeObject(gold);
@@ -112,7 +116,7 @@ public abstract class SearchEngine {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}catch(Exception ex){}
 		return gold;
 	}
 
