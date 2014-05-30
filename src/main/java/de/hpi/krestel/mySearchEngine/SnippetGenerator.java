@@ -17,7 +17,7 @@ public class SnippetGenerator {
 	}
 	
 	public String generate() {
-		String[] queryTerms = userQuery.split("[\\s.]");
+		String[] queryTerms = userQuery.toLowerCase().split("[\\s.]");
 		String[] doc = document.split("[\\s]");
 		SnowballStemmer stemmer = new germanStemmer();
 		

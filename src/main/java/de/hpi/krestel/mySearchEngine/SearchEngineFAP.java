@@ -96,7 +96,7 @@ public class SearchEngineFAP extends SearchEngine {
 			ArrayList<String> results = new ArrayList<>();
 			
 			for (Integer docId : docIds) {
-				String result = "\n" + pageIndex.getTitle(docId) + "\n";
+				String result = pageIndex.getTitle(docId) + "\n";
 				result += new SnippetGenerator(pageIndex.getText(docId), query).generate();
 				results.add(result);
 			}
@@ -109,7 +109,6 @@ public class SearchEngineFAP extends SearchEngine {
 
 	@Override
 	Double computeNdcg(ArrayList<String> goldRanking, ArrayList<String> myRanking, int at) {
-		// TODO Auto-generated method stub
-		return null;
+		return NdcgComputer.computeNdcg(goldRanking, myRanking, at);
 	}
 }
