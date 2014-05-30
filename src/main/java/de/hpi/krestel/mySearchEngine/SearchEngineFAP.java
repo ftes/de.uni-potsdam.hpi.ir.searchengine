@@ -106,10 +106,9 @@ public class SearchEngineFAP extends SearchEngine {
 			return null;
 		}
 	}
-	
+
 	@Override
-	Double computeNdcg(String query, ArrayList<String> ranking, int ndcgAt) {
-	
+	Double computeNdcg(ArrayList<String> goldRanking, ArrayList<String> myRanking, int at) {
 		// TODO Auto-generated method stub
 		return null;
 	}
