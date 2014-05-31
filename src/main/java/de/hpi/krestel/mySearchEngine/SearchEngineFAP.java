@@ -97,7 +97,7 @@ public class SearchEngineFAP extends SearchEngine {
 			
 			for (Integer docId : docIds) {
 				String result = pageIndex.getTitle(docId) + "\n";
-				result += new SnippetGenerator(pageIndex.getText(docId), query).generate();
+				result += new SnippetGenerator(pageIndex.getText(docId), query).generate() + "\n";
 				results.add(result);
 			}
 			return results;
