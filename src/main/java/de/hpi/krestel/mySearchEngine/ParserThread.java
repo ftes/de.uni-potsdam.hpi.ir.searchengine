@@ -6,6 +6,7 @@ import java.util.Stack;
 
 public class ParserThread extends Thread {
 	private boolean done = false;
+	private boolean writeRequested = false;
 	private final String stemmedPartialDir;
 	private final String unstemmedPartialDir;
 	
@@ -49,8 +50,7 @@ public class ParserThread extends Thread {
 			addToIndex(page, stemmedIndex, true);
 			addToIndex(page, unstemmedIndex, false);
 
-			if (Util.isMainMemoryFull()){
-				System.out.println("MEMORY FULL!");
+			if (writeRequested) {
 				System.out.println("Writing " + stemmedPartialDir + "/" + getFileName());
 				System.out.println("Writing " + unstemmedPartialDir + "/" + getFileName());
 				// write to disk and remove references
@@ -64,6 +64,7 @@ public class ParserThread extends Thread {
 				stemmedIndex = new PartialIndex(getFileName());
 				unstemmedIndex = new PartialIndex(getFileName());
 				Util.runGarbageCollector();
+				writeRequested = false;
 			}
 		}
 		
@@ -88,5 +89,9 @@ public class ParserThread extends Thread {
 
 	public void sendCancellation() {
 		done = true;
+	}
+	
+	public void requestWrite() {
+		writeRequested = true;
 	}
 }

@@ -81,9 +81,9 @@ public class Util {
 	}
 	
 	/**
-	 * Leave at least 50 MBytes of memory free.
+	 * Leave at least 500 MBytes of memory free.
 	 */
-	public static final long MIN_FREE_MEMORY_BYTES = 50 * 1024 * 1024;
+	public static final long MIN_FREE_MEMORY_BYTES = 200 * 1024 * 1024;
 	
 	/**
 	 * Determine whether the main memory can be considered full.
@@ -92,7 +92,8 @@ public class Util {
 	 * TODO caching
 	 */
 	public static boolean isMainMemoryFull() {
-		return Runtime.getRuntime().freeMemory() < MIN_FREE_MEMORY_BYTES;
+		long freeMem = Runtime.getRuntime().freeMemory();
+		return freeMem < MIN_FREE_MEMORY_BYTES;
 	}
 	
 	/**

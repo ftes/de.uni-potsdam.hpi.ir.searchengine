@@ -14,7 +14,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 public class ParserImpl extends Parser {
-	public static final int N_THREADS = 1;
+	public static final int N_THREADS = 4;
 	
 	public ParserImpl(InputStream in) throws XMLStreamException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		super(in);
@@ -99,6 +99,14 @@ public class ParserImpl extends Parser {
 				} else if (!inRevision && tag.equals("title")) {
 					page.setTitle(characters);
 				} else if (tag.equals("page")) {
+					if (numArticles % 50 == 0) {
+						if (Util.isMainMemoryFull()){
+							System.out.println("MEMORY FULL!");
+							for (ParserThread thread : threads) {
+								thread.requestWrite();
+							}
+						}
+					}
 					synchronized (buffer) {
 						while (buffer.size() >= N_THREADS*2) {
 							try {
@@ -118,6 +126,7 @@ public class ParserImpl extends Parser {
 			default:
 				break;
 			}
+			
 			
 			parser.next();
 		}
