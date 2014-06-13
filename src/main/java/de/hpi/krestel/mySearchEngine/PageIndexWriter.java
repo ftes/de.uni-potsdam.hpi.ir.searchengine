@@ -11,6 +11,8 @@ import java.io.RandomAccessFile;
  *
  */
 public class PageIndexWriter {	
+	public static final String TERMINATOR = "DONE00";
+	
 	private RandomAccessFile file;
 	
 	public PageIndexWriter(String pageFile) throws IOException {
@@ -37,7 +39,16 @@ public class PageIndexWriter {
 		String text = page.getText();
 		Tokenizer t = new Tokenizer(text);
 		String cleaned = t.getCleanText();
-		file.writeUTF(cleaned);
+		
+		// UTF maximal 1000 Zeichen.
+		int length = 1000;
+		int start = 0;
+		for (start = 0; start < cleaned.length() - length; start += length ) {
+			String tmp = cleaned.substring(start, start + length);
+			file.writeUTF(tmp);
+		}
+		file.writeUTF(cleaned.substring(start));
+		file.writeUTF(PageIndexWriter.TERMINATOR);
 
 		return offset;
 	}
