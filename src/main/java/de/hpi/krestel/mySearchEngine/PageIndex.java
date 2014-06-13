@@ -75,20 +75,10 @@ public class PageIndex {
 		Page page = new Page();
 		page.setId(documentId);
 		
-		String title = "";		
-		char c = pageFile.readChar();		
-		while (c != '\0') {
-			title += c;
-			c = pageFile.readChar();
-		}
+		String title = pageFile.readUTF();
 		page.setTitle(title);
 		
-		String text = "";		
-		c = pageFile.readChar();		
-		while (c != '\0') {
-			text += c;
-			c = pageFile.readChar();
-		}
+		String text = pageFile.readUTF();		
 		page.setText(text);
 		
 		return page;

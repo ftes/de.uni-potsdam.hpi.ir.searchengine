@@ -12,7 +12,6 @@ import java.io.RandomAccessFile;
  */
 public class PageIndexWriter {	
 	private RandomAccessFile file;
-	private long length;
 	
 	public PageIndexWriter(String pageFile) throws IOException {
 		// delete the file
@@ -20,7 +19,7 @@ public class PageIndexWriter {
 		f.delete();
 		// open the file
 		file = new RandomAccessFile(pageFile, "rw");
-		length = file.length();
+		// file.seek(file.length());
 	}	
 	
 	/**
@@ -31,18 +30,14 @@ public class PageIndexWriter {
 	 */
 
 	public long store(Page page) throws IOException {
-		long offset = length;
+		long offset = file.getFilePointer();
 		
-		file.writeChars(page.getTitle());
-		file.writeChar('\0');
-		length += page.getTitle().length() * 2 + 2; //every char written as 2-byte val
+		file.writeUTF(page.getTitle());
 		
 		String text = page.getText();
 		Tokenizer t = new Tokenizer(text);
 		String cleaned = t.getCleanText();
-		file.writeChars(cleaned);
-		file.writeChar('\0');
-		length += cleaned.length() * 2 + 2; //every char written as 2-byte val
+		file.writeUTF(cleaned);
 
 		return offset;
 	}
