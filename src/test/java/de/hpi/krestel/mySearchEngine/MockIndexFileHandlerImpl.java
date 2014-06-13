@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MockIndexFileHandlerImpl implements IndexFileHandler {
+public class MockIndexFileHandlerImpl implements IndexFileLinearReader, IndexFileLinearWriter, IndexFileRandomReader {
 	private final List<Term> terms;
 	private int index = 0;
 	private String id;

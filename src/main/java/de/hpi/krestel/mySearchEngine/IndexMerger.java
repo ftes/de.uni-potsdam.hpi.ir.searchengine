@@ -37,7 +37,7 @@ public interface IndexMerger {
 	 * Exposed for testing purposes.
 	 * @see IndexMerger#merge(String, String, String)
 	 */
-	void merge(SeekList seekList, Set<IndexFileHandler> partialIndexHandlers, IndexFileHandler mainIndexHandler)
+	void merge(SeekList seekList, Set<IndexFileLinearReader> partialIndexHandlers, IndexFileLinearWriter mainIndexHandler)
 			throws IOException;
 
 }

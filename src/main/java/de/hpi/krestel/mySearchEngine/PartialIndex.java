@@ -15,8 +15,7 @@ import java.util.TreeMap;
  *
  */
 public class PartialIndex {
-	private static int nextID = 0;
-	private int ID;
+	private int id;
 	
 	/**
 	 * This key-sorted map stores the partial index. Keys are the Terms as Strings.
@@ -24,9 +23,8 @@ public class PartialIndex {
 	 */
 	private Map<String, Term> map = new TreeMap<>();
 	
-	public PartialIndex() {
-		this.ID = PartialIndex.nextID;
-		PartialIndex.nextID++;
+	public PartialIndex(int id) {
+		this.id = id;
 	}
 	
 	/**
@@ -34,7 +32,7 @@ public class PartialIndex {
 	 * @return
 	 */
 	public int getID() {
-		return ID;
+		return id;
 	}
 	
 	/**
@@ -79,10 +77,9 @@ public class PartialIndex {
 	 */
 	public void store(String directory) throws IOException {
 		String filename = directory + File.separator + this.getFilename();
-		IndexFileHandler fileHandler = new IndexFileHandlerImpl(filename);
+		IndexFileLinearWriter fileHandler = new IndexFileLinearWriterImpl(filename);
 		
-		for (Entry<String, Term> entry : map.entrySet()) {
-			Term term = entry.getValue();
+		for (Term term : map.values()) {
 			fileHandler.storeTerm(term);	
 		}
 		fileHandler.close();		

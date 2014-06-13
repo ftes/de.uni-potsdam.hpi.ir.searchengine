@@ -1,7 +1,6 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -13,13 +12,15 @@ import java.io.RandomAccessFile;
  */
 public class PageIndexWriter {	
 	private RandomAccessFile file;
+	private long length;
 	
-	public PageIndexWriter(String pageFile) throws FileNotFoundException {
+	public PageIndexWriter(String pageFile) throws IOException {
 		// delete the file
 		File f = new File(pageFile);
 		f.delete();
 		// open the file
 		file = new RandomAccessFile(pageFile, "rw");
+		length = file.length();
 	}	
 	
 	/**
@@ -29,17 +30,19 @@ public class PageIndexWriter {
 	 * @throws IOException 
 	 */
 
-	public long store(Page page) throws IOException {				
-		file.seek( file.length() ); // goto end of file
-		long offset = file.getFilePointer();
+	public long store(Page page) throws IOException {
+		long offset = length;
 		
 		file.writeChars(page.getTitle());
 		file.writeChar('\0');
+		length += page.getTitle().length() * 2 + 2; //every char written as 2-byte val
 		
 		String text = page.getText();
 		Tokenizer t = new Tokenizer(text);
-		file.writeChars(t.getCleanText());
+		String cleaned = t.getCleanText();
+		file.writeChars(cleaned);
 		file.writeChar('\0');
+		length += cleaned.length() * 2 + 2; //every char written as 2-byte val
 
 		return offset;
 	}

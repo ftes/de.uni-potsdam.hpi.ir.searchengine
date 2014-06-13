@@ -25,26 +25,26 @@ public class IndexMergerTest {
 	public void testMerging() throws IOException {
 		Log.LEVEL = Level.DEBUG;
 		
-		IndexFileHandler partial1 = new MockIndexFileHandlerImpl("1",
+		IndexFileLinearReader partial1 = new MockIndexFileHandlerImpl("1",
 				createTerm("anton", new TermOccurrence(1, 3), new TermOccurrence(1, 10)),
 				createTerm("berta", new TermOccurrence(1, 4)));
 		
-		IndexFileHandler partial2 = new MockIndexFileHandlerImpl("2",
+		IndexFileLinearReader partial2 = new MockIndexFileHandlerImpl("2",
 				createTerm("anna", new TermOccurrence(2, 3)),
 				createTerm("carla", new TermOccurrence(2, 4)));
 		
-		IndexFileHandler partial3 = new MockIndexFileHandlerImpl("3",
+		IndexFileLinearReader partial3 = new MockIndexFileHandlerImpl("3",
 				createTerm("annika", new TermOccurrence(3, 3)),
 				createTerm("anton", new TermOccurrence(1, 5)),
 				createTerm("berta", new TermOccurrence(3, 11)),
 				createTerm("doris", new TermOccurrence(3, 4)));
 		
-		IndexFileHandler partial4 = new MockIndexFileHandlerImpl("4",
+		IndexFileLinearReader partial4 = new MockIndexFileHandlerImpl("4",
 				createTerm("boris", new TermOccurrence(4, 1)),
 				createTerm("doris", new TermOccurrence(4, 2)));
 		
 		MockSeekListImpl seekList = new MockSeekListImpl();
-		Set<IndexFileHandler> partialIndexHandlers = new HashSet<>(Arrays.asList(
+		Set<IndexFileLinearReader> partialIndexHandlers = new HashSet<>(Arrays.asList(
 				partial1, partial2, partial3, partial4));
 		MockIndexFileHandlerImpl mainIndexHandler = new MockIndexFileHandlerImpl("main");
 		
