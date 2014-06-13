@@ -1,6 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -12,16 +13,15 @@ import javax.xml.stream.XMLStreamException;
  *
  */
 public abstract class Parser {
-	private String filename;
+	protected InputStream in;
 	
 	/**
 	 * Creates the parser
 	 * @param filename the filename of the wikipedia xml file
 	 */
-	public Parser(String filename) {
-		this.filename = filename;
+	public Parser(InputStream in) {
+		this.in = in;
 	}
-	
 	/**
 	 * Parses the specified XML File and request the generation of the indexes.
 	 */
@@ -30,8 +30,4 @@ public abstract class Parser {
 			throws XMLStreamException, ClassNotFoundException,
 			InstantiationException, IllegalAccessException,
 			NumberFormatException, FactoryConfigurationError, IOException;
-	
-	public String getFilename() {
-		return filename;
-	}
 }
