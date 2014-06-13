@@ -1,6 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import org.tartarus.snowball.SnowballStemmer;
 import org.tartarus.snowball.ext.germanStemmer;
@@ -16,29 +17,36 @@ public class Tokenizer {
 		return text;
 	}
 	
+	// remove html escape sequencies
+	private static final Pattern htmlToSpace = Pattern.compile("&\\w{2,6}?;");
+	//remove html tags
+	//private static final Pattern htmlToNone = Pattern.compile("(<.*?>)");
+	// remove non word characters
+	private static final Pattern nonWordToSpace = Pattern.compile("[^a-zA-ZäöüÄÖÜß0-9.,!:\\(\\)-]"); 
+	// remove unnecessary whitespace
+	//private static final Pattern whitespaceToSpace = Pattern.compile("\\s+"); 
+	
 	public String getCleanText() {
-		String text = getText();
-		// remove html escape sequencies
-		text = text.replaceAll("&\\w*?;", " ");
-		//remove html tags
-		text = text.replaceAll("(<.*?>)", ""); 
-		// remove non word characters
-		text = text.replaceAll("[^a-zA-ZäöüÄÖÜß0-9.,!:\\(\\)-]+", " "); 
-		// remove unnecessary whitespace
-		text = text.replaceAll("\\s+", " "); 
+		htmlToSpace.matcher(text).replaceAll(" ");
+		//htmlToNone.matcher(text).replaceAll("");
+		nonWordToSpace.matcher(text).replaceAll(" ");
+		//whitespaceToSpace.matcher(text).replaceAll(" ");
 		return text;
 	}
+	
+	private static final Pattern splitOnWhitespace = Pattern.compile("[\\s+.]");
+	private static final Pattern removeNonAToZOrUmlauts = Pattern.compile("[^a-zäöüß]");
 	
 	public ArrayList<String> tokenize(boolean stem){
 		SnowballStemmer stemmer = new germanStemmer();
 		ArrayList<String> resultTokens = new ArrayList<String>();
 		
 		String text = getCleanText();
-		String[] tokens = text.split("[\\s.]");
+		String[] tokens = splitOnWhitespace.split(text);
 		
 		for (String token : tokens){
 			token = token.toLowerCase();
-			token = token.replaceAll("[^a-zäöüß]", "");
+			token = removeNonAToZOrUmlauts.matcher(token).replaceAll("");
 
 			if (token.length() > SeekList.MAX_TERM_LENGTH) {
 				continue;

@@ -3,6 +3,7 @@ package de.hpi.krestel.mySearchEngine;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -49,6 +50,7 @@ public class ParserImpl extends Parser {
 
 		long numArticles = 0;
 		long printInterval = 10;
+		Date start = new Date();
 		// read from stream
 		while (parser.hasNext()) {
 
@@ -66,7 +68,8 @@ public class ParserImpl extends Parser {
 					page = new Page();
 					numArticles++;
 					if (numArticles % printInterval == 0) {
-						System.out.println("Indexed " + printInterval + " articles, total: " + numArticles);
+						long elapsed = new Date().getTime() - start.getTime();
+						System.out.printf("%d articles, %d seconds\n", numArticles, (int) elapsed / 1000);
 					}
 				} else if (tag.equals("revision")) {
 					inRevision = true;
