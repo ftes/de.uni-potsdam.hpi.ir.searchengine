@@ -50,7 +50,8 @@ public class ParserImpl extends Parser {
 		}
 		
 		// read from stream
-		while (parser.hasNext()) {
+		boolean done = false;
+		while (! done && parser.hasNext()) {
 			switch (parser.getEventType()) {
 			case XMLStreamConstants.START_DOCUMENT:
 				break;
@@ -68,6 +69,10 @@ public class ParserImpl extends Parser {
 						long elapsed = new Date().getTime() - start.getTime();
 						int eta = (int) ((elapsed / numArticles) * 3.3e6 / 1000 / 60 / 60);
 						System.out.printf("%d articles, %d seconds, ETA: %d hours\n", numArticles, (int) elapsed / 1000, eta);
+						
+						if (elapsed > 5 * 1000 * 60) {
+							done = true;
+						}
 					}
 				} else if (tag.equals("revision")) {
 					inRevision = true;
@@ -94,6 +99,14 @@ public class ParserImpl extends Parser {
 				} else if (!inRevision && tag.equals("title")) {
 					page.setTitle(characters);
 				} else if (tag.equals("page")) {
+					if (numArticles % 50 == 0) {
+						if (Util.isMainMemoryFull()){
+							System.out.println("MEMORY FULL!");
+							for (ParserThread thread : threads) {
+								thread.requestWrite();
+							}
+						}
+					}
 					synchronized (buffer) {
 						while (buffer.size() >= N_THREADS*2) {
 							try {
@@ -113,6 +126,7 @@ public class ParserImpl extends Parser {
 			default:
 				break;
 			}
+			
 			
 			parser.next();
 		}
