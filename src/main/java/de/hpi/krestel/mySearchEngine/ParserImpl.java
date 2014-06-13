@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Stack;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -12,19 +14,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 public class ParserImpl extends Parser {
+	public static final int N_THREADS = 4;
+	
 	public ParserImpl(InputStream in) throws XMLStreamException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		super(in);
-	}
-	
-	private void addToIndex(String characters, Page page, PartialIndex index, boolean stem) {
-		Tokenizer tokenizer = new Tokenizer(characters);
-		ArrayList<String> tokens = tokenizer.tokenize(stem);
-		
-		int tokenPosition = 0;
-		for (String token : tokens) {
-			index.addOccurenceForTerm(token, new TermOccurrence(page.getId(), tokenPosition));
-			tokenPosition++;
-		}
 	}
 
 	@Override
@@ -42,18 +35,22 @@ public class ParserImpl extends Parser {
 
 		boolean inRevision = false;
 
-		int n = 0;
-		PartialIndex unstemmedIndex = new PartialIndex(n);
-		PartialIndex stemmedIndex = new PartialIndex(n);
 		PageIndexWriter pageWriter = new PageIndexWriter(pageFile);
 		PageIndex pageIndex = new PageIndex();
 
 		long numArticles = 0;
 		long printInterval = 10;
 		Date start = new Date();
+		
+		final Stack<Page> buffer = new Stack<>();
+		List<ParserThread> threads = new ArrayList<>();
+		for (int i=0; i<N_THREADS; i++) {
+			threads.add(new ParserThread(buffer, stemmedPartialDir, unstemmedPartialDir));
+			threads.get(i).start();
+		}
+		
 		// read from stream
 		while (parser.hasNext()) {
-
 			switch (parser.getEventType()) {
 			case XMLStreamConstants.START_DOCUMENT:
 				break;
@@ -81,9 +78,6 @@ public class ParserImpl extends Parser {
 					
 					page.setText(characters);
 					
-					addToIndex(characters, page, stemmedIndex, true);
-					addToIndex(characters, page, unstemmedIndex, false);
-					
 					long offset = pageWriter.store(page);
 					pageIndex.addOffset(page.getId(), offset);
 				}
@@ -99,9 +93,18 @@ public class ParserImpl extends Parser {
 					page.setId(Integer.parseInt(characters));
 				} else if (!inRevision && tag.equals("title")) {
 					page.setTitle(characters);
-//				} else if (tag.equals("page")) {
-//					pages.add(page);
-//					// System.out.println(page);
+				} else if (tag.equals("page")) {
+					synchronized (buffer) {
+						while (buffer.size() >= N_THREADS*2) {
+							try {
+								buffer.wait();
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						buffer.add(page);
+						buffer.notifyAll();
+					}
 				} else if (tag.equals("revision")) {
 					inRevision = false;
 				}
@@ -110,23 +113,36 @@ public class ParserImpl extends Parser {
 			default:
 				break;
 			}
-
-			if (Util.isMainMemoryFull()){
-				System.out.println("MEMORY FULL!");
-				System.out.println("Writing " + stemmedPartialDir + "/" + stemmedIndex.getFilename());
-				System.out.println("Writing " + unstemmedPartialDir + "/" + unstemmedIndex.getFilename());
-				// write to disk and remove references
-				stemmedIndex.store(stemmedPartialDir);
-				unstemmedIndex.store(unstemmedPartialDir);
-				stemmedIndex = new PartialIndex(++n);
-				unstemmedIndex = new PartialIndex(n);
-				Util.runGarbageCollector();
-			}
 			
 			parser.next();
 		}
-		stemmedIndex.store(stemmedPartialDir);
-		unstemmedIndex.store(unstemmedPartialDir);
+
+		int bufferSize = 0;
+		do {
+			synchronized (buffer) {
+				bufferSize = buffer.size();
+				if (bufferSize > 0) {
+					try {
+						buffer.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		} while (bufferSize > 0);
+		
+		for (ParserThread thread : threads) {
+			thread.sendCancellation();
+		}
+		
+		for (ParserThread thread : threads) {
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		pageIndex.exportFile(pageIndexFile);
 		pageWriter.close();
 	}

@@ -15,7 +15,7 @@ import java.util.TreeMap;
  *
  */
 public class PartialIndex {
-	private int id;
+	private String fileName;
 	
 	/**
 	 * This key-sorted map stores the partial index. Keys are the Terms as Strings.
@@ -23,16 +23,8 @@ public class PartialIndex {
 	 */
 	private Map<String, Term> map = new TreeMap<>();
 	
-	public PartialIndex(int id) {
-		this.id = id;
-	}
-	
-	/**
-	 * returns a globally unique and constant ID that can be safely used for the filename.
-	 * @return
-	 */
-	public int getID() {
-		return id;
+	public PartialIndex(String f) {
+		this.fileName = f;
 	}
 	
 	/**
@@ -40,7 +32,7 @@ public class PartialIndex {
 	 * @return
 	 */
 	public String getFilename() {
-		return this.getID() + ".dat";
+		return fileName + ".dat";
 	}
 	
 	/**
