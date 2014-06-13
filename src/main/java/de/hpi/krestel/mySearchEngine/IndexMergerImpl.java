@@ -18,8 +18,8 @@ public class IndexMergerImpl implements IndexMerger {
 	public void merge(String stemmedSeekListPath, String unstemmedSeekListPath,
 			String stemmedPartialIndexDirectory, String unstemmedPartialIndexDirectory,
 			String stemmedMergedIndexPath, String ustemmedMergedIndexPath) throws IOException {
-		IndexFileHandler stemmedIndexHandler = new IndexFileHandlerImpl(stemmedMergedIndexPath);
-		IndexFileHandler unstemmedIndexHandler = new IndexFileHandlerImpl(ustemmedMergedIndexPath);
+		IndexFileLinearWriter stemmedIndexHandler = new IndexFileLinearWriterImpl(stemmedMergedIndexPath);
+		IndexFileLinearWriter unstemmedIndexHandler = new IndexFileLinearWriterImpl(ustemmedMergedIndexPath);
 		SeekList stemmedSeekList = new SeekListImpl(stemmedSeekListPath);
 		SeekList unstemmedSeekList = new SeekListImpl(unstemmedSeekListPath);
 		
@@ -27,18 +27,18 @@ public class IndexMergerImpl implements IndexMerger {
 		merge(unstemmedPartialIndexDirectory, unstemmedIndexHandler, unstemmedSeekList);
 	}
 	
-	private void merge(String partialIndexDirectory, IndexFileHandler indexHandler, SeekList seekList) throws IOException {
-		Set<IndexFileHandler> handlers = new HashSet<>();
+	private void merge(String partialIndexDirectory, IndexFileLinearWriter indexHandler, SeekList seekList) throws IOException {
+		Set<IndexFileLinearReader> handlers = new HashSet<>();
 		
 		for (File file : new File(partialIndexDirectory).listFiles()) {
 			if (file.isFile()) {
-				handlers.add(new IndexFileHandlerImpl(file.getAbsolutePath()));
+				handlers.add(new IndexFileLinearReaderImpl(file.getAbsolutePath()));
 			}
 		}
 		
 		merge(seekList, handlers, indexHandler);
 		
-		for (IndexFileHandler handler : handlers) {
+		for (IndexFileLinearReader handler : handlers) {
 			handler.close();
 		}
 		indexHandler.close();
@@ -56,9 +56,9 @@ public class IndexMergerImpl implements IndexMerger {
 //	}
 	
 	@Override
-	public void merge(SeekList seekList, Set<IndexFileHandler> partialIndexHandlers,
-			IndexFileHandler mainIndexHandler) throws IOException {
-		SortedMap<Term, IndexFileHandler> currentTerms = new TreeMap<>(TermComparator.INSTANCE);
+	public void merge(SeekList seekList, Set<IndexFileLinearReader> partialIndexHandlers,
+			IndexFileLinearWriter mainIndexHandler) throws IOException {
+		SortedMap<Term, IndexFileLinearReader> currentTerms = new TreeMap<>(TermComparator.INSTANCE);
 		
 		while (true) {
 			fillCurrentTermSet(currentTerms, partialIndexHandlers);
@@ -99,11 +99,11 @@ public class IndexMergerImpl implements IndexMerger {
 	 * If the end of one file is reached, it is removed from the {@link #handlers}.
 	 * @throws IOException 
 	 */
-	private void fillCurrentTermSet(SortedMap<Term, IndexFileHandler> currentTerms,
-			Set<IndexFileHandler> partialIndexHandlers) throws IOException {
-		Set<IndexFileHandler> missingHandlers = new HashSet<>(partialIndexHandlers);
+	private void fillCurrentTermSet(SortedMap<Term, IndexFileLinearReader> currentTerms,
+			Set<IndexFileLinearReader> partialIndexHandlers) throws IOException {
+		Set<IndexFileLinearReader> missingHandlers = new HashSet<>(partialIndexHandlers);
 		missingHandlers.removeAll(currentTerms.values());
-		for (IndexFileHandler handler : missingHandlers) {
+		for (IndexFileLinearReader handler : missingHandlers) {
 			Term term = handler.readNextTerm();
 			if (term == null) {
 				partialIndexHandlers.remove(handler);

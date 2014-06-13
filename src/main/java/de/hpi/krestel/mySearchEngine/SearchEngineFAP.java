@@ -1,7 +1,10 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,16 +52,23 @@ public class SearchEngineFAP extends SearchEngine {
 	}
 
 	@Override
-	void index(String dir) {
+	void index(String directory) {
+		InputStream in = null;
 		try {
-			FileUtils.deleteDirectory(new File(dir));
+			in = new FileInputStream(new File(directory));
+		} catch (FileNotFoundException e2) {
+			e2.printStackTrace();
+			return;
+		}
+		try {
+			FileUtils.deleteDirectory(new File(SearchEngineFAP.dir));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		new File(stemmedPartialDir).mkdirs();
 		new File(unstemmedPartialDir).mkdirs();
 		try {
-			new ParserImpl(dir).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
+			new ParserImpl(in).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
 			new IndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
 					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
 		} catch (NumberFormatException | ClassNotFoundException

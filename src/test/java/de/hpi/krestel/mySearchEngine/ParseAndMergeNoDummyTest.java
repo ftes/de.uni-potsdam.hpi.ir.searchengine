@@ -2,7 +2,6 @@ package de.hpi.krestel.mySearchEngine;
 
 import java.io.File;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 public class ParseAndMergeNoDummyTest {
@@ -27,7 +26,7 @@ public class ParseAndMergeNoDummyTest {
 			file = new File(partialDir);
 			file.mkdir();
 
-			new ParserImpl("/small.xml").parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
+			new ParserImpl(this.getClass().getResourceAsStream("/small.xml")).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
 			new IndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
 					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
 

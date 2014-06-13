@@ -1,6 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.xml.stream.FactoryConfigurationError;
@@ -10,8 +11,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 public class ParserImpl extends Parser {
-	public ParserImpl(String filename) throws XMLStreamException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-		super(filename);
+	public ParserImpl(InputStream in) throws XMLStreamException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		super(in);
 	}
 	
 	private void addToIndex(String characters, Page page, PartialIndex index, boolean stem) {
@@ -31,8 +32,7 @@ public class ParserImpl extends Parser {
 		
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		XMLStreamReader parser = factory
-						.createXMLStreamReader(WikipediaExport.class
-						.getResourceAsStream(this.getFilename()));
+						.createXMLStreamReader(in);
 
 //		List<Page> pages = new ArrayList<Page>();
 		Page page = null;
@@ -41,11 +41,14 @@ public class ParserImpl extends Parser {
 
 		boolean inRevision = false;
 
-		PartialIndex unstemmedIndex = new PartialIndex();
-		PartialIndex stemmedIndex = new PartialIndex();
+		int n = 0;
+		PartialIndex unstemmedIndex = new PartialIndex(n);
+		PartialIndex stemmedIndex = new PartialIndex(n);
 		PageIndexWriter pageWriter = new PageIndexWriter(pageFile);
 		PageIndex pageIndex = new PageIndex();
 
+		long numArticles = 0;
+		long printInterval = 10;
 		// read from stream
 		while (parser.hasNext()) {
 
@@ -61,6 +64,10 @@ public class ParserImpl extends Parser {
 				tag = parser.getLocalName();
 				if (tag.equals("page")) {
 					page = new Page();
+					numArticles++;
+					if (numArticles % printInterval == 0) {
+						System.out.println("Indexed " + printInterval + " articles, total: " + numArticles);
+					}
 				} else if (tag.equals("revision")) {
 					inRevision = true;
 				} else if (tag.equals("text")) {
@@ -102,11 +109,13 @@ public class ParserImpl extends Parser {
 
 			if (Util.isMainMemoryFull()){
 				System.out.println("MEMORY FULL!");
+				System.out.println("Writing " + stemmedPartialDir + "/" + stemmedIndex.getFilename());
+				System.out.println("Writing " + unstemmedPartialDir + "/" + unstemmedIndex.getFilename());
 				// write to disk and remove references
 				stemmedIndex.store(stemmedPartialDir);
 				unstemmedIndex.store(unstemmedPartialDir);
-				stemmedIndex = new PartialIndex();
-				unstemmedIndex = new PartialIndex();
+				stemmedIndex = new PartialIndex(++n);
+				unstemmedIndex = new PartialIndex(n);
 				Util.runGarbageCollector();
 			}
 			

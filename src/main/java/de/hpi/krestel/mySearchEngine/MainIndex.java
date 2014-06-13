@@ -10,7 +10,7 @@ import java.io.IOException;
  *
  */
 public class MainIndex {
-	private final IndexFileHandler indexFile;
+	private final IndexFileRandomReader indexFile;
 	private final SeekList seeklist;
 	
 	/**
@@ -20,7 +20,7 @@ public class MainIndex {
 	 * @throws IOException 
 	 */
 	public MainIndex(String indexPath, String seeklistPath) throws IOException {
-		indexFile = new IndexFileHandlerImpl(indexPath);
+		indexFile = new IndexFileRandomReaderImpl(indexPath);
 		seeklist = new SeekListImpl(seeklistPath);
 	}
 	

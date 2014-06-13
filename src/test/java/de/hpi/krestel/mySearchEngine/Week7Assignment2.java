@@ -4,17 +4,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class Week6Assignment3 {	
+public class Week7Assignment2 {	
 	public static void main(String[] args) throws IOException, QueryProcessingException {
 		SearchEngine searchEngine = new SearchEngineFAP();
 		
-		searchEngine.index("../small.xml");
+		searchEngine.index("../huge.xml");
 		searchEngine.loadIndex(null);
 		
 		System.out.println();
 		
-		query("Anschluss", searchEngine);
-		query("Soziologie", searchEngine);
+		query("Anschluss Luhmann", searchEngine);
+		query("Actinium", searchEngine);
+		query("Information Retrieval", searchEngine);
 	}
 	
 	private static void query(String query, SearchEngine searchEngine) {

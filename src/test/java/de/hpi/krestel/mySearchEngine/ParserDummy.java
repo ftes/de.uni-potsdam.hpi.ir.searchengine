@@ -12,7 +12,8 @@ public class ParserDummy extends Parser {
 
 	@Override
 	public void parseToPartialIndexes(String sIndexDirectory, String uIndexDirectory, String pageIndexFile, String pageFile) throws IOException {
-		PartialIndex index = new PartialIndex();
+		int n=0;
+		PartialIndex index = new PartialIndex(n);
 		
 		// split long text
 		int offset = 0;
@@ -21,7 +22,7 @@ public class ParserDummy extends Parser {
 			if (i % 1000 == 1000-1) {
 				// that's roughly 13 parts
 				index.store(sIndexDirectory);
-				index = new PartialIndex();
+				index = new PartialIndex(n++);
 			}
 			char c = longText.charAt(i);
 			// check if c is a letter
