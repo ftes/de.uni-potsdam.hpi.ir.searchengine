@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -15,6 +16,8 @@ import javax.xml.stream.XMLStreamReader;
 
 public class ParserImpl extends Parser {
 	public static final int N_THREADS = 4;
+	
+	private static final Pattern redirect = Pattern.compile("\\A#REDIRECT \\[\\[.*\\]\\]\\z");
 	
 	public ParserImpl(InputStream in) throws XMLStreamException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		super(in);
@@ -70,7 +73,7 @@ public class ParserImpl extends Parser {
 						int eta = (int) ((elapsed / numArticles) * 3.3e6 / 1000 / 60 / 60);
 						System.out.printf("%d articles, %d seconds, ETA: %d hours\n", numArticles, (int) elapsed / 1000, eta);
 						
-						if (elapsed > 5 * 1000 * 60) {
+						if (elapsed > 5 * 1000) {
 							done = true;
 						}
 					}
@@ -107,16 +110,20 @@ public class ParserImpl extends Parser {
 							}
 						}
 					}
-					synchronized (buffer) {
-						while (buffer.size() >= N_THREADS*2) {
-							try {
-								buffer.wait();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
+					
+					//don't include redirect pages
+					if (! redirect.matcher(page.getText()).matches()) {
+						synchronized (buffer) {
+							while (buffer.size() >= N_THREADS*2) {
+								try {
+									buffer.wait();
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
 							}
+							buffer.add(page);
+							buffer.notifyAll();
 						}
-						buffer.add(page);
-						buffer.notifyAll();
 					}
 				} else if (tag.equals("revision")) {
 					inRevision = false;
