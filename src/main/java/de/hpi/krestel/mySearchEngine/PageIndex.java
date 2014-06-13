@@ -78,7 +78,12 @@ public class PageIndex {
 		String title = pageFile.readUTF();
 		page.setTitle(title);
 		
-		String text = pageFile.readUTF();		
+		String text = "";
+		String tmp = pageFile.readUTF();
+		while (! tmp.equals(PageIndexWriter.TERMINATOR)) {
+			text += tmp;
+			tmp = pageFile.readUTF();
+		}
 		page.setText(text);
 		
 		return page;
