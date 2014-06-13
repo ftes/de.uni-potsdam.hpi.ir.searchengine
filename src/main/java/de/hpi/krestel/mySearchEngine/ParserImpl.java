@@ -69,7 +69,8 @@ public class ParserImpl extends Parser {
 					numArticles++;
 					if (numArticles % printInterval == 0) {
 						long elapsed = new Date().getTime() - start.getTime();
-						System.out.printf("%d articles, %d seconds\n", numArticles, (int) elapsed / 1000);
+						int eta = (int) ((elapsed / numArticles) * 3.3e6 / 1000 / 60 / 60);
+						System.out.printf("%d articles, %d seconds, ETA: %d hours\n", numArticles, (int) elapsed / 1000, eta);
 					}
 				} else if (tag.equals("revision")) {
 					inRevision = true;
