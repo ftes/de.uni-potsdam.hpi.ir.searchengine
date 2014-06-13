@@ -83,8 +83,8 @@ public class Util {
 	/**
 	 * Leave at least 500 MBytes of memory free.
 	 */
-	public static final long MIN_FREE_MEMORY_BYTES = 200 * 1024 * 1024;
-	
+	public static final long MIN_FREE_MEMORY_BYTES = 100 * 1024 * 1024;
+	public static final long MAX_USED_MEMORY_BYTES = 1600 * 1024 * 1024;
 	/**
 	 * Determine whether the main memory can be considered full.
 	 * If so, delete all references to large objects no longer needed (e.g. partial index) and
@@ -92,8 +92,9 @@ public class Util {
 	 * TODO caching
 	 */
 	public static boolean isMainMemoryFull() {
-		long freeMem = Runtime.getRuntime().freeMemory();
-		return freeMem < MIN_FREE_MEMORY_BYTES;
+		Runtime runtime = Runtime.getRuntime();
+		long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+		return usedMemory > MAX_USED_MEMORY_BYTES;
 	}
 	
 	/**
