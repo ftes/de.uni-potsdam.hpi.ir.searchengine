@@ -51,7 +51,7 @@ public class SearchEngineFAP extends SearchEngine {
 	@Override
 	void index(String dir) {
 		try {
-			FileUtils.deleteDirectory(new File(dir));
+			FileUtils.deleteDirectory(new File(SearchEngineFAP.dir));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
