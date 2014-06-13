@@ -51,9 +51,7 @@ public class PartialIndex {
 	public void addTerm(Term term) {
 		if (map.containsKey(term.getTerm())) {
 			Term existingTerm = map.get(term.getTerm());
-			for (TermOccurrence occurence : term.getOccurrences()) {
-				existingTerm.addOccurence(occurence);
-			}
+			existingTerm.merge(term);
 		} else {
 			map.put(term.getTerm(), term);
 		}

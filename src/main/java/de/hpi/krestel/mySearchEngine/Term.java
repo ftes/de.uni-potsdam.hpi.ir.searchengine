@@ -72,4 +72,8 @@ public class Term {
 		}
 		return s;
 	}
+	
+	public void merge(Term term) {
+		occurrences.addAll(term.getOccurrences());
+	}
 }
