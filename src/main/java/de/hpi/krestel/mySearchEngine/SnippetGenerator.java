@@ -1,6 +1,8 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.tartarus.snowball.SnowballStemmer;
 import org.tartarus.snowball.ext.germanStemmer;
@@ -18,7 +20,14 @@ public class SnippetGenerator {
 	
 	public String generate() {
 		String[] queryTerms = userQuery.toLowerCase().split("[\\s.]");
+		
+		// before splitting document on whitespaces, remove wikipedia markup
+		document = cleanWikiFormat(document); // bold, italic, wiki internal links
+		document = removeExternalLinks(document);
+		document = removeCurlyBraces(document);
+		
 		String[] doc = document.split("[\\s]");
+		
 		SnowballStemmer stemmer = new germanStemmer();
 		
 		boolean foundMatch = false;
@@ -31,37 +40,41 @@ public class SnippetGenerator {
 		}
 		
 		for(String word : doc) {
-
-			String wordCopy = word.toLowerCase();
-			wordCopy = wordCopy.replaceAll("[^a-zäöüß]", "");
-			stemmer.setCurrent(wordCopy);
-			stemmer.stem();
-			wordCopy = stemmer.getCurrent();
+			// after splitting remove all headers and bullet points
+			word = word.replaceAll("[*=]", "").trim();
 			
-			if (foundMatch) {
-				// only append the X words following the query term
+			if (word.length() > 0) {
+				String wordCopy = word.toLowerCase();
+				wordCopy = wordCopy.replaceAll("[^a-zäöüß]", "");
+				stemmer.setCurrent(wordCopy);
+				stemmer.stem();
+				wordCopy = stemmer.getCurrent();
 				
-				if (addAfter > 0) {
-					snippet.add(word);
-					addAfter--;
+				if (foundMatch) {
+					// only append the X words following the query term
+					
+					if (addAfter > 0) {
+						snippet.add(word);
+						addAfter--;
+					} else {
+						break; // snippet complete, stop searching document
+					}				
+					
 				} else {
-					break; // snippet complete, stop searching document
-				}				
-				
-			} else {
-				// keep looking for a query term and buffer X words before potential match
-				
-				if (snippet.size() > SNIPPET_SIZE / 2) {
-					snippet.remove(); // make space for another word
-				}
-				snippet.add(word); // append word to the end
-				
-				for (String qTerm : queryTerms) {
-					if (wordCopy.equals(qTerm)) {
-						// found a match, now construct snippet
-						foundMatch = true;
-						break;
-					}	
+					// keep looking for a query term and buffer X words before potential match
+					
+					if (snippet.size() > SNIPPET_SIZE / 2) {
+						snippet.remove(); // make space for another word
+					}
+					snippet.add(word); // append word to the end
+					
+					for (String qTerm : queryTerms) {
+						if (wordCopy.equals(qTerm)) {
+							// found a match, now construct snippet
+							foundMatch = true;
+							break;
+						}	
+					}
 				}
 			}
 
@@ -83,4 +96,77 @@ public class SnippetGenerator {
 			return builder.toString();
 		}
 	}
+	
+	// throw away anything that is inside two curly brackets {{...}}
+	private String removeCurlyBraces(CharSequence sequence) {
+		Pattern patt = Pattern.compile("\\{\\{.*?\\}\\}");
+		Matcher m = patt.matcher(sequence);
+        StringBuffer sb = new StringBuffer(sequence.length());
+        while (m.find()) {
+            String text = "";
+            // ... possibly process 'text' ...
+            m.appendReplacement(sb, Matcher.quoteReplacement(text));
+        }
+        m.appendTail(sb);
+        return sb.toString();
+	}
+	
+	// remove external wikipedia links but keep description text [http://www.abc.net.au/a.htm Artikel über..]
+	private String removeExternalLinks(CharSequence sequence) {
+		Pattern patt = Pattern.compile("[^\\[]\\[http[^\\s\\[]*\\s+([^\\]]*)\\]");
+		Matcher m = patt.matcher(sequence);
+        StringBuffer sb = new StringBuffer(sequence.length());
+        while (m.find()) {
+            String text = m.group(1);
+            // ... possibly process 'text' ...
+            m.appendReplacement(sb, Matcher.quoteReplacement(text));
+        }
+        m.appendTail(sb);
+        return sb.toString();
+	}
+	
+	private String removeItalic(CharSequence sequence) {
+        Pattern patt = Pattern.compile("\\''(.+?)\\''");
+        Matcher m = patt.matcher(sequence);
+        StringBuffer sb = new StringBuffer(sequence.length());
+        while (m.find()) {
+            String text = m.group(1);
+            // ... possibly process 'text' ...
+            m.appendReplacement(sb, Matcher.quoteReplacement(text));
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
+    private String removeBold(CharSequence sequence) {
+        Pattern patt = Pattern.compile("\\'''(.+?)\\'''");
+        Matcher m = patt.matcher(sequence);
+        StringBuffer sb = new StringBuffer(sequence.length());
+        while (m.find()) {
+            String text = m.group(1);
+            // ... possibly process 'text' ...
+            m.appendReplacement(sb, Matcher.quoteReplacement(text));
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
+    // remove wikipedia internal url and keep describing text
+    private String removeUrl(CharSequence sequence) {
+        Pattern patt = Pattern.compile("\\[\\[([^\\|\\]]*)\\|?([^\\]]*)?\\]\\]");
+        Matcher m = patt.matcher(sequence);
+        StringBuffer sb = new StringBuffer(sequence.length());
+        while (m.find()) {
+            String text = m.group(1);
+            // ... possibly process 'text' ...
+            m.appendReplacement(sb, Matcher.quoteReplacement(text));
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
+    public String cleanWikiFormat(CharSequence sequence) {
+        return removeUrl(removeBold(removeItalic(sequence)));
+    }
+
 }
