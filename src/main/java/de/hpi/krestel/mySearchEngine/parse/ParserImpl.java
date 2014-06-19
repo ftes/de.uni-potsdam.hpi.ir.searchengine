@@ -31,7 +31,8 @@ public class ParserImpl extends Parser {
 	}
 
 	@Override
-	public void parseToPartialIndexes(String stemmedPartialDir, String unstemmedPartialDir, String pageIndexFile, String pageFile)
+	public void parseToPartialIndexes(String stemmedPartialDir, String unstemmedPartialDir,
+			String linksPartialDir, String pageIndexFile, String pageFile)
 			throws XMLStreamException, ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, FactoryConfigurationError, IOException {
 		
 		XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -55,7 +56,7 @@ public class ParserImpl extends Parser {
 		final Stack<Page> buffer = new Stack<>();
 		List<ParserThread> threads = new ArrayList<>();
 		for (int i=0; i<N_THREADS; i++) {
-			threads.add(new ParserThread(buffer, stemmedPartialDir, unstemmedPartialDir));
+			threads.add(new ParserThread(buffer, stemmedPartialDir, unstemmedPartialDir, linksPartialDir));
 			threads.get(i).start();
 		}
 		

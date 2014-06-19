@@ -33,9 +33,7 @@ S extends IndexListSlot<V>, V extends Comparable<V>> {
 	 * 
 	 * @throws IOException 
 	 */
-	void merge(String stemmedSeekListPath, String unstemmedSeekListPath,
-			String stemmedPartialIndexDirectory, String unstemmedPartialIndexDirectory,
-			String stemmedMergedIndexPath, String ustemmedMergedIndexPath) throws IOException;
+	void merge(String seekListPath, String partialIndexDirectory, String mergedIndexPath) throws IOException;
 	
 	/**
 	 * Exposed for testing purposes.

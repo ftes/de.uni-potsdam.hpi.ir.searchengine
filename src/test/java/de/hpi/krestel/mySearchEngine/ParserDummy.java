@@ -1,5 +1,6 @@
 package de.hpi.krestel.mySearchEngine;
 
+import java.io.File;
 import java.io.IOException;
 
 import de.hpi.krestel.mySearchEngine.index.TitleIndex;
@@ -17,9 +18,10 @@ public class ParserDummy extends Parser {
 	}
 
 	@Override
-	public void parseToPartialIndexes(String sIndexDirectory, String uIndexDirectory, String pageIndexFile, String pageFile) throws IOException {
+	public void parseToPartialIndexes(String sIndexDirectory, String uIndexDirectory,
+			String linksIndexDir, String pageIndexFile, String pageFile) throws IOException {
 		int n=0;
-		TermPartialIndex index = new TermPartialIndex(new TermIndexFileLinearWriterImpl(n + ""));
+		TermPartialIndex index = new TermPartialIndex(new TermIndexFileLinearWriterImpl(sIndexDirectory + File.separator + n + ""));
 		
 		// split long text
 		int offset = 0;
@@ -27,8 +29,8 @@ public class ParserDummy extends Parser {
 		for (int i = 0; i < longText.length(); i++) {
 			if (i % 1000 == 1000-1) {
 				// that's roughly 13 parts
-				index.store(sIndexDirectory);
-				index = new TermPartialIndex(new TermIndexFileLinearWriterImpl(n + ""));
+				index.store();
+				index = new TermPartialIndex(new TermIndexFileLinearWriterImpl(sIndexDirectory + File.separator + n + ""));
 			}
 			char c = longText.charAt(i);
 			// check if c is a letter
@@ -43,7 +45,7 @@ public class ParserDummy extends Parser {
 				offset = i + 1;
 			}
 		}
-		index.store(sIndexDirectory);
+		index.store();
 	}
 
 	@Override

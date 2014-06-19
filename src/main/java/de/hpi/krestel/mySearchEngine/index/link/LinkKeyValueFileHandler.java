@@ -9,7 +9,7 @@ import de.hpi.krestel.mySearchEngine.index.io.KeyValueFileHandler;
 import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 import de.hpi.krestel.mySearchEngine.util.Util;
 
-public class DocumentLinkKeyValueFileHandler implements
+public class LinkKeyValueFileHandler implements
 		KeyValueFileHandler<Integer, String> {
 
 	@Override

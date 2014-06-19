@@ -33,9 +33,10 @@ public class ParseAndMergeNoDummyTest {
 			file = new File(partialDir);
 			file.mkdir();
 
-			new ParserImpl(this.getClass().getResourceAsStream("/small.xml")).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
-			new TermIndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
-					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
+			new ParserImpl(this.getClass().getResourceAsStream("/small.xml")).
+				parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, null, pageIndexFile, pageFile);
+			new TermIndexMergerImpl().merge(stemmedSeeklistFile, stemmedPartialDir, stemmedIndexFile);
+			new TermIndexMergerImpl().merge(unstemmedSeeklistFile, unstemmedPartialDir, unstemmedIndexFile);
 
 			TermMainIndexImpl stemmedMainIndex = new TermMainIndexImpl(stemmedIndexFile, stemmedSeeklistFile);
 			TermMainIndexImpl unstemmedMainIndex = new TermMainIndexImpl(unstemmedIndexFile, unstemmedSeeklistFile);

@@ -28,7 +28,7 @@ public abstract class Parser {
 	 * Parses the specified XML File and request the generation of the indexes.
 	 */
 	public abstract void parseToPartialIndexes(String stemmedPartialDir,
-			String unstemmedPartialDir, String pageIndexFile, String pageFile)
+			String unstemmedPartialDir, String linksPartialDir, String pageIndexFile, String pageFile)
 			throws XMLStreamException, ClassNotFoundException,
 			InstantiationException, IllegalAccessException,
 			NumberFormatException, FactoryConfigurationError, IOException;

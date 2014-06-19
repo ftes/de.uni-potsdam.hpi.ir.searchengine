@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import de.hpi.krestel.mySearchEngine.index.io.BaseIndexFileRandomReader;
 
-public class DocumentLinkIndexFileRandomReaderImpl extends
-		BaseIndexFileRandomReader<Integer, DocumentWithLinks, DocumentLink, String> {
+public class LinkIndexFileRandomReaderImpl extends
+		BaseIndexFileRandomReader<Integer, DocumentWithLinks, Link, String> {
 
-	public DocumentLinkIndexFileRandomReaderImpl(
+	public LinkIndexFileRandomReaderImpl(
 			String filename) throws IOException {
-		super(filename, new DocumentLinkKeyValueFileHandler(), new DocumentLinkIndexListFactory());
+		super(filename, new LinkKeyValueFileHandler(), new LinkIndexListFactory());
 	}
 
 }

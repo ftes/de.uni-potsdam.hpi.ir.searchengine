@@ -7,6 +7,9 @@ import java.util.Stack;
 
 import de.hpi.krestel.mySearchEngine.index.PartialIndex;
 import de.hpi.krestel.mySearchEngine.index.io.IndexFileHandlerFactory;
+import de.hpi.krestel.mySearchEngine.index.link.DocumentWithLinks;
+import de.hpi.krestel.mySearchEngine.index.link.Link;
+import de.hpi.krestel.mySearchEngine.index.link.LinkIndexFileHandlerFactory;
 import de.hpi.krestel.mySearchEngine.index.term.Term;
 import de.hpi.krestel.mySearchEngine.index.term.TermIndexFileHandlerFactory;
 import de.hpi.krestel.mySearchEngine.index.term.TermOccurrence;
@@ -17,34 +20,47 @@ public class ParserThread extends Thread {
 	private boolean writeRequested = false;
 	private final String stemmedPartialDir;
 	private final String unstemmedPartialDir;
+	private final String linksPartialDir;
 	private PartialIndex<String, Term, TermOccurrence, Integer> unstemmedIndex;
 	private PartialIndex<String, Term, TermOccurrence, Integer> stemmedIndex;
-	private final IndexFileHandlerFactory<String, Term, TermOccurrence, Integer> indexFileHandlerFactory;
+	private PartialIndex<Integer, DocumentWithLinks, Link, String> linkIndex;
+	private final IndexFileHandlerFactory<String, Term, TermOccurrence, Integer> termFactory;
+	private final IndexFileHandlerFactory<Integer, DocumentWithLinks, Link, String> linkFactory;
 	
 	private int n = 0;
 
 	private final Stack<Page> buffer;
 
-	public ParserThread(Stack<Page> buffer, String stemmedPartialDir, String unstemmedPartialDir) {
+	public ParserThread(Stack<Page> buffer, String stemmedPartialDir, String unstemmedPartialDir,
+			String linksPartialDir) {
 		this.buffer = buffer;
 		this.stemmedPartialDir = stemmedPartialDir;
 		this.unstemmedPartialDir = unstemmedPartialDir;
-		this.indexFileHandlerFactory = new TermIndexFileHandlerFactory();
+		this.linksPartialDir = linksPartialDir;
+		this.termFactory = new TermIndexFileHandlerFactory();
+		this.linkFactory = new LinkIndexFileHandlerFactory();
 	}
 	
 	private String getFilePath(String dir) {
 		return dir + File.separator + Thread.currentThread().getId() + "-" + n + ".dat";
 	}
-
-	@Override
-	public void run() {
+	
+	private void createIndexes() {
 		try {
-			stemmedIndex = indexFileHandlerFactory.createPartialIndex(getFilePath(stemmedPartialDir));
-			unstemmedIndex = indexFileHandlerFactory.createPartialIndex(getFilePath(unstemmedPartialDir));
+			stemmedIndex = termFactory.createPartialIndex(getFilePath(stemmedPartialDir));
+			unstemmedIndex = termFactory.createPartialIndex(getFilePath(unstemmedPartialDir));
+			if (linksPartialDir != null) {
+				linkIndex = linkFactory.createPartialIndex(getFilePath(linksPartialDir));
+			}
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}
+
+	@Override
+	public void run() {
+		createIndexes();
 		
 		while (! done) {
 			Page page = null;
@@ -69,12 +85,7 @@ public class ParserThread extends Thread {
 
 			if (writeRequested) {
 				write();
-				try {
-					stemmedIndex = indexFileHandlerFactory.createPartialIndex(getFilePath(stemmedPartialDir));
-					unstemmedIndex = indexFileHandlerFactory.createPartialIndex(getFilePath(unstemmedPartialDir));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				createIndexes();
 				Util.runGarbageCollector();
 				writeRequested = false;
 			}
@@ -86,10 +97,16 @@ public class ParserThread extends Thread {
 	private void write() {
 		System.out.println("Writing " + getFilePath(stemmedPartialDir));
 		System.out.println("Writing " + getFilePath(unstemmedPartialDir));
+		if (linkIndex != null) {
+			System.out.println("Writing " + getFilePath(linksPartialDir));
+		}
 		// write to disk and remove references
 		try {
-			stemmedIndex.store(stemmedPartialDir);
-			unstemmedIndex.store(unstemmedPartialDir);
+			stemmedIndex.store();
+			unstemmedIndex.store();
+			if (linkIndex != null) {
+				linkIndex.store();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -41,16 +41,10 @@ V extends Comparable<V>> implements IndexMerger<K, L, S, V> {
 	}
 	
 	@Override
-	public void merge(String stemmedSeekListPath, String unstemmedSeekListPath,
-			String stemmedPartialIndexDirectory, String unstemmedPartialIndexDirectory,
-			String stemmedMergedIndexPath, String unstemmedMergedIndexPath) throws IOException {
-		IndexFileLinearWriter<K, L, S, V> stemmedIndexHandler = indexFileHandlerFactory.createLinearWriter(stemmedMergedIndexPath);
-		IndexFileLinearWriter<K, L, S, V> unstemmedIndexHandler = indexFileHandlerFactory.createLinearWriter(unstemmedMergedIndexPath);
-		SeekList<K> stemmedSeekList = indexFileHandlerFactory.createSeekList(stemmedSeekListPath);
-		SeekList<K> unstemmedSeekList = indexFileHandlerFactory.createSeekList(unstemmedSeekListPath);
-		
-		merge(stemmedPartialIndexDirectory, stemmedIndexHandler, stemmedSeekList);
-		merge(unstemmedPartialIndexDirectory, unstemmedIndexHandler, unstemmedSeekList);
+	public void merge(String seekListPath, String partialIndexDirectory, String mergedIndexPath) throws IOException {
+		IndexFileLinearWriter<K, L, S, V> indexHandler = indexFileHandlerFactory.createLinearWriter(mergedIndexPath);
+		SeekList<K> seekList = indexFileHandlerFactory.createSeekList(seekListPath);
+		merge(partialIndexDirectory, indexHandler, seekList);
 	}
 	
 	private void merge(String partialIndexDirectory, IndexFileLinearWriter<K, L, S, V> indexHandler,

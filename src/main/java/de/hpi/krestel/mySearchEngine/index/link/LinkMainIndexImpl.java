@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import de.hpi.krestel.mySearchEngine.index.MainIndex;
 
-public class DocumentLinkMainIndexImpl extends MainIndex<Integer,
-DocumentWithLinks, DocumentLink, String> {
+public class LinkMainIndexImpl extends MainIndex<Integer,
+DocumentWithLinks, Link, String> {
 
-	public DocumentLinkMainIndexImpl(String indexPath, String seeklistPath)
+	public LinkMainIndexImpl(String indexPath, String seeklistPath)
 			throws IOException {
-		super(indexPath, seeklistPath, new DocumentLinkIndexFileHandlerFactory());
+		super(indexPath, seeklistPath, new LinkIndexFileHandlerFactory());
 	}
 
 }

@@ -16,6 +16,8 @@ import org.apache.commons.io.FileUtils;
 import de.hpi.krestel.mySearchEngine.booleanQueries.QueryParser;
 import de.hpi.krestel.mySearchEngine.index.PageIndex;
 import de.hpi.krestel.mySearchEngine.index.TitleIndex;
+import de.hpi.krestel.mySearchEngine.index.link.LinkIndexMergerImpl;
+import de.hpi.krestel.mySearchEngine.index.link.LinkMainIndexImpl;
 import de.hpi.krestel.mySearchEngine.index.term.TermIndexMergerImpl;
 import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
 import de.hpi.krestel.mySearchEngine.parse.Parser;
@@ -44,16 +46,22 @@ public class SearchEngineFAP extends SearchEngine {
 	
 	public static final String stemmedSeeklistFile = dir + File.separator + "stemmed-seeklist.dat";
 	public static final String unstemmedSeeklistFile = dir + File.separator + "unstemmed-seeklist.dat";
+	public static final String linkSeeklistFile = dir + File.separator + "link-seeklist.dat";
+	
 	public static final String stemmedIndexFile = dir + File.separator + "stemmed-index.dat";
 	public static final String unstemmedIndexFile = dir + File.separator + "unstemmed-index.dat";
+	public static final String linkIndexFile = dir + File.separator + "link-index.dat";
+	
 	public static final String pageFile = dir + File.separator + "pages.dat";
 	public static final String pageIndexFile = dir + File.separator + "pagesIndex.dat";
 	
 	public static final String stemmedPartialDir = partialDir + File.separator + "stemmed";
 	public static final String unstemmedPartialDir = partialDir + File.separator + "unstemmed";
+	public static final String linksPartialDir = partialDir + File.separator + "links";
 	
 	private TermMainIndexImpl stemmedMainIndex;
 	private TermMainIndexImpl unstemmedMainIndex;
+	private LinkMainIndexImpl linkMainIndex;
 	private PageIndex pageIndex;
 	
 	// Replace 'Y' with your search engine name
@@ -78,14 +86,18 @@ public class SearchEngineFAP extends SearchEngine {
 		}
 		new File(stemmedPartialDir).mkdirs();
 		new File(unstemmedPartialDir).mkdirs();
+		new File(linksPartialDir).mkdirs();
 		try {
 			Parser parser = new ParserImpl(in);
-			parser.parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
+			parser.parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, linksPartialDir, pageIndexFile, pageFile);
 			TitleIndex titleIndex = parser.getTitleIndex();
 			
-			TermIndexMergerImpl merger = new TermIndexMergerImpl(titleIndex);
-			merger.merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
-					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
+			TermIndexMergerImpl termMerger = new TermIndexMergerImpl();
+			termMerger.merge(stemmedSeeklistFile, stemmedPartialDir, stemmedIndexFile);
+			termMerger.merge(unstemmedSeeklistFile, unstemmedPartialDir, unstemmedIndexFile);
+			
+			LinkIndexMergerImpl linkMerger = new LinkIndexMergerImpl(titleIndex);
+			linkMerger.merge(linkSeeklistFile, linksPartialDir, linkIndexFile);
 		} catch (NumberFormatException | ClassNotFoundException
 				| InstantiationException | IllegalAccessException
 				| XMLStreamException | FactoryConfigurationError | IOException e) {
@@ -99,6 +111,7 @@ public class SearchEngineFAP extends SearchEngine {
 		try {
 			stemmedMainIndex = new TermMainIndexImpl(stemmedIndexFile, stemmedSeeklistFile);
 			unstemmedMainIndex = new TermMainIndexImpl(unstemmedIndexFile, unstemmedSeeklistFile);
+			linkMainIndex = new LinkMainIndexImpl(linkIndexFile, linkSeeklistFile);
 			pageIndex = new PageIndex();
 			pageIndex.importFile(pageIndexFile, pageFile);
 			return true;

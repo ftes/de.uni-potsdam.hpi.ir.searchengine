@@ -3,14 +3,14 @@ package de.hpi.krestel.mySearchEngine.index.link;
 import de.hpi.krestel.mySearchEngine.index.TitleIndex;
 import de.hpi.krestel.mySearchEngine.index.io.IndexMergerImpl;
 
-public class DocumentLinkIndexMergerImpl extends IndexMergerImpl<Integer,
-DocumentWithLinks, DocumentLink, String> {
+public class LinkIndexMergerImpl extends IndexMergerImpl<Integer,
+DocumentWithLinks, Link, String> {
 
-	public DocumentLinkIndexMergerImpl(TitleIndex titleIndex) {
-		super(new DocumentLinkIndexFileHandlerFactory(), new DocumentLinkIndexListFactory(), titleIndex);
+	public LinkIndexMergerImpl(TitleIndex titleIndex) {
+		super(new LinkIndexFileHandlerFactory(), new LinkIndexListFactory(), titleIndex);
 	}
 
-	public DocumentLinkIndexMergerImpl() {
-		super(new DocumentLinkIndexFileHandlerFactory(), new DocumentLinkIndexListFactory());
+	public LinkIndexMergerImpl() {
+		super(new LinkIndexFileHandlerFactory(), new LinkIndexListFactory());
 	}
 }

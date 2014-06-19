@@ -64,7 +64,7 @@ S extends IndexListSlot<V>, V extends Comparable<V>> {
 	 * @param the directory to store the file in (no trailing slash)
 	 * @throws IOException 
 	 */
-	public void store(String directory) throws IOException {		
+	public void store() throws IOException {		
 		for (L list : map.values()) {
 			try {
 				writer.storeList(list);
