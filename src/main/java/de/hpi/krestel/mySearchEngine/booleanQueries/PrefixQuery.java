@@ -6,22 +6,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.hpi.krestel.mySearchEngine.MainIndex;
-import de.hpi.krestel.mySearchEngine.TermLengthException;
-import de.hpi.krestel.mySearchEngine.TermNotFoundException;
+import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
+import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
+import de.hpi.krestel.mySearchEngine.search.TermLengthException;
 
 public class PrefixQuery implements BooleanSetOperation<Integer> {
-	private final MainIndex stemmedIndex;
-	private final MainIndex unstemmedIndex;
+	private final TermMainIndexImpl stemmedIndex;
+	private final TermMainIndexImpl unstemmedIndex;
 	private final String prefix;
 	private final Set<String> terms;
 	
-	public PrefixQuery(MainIndex stemmedIndex, MainIndex unstemmedIndex, String prefix) throws IOException {
+	public PrefixQuery(TermMainIndexImpl stemmedIndex, TermMainIndexImpl unstemmedIndex, String prefix) throws IOException {
 		this.stemmedIndex = stemmedIndex;
 		this.unstemmedIndex = unstemmedIndex;
 		this.prefix = prefix.toLowerCase();
-		terms = stemmedIndex.getSeekList().getTermsBeginningWith(this.prefix);
-		terms.addAll(unstemmedIndex.getSeekList().getTermsBeginningWith(this.prefix));
+		terms = stemmedIndex.getSeekList().getKeysBeginningWith(this.prefix);
+		terms.addAll(unstemmedIndex.getSeekList().getKeysBeginningWith(this.prefix));
 	}
 
 	@Override
@@ -29,9 +29,9 @@ public class PrefixQuery implements BooleanSetOperation<Integer> {
 		Set<Integer> result = new HashSet<>();
 		for (String term : terms) {
 			try {
-				result.addAll(stemmedIndex.getTerm(term).getDocumentIds());
-				result.addAll(unstemmedIndex.getTerm(term).getDocumentIds());
-			} catch (TermNotFoundException e) {} //shouldn't happen
+				result.addAll(stemmedIndex.getList(term).getDocumentIds());
+				result.addAll(unstemmedIndex.getList(term).getDocumentIds());
+			} catch (KeyNotFoundException e) {} //shouldn't happen
 		}
 		return new ArrayList<Integer>(result);
 	}

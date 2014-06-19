@@ -4,8 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
+
+import de.hpi.krestel.mySearchEngine.index.term.Term;
+import de.hpi.krestel.mySearchEngine.index.term.TermIndexMergerImpl;
+import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
+import de.hpi.krestel.mySearchEngine.parse.ParserImpl;
 
 public class ParseAndMergeTest {
 	public static final String dir = "data";
@@ -30,16 +34,16 @@ public class ParseAndMergeTest {
 			file.mkdir();
 
 			new ParserImpl(this.getClass().getResourceAsStream("/small.xml")).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
-			new IndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
+			new TermIndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
 					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
 
-			MainIndex stemmedMainIndex = new MainIndex(stemmedIndexFile, stemmedSeeklistFile);
-			MainIndex unstemmedMainIndex = new MainIndex(unstemmedIndexFile, unstemmedSeeklistFile);
+			TermMainIndexImpl stemmedMainIndex = new TermMainIndexImpl(stemmedIndexFile, stemmedSeeklistFile);
+			TermMainIndexImpl unstemmedMainIndex = new TermMainIndexImpl(unstemmedIndexFile, unstemmedSeeklistFile);
 			
-			Term term = stemmedMainIndex.getTerm("weit");
-			assertEquals(8, term.getOccurrences().size());
-			term = stemmedMainIndex.getTerm("blindtext");
-			assertEquals(7, term.getOccurrences().size());
+			Term term = stemmedMainIndex.getList("weit");
+			assertEquals(8, term.getSlots().size());
+			term = stemmedMainIndex.getList("blindtext");
+			assertEquals(7, term.getSlots().size());
 			
 			stemmedMainIndex.close();
 			unstemmedMainIndex.close();

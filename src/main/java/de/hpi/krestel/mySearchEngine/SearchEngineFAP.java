@@ -14,6 +14,15 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.FileUtils;
 
 import de.hpi.krestel.mySearchEngine.booleanQueries.QueryParser;
+import de.hpi.krestel.mySearchEngine.index.PageIndex;
+import de.hpi.krestel.mySearchEngine.index.term.TermIndexMergerImpl;
+import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
+import de.hpi.krestel.mySearchEngine.parse.ParserImpl;
+import de.hpi.krestel.mySearchEngine.search.NdcgComputer;
+import de.hpi.krestel.mySearchEngine.search.PseudoRelevanceFeedback;
+import de.hpi.krestel.mySearchEngine.search.QueryProcessingException;
+import de.hpi.krestel.mySearchEngine.search.SearchOperation;
+import de.hpi.krestel.mySearchEngine.search.SnippetGenerator;
 
 /* This is your file! implement your search engine here!
  * 
@@ -41,8 +50,8 @@ public class SearchEngineFAP extends SearchEngine {
 	public static final String stemmedPartialDir = partialDir + File.separator + "stemmed";
 	public static final String unstemmedPartialDir = partialDir + File.separator + "unstemmed";
 	
-	private MainIndex stemmedMainIndex;
-	private MainIndex unstemmedMainIndex;
+	private TermMainIndexImpl stemmedMainIndex;
+	private TermMainIndexImpl unstemmedMainIndex;
 	private PageIndex pageIndex;
 	
 	// Replace 'Y' with your search engine name
@@ -69,7 +78,7 @@ public class SearchEngineFAP extends SearchEngine {
 		new File(unstemmedPartialDir).mkdirs();
 		try {
 			new ParserImpl(in).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
-			new IndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
+			new TermIndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
 					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
 		} catch (NumberFormatException | ClassNotFoundException
 				| InstantiationException | IllegalAccessException
@@ -82,8 +91,8 @@ public class SearchEngineFAP extends SearchEngine {
 	boolean loadIndex(String directory) {
 		//TODO right now {@code directory} is ignored, what is it good for?
 		try {
-			stemmedMainIndex = new MainIndex(stemmedIndexFile, stemmedSeeklistFile);
-			unstemmedMainIndex = new MainIndex(unstemmedIndexFile, unstemmedSeeklistFile);
+			stemmedMainIndex = new TermMainIndexImpl(stemmedIndexFile, stemmedSeeklistFile);
+			unstemmedMainIndex = new TermMainIndexImpl(unstemmedIndexFile, unstemmedSeeklistFile);
 			pageIndex = new PageIndex();
 			pageIndex.importFile(pageIndexFile, pageFile);
 			return true;
@@ -111,7 +120,7 @@ public class SearchEngineFAP extends SearchEngine {
 				results.add(result);
 			}
 			return results;
-		} catch (IOException | TermLengthException | QueryProcessingException e) {
+		} catch (IOException | QueryProcessingException e) {
 			e.printStackTrace();
 			return null;
 		}

@@ -10,20 +10,20 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedSet;
 
-import de.hpi.krestel.mySearchEngine.MainIndex;
-import de.hpi.krestel.mySearchEngine.TermLengthException;
-import de.hpi.krestel.mySearchEngine.TermNotFoundException;
-import de.hpi.krestel.mySearchEngine.TermOccurrence;
-import de.hpi.krestel.mySearchEngine.TermOccurrenceComparator;
-import de.hpi.krestel.mySearchEngine.Tokenizer;
+import de.hpi.krestel.mySearchEngine.index.IndexListSlotComparator;
+import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
+import de.hpi.krestel.mySearchEngine.index.term.TermOccurrence;
+import de.hpi.krestel.mySearchEngine.parse.Tokenizer;
+import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
+import de.hpi.krestel.mySearchEngine.search.TermLengthException;
 
 public class PhraseQuery implements BooleanSetOperation<Integer> {
 	public static final String SYMBOL = "´";
 	
-	private final MainIndex index;
+	private final TermMainIndexImpl index;
 	private final List<String> tokens;
 	
-	public PhraseQuery(MainIndex index, String phrase) {
+	public PhraseQuery(TermMainIndexImpl index, String phrase) {
 		this.index = index;
 		tokens = new Tokenizer(phrase).tokenize(false);
 	}
@@ -41,8 +41,8 @@ public class PhraseQuery implements BooleanSetOperation<Integer> {
 		for (String token : tokens) {
 			SortedSet<TermOccurrence> occurrences = null;
 			try {
-				occurrences = index.getTerm(token).getOccurrences();
-			} catch (TermNotFoundException e) {
+				occurrences = index.getList(token).getSlots();
+			} catch (KeyNotFoundException e) {
 				return Collections.emptyList();
 			}
 
@@ -58,11 +58,11 @@ public class PhraseQuery implements BooleanSetOperation<Integer> {
 					TermOccurrence current = currentIter.next();
 					while (true) {
 						try {
-							int comparison = TermOccurrenceComparator.INSTANCE.compare(previous, current);
+							int comparison = new IndexListSlotComparator<TermOccurrence, Integer>().compare(previous, current);
 							if (comparison < 0) {
 								//previous is before current -> check if directly next to each other
 								if (previous.getDocumentId() == current.getDocumentId() &&
-										previous.getPosition() + 1 == current.getPosition()) {
+										previous.getValue() + 1 == current.getValue()) {
 									//directly next to one another -> keep occurrence in current set
 									previous = previousIter.next();
 									current = currentIter.next();

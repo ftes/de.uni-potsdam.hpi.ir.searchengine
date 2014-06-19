@@ -1,13 +1,8 @@
 package de.hpi.krestel.mySearchEngine;
 
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.SocketTimeoutException;
 import java.net.UnknownServiceException;
 import java.util.ArrayList;
@@ -74,14 +69,14 @@ public abstract class SearchEngine {
 		//int numResults = 100;
 		ArrayList<String> gold;
 		String queryTerms = query.replaceAll(" ", "+");
-		try{
-			if (0!=1)
-				throw new Exception(); // don't do this
-			FileInputStream streamIn = new FileInputStream(this.wikiDirectory +queryTerms +".ser");
-			ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
-			gold = (ArrayList<String>) objectinputstream.readObject();
-			return gold;
-		}catch(Exception ex){}
+//		try{
+//			if (0!=1)
+//				throw new Exception(); // don't do this
+//			FileInputStream streamIn = new FileInputStream(this.wikiDirectory +queryTerms +".ser");
+//			ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
+//			gold = (ArrayList<String>) objectinputstream.readObject();
+//			return gold;
+//		}catch(Exception ex){}
 
 		gold = new ArrayList<String>();
 		String url = "http://de.wikipedia.org/w/index.php?title=Spezial%3ASuche&search=" +queryTerms +"&fulltext=Search&profile=default";
@@ -105,17 +100,17 @@ public abstract class SearchEngine {
 				gold.add(m.group(1));
 			}
 		}		
-		try {
-			if (0!=1)
-				throw new Exception(); // don't do this
-			FileOutputStream fout = new FileOutputStream(this.wikiDirectory +queryTerms +".ser");
-			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(gold);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}catch(Exception ex){}
+//		try {
+//			if (0!=1)
+//				throw new Exception(); // don't do this
+//			FileOutputStream fout = new FileOutputStream(this.wikiDirectory +queryTerms +".ser");
+//			ObjectOutputStream oos = new ObjectOutputStream(fout);
+//			oos.writeObject(gold);
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}catch(Exception ex){}
 		return gold;
 	}
 

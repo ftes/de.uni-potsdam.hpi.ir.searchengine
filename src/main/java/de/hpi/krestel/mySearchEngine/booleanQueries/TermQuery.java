@@ -4,17 +4,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import de.hpi.krestel.mySearchEngine.MainIndex;
-import de.hpi.krestel.mySearchEngine.QueryProcessingException;
-import de.hpi.krestel.mySearchEngine.TermLengthException;
-import de.hpi.krestel.mySearchEngine.TermNotFoundException;
-import de.hpi.krestel.mySearchEngine.Tokenizer;
+
+import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
+import de.hpi.krestel.mySearchEngine.parse.Tokenizer;
+import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
+import de.hpi.krestel.mySearchEngine.search.QueryProcessingException;
+import de.hpi.krestel.mySearchEngine.search.TermLengthException;
 
 public class TermQuery implements BooleanSetOperation<Integer> {
-	private final MainIndex index;
+	private final TermMainIndexImpl index;
 	private final String token;
 	
-	public TermQuery(MainIndex index, String term) throws QueryProcessingException {
+	public TermQuery(TermMainIndexImpl index, String term) throws QueryProcessingException {
 		this.index = index;
 		ArrayList<String> tokens = new Tokenizer(term).tokenize(true);
 		if (tokens.size() != 1) {
@@ -27,8 +28,8 @@ public class TermQuery implements BooleanSetOperation<Integer> {
 	@Override
 	public List<Integer> execute(int topK) throws IOException, TermLengthException {
 		try {
-			return new ArrayList<Integer>(index.getTerm(token).getDocumentIds());
-		} catch (TermNotFoundException e) {
+			return new ArrayList<Integer>(index.getList(token).getDocumentIds());
+		} catch (KeyNotFoundException e) {
 			return Collections.emptyList();
 		}
 	}

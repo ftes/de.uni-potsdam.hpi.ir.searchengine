@@ -3,6 +3,8 @@ package de.hpi.krestel.mySearchEngine;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import de.hpi.krestel.mySearchEngine.search.QueryProcessingException;
+
 
 public class Week6Assignment3 {	
 	public static void main(String[] args) throws IOException, QueryProcessingException {

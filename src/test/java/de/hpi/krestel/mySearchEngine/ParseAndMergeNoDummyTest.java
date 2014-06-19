@@ -4,6 +4,13 @@ import java.io.File;
 
 import org.junit.Test;
 
+import de.hpi.krestel.mySearchEngine.index.PageIndex;
+import de.hpi.krestel.mySearchEngine.index.term.Term;
+import de.hpi.krestel.mySearchEngine.index.term.TermIndexMergerImpl;
+import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
+import de.hpi.krestel.mySearchEngine.index.term.TermOccurrence;
+import de.hpi.krestel.mySearchEngine.parse.ParserImpl;
+
 public class ParseAndMergeNoDummyTest {
 	public static final String dir = "data";
 	public static final String partialDir = dir + File.separator + "partial";
@@ -27,20 +34,20 @@ public class ParseAndMergeNoDummyTest {
 			file.mkdir();
 
 			new ParserImpl(this.getClass().getResourceAsStream("/small.xml")).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
-			new IndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
+			new TermIndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
 					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
 
-			MainIndex stemmedMainIndex = new MainIndex(stemmedIndexFile, stemmedSeeklistFile);
-			MainIndex unstemmedMainIndex = new MainIndex(unstemmedIndexFile, unstemmedSeeklistFile);
+			TermMainIndexImpl stemmedMainIndex = new TermMainIndexImpl(stemmedIndexFile, stemmedSeeklistFile);
+			TermMainIndexImpl unstemmedMainIndex = new TermMainIndexImpl(unstemmedIndexFile, unstemmedSeeklistFile);
 			PageIndex pageIndex = new PageIndex();
 			pageIndex.importFile(pageIndexFile, pageFile);
 			
-			Term term = stemmedMainIndex.getTerm("auf");
+			Term term = stemmedMainIndex.getList("auf");
 			
-			System.out.println("Term: " + term.getTerm());
-			for (TermOccurrence occurence : term.getOccurrences()) {
+			System.out.println("Term: " + term.getKey());
+			for (TermOccurrence occurence : term.getSlots()) {
 				int documentId = occurence.getDocumentId();
-				System.out.println("\t documentId= " + documentId + "; title= " + pageIndex.getTitle(documentId) + "; position= " + occurence.getPosition());
+				System.out.println("\t documentId= " + documentId + "; title= " + pageIndex.getTitle(documentId) + "; position= " + occurence.getValue());
 			}
 			
 			stemmedMainIndex.close();

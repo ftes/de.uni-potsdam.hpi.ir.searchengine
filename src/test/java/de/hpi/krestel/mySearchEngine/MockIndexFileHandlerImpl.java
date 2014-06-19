@@ -5,7 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MockIndexFileHandlerImpl implements IndexFileLinearReader, IndexFileLinearWriter, IndexFileRandomReader {
+import de.hpi.krestel.mySearchEngine.index.io.IndexFileLinearReader;
+import de.hpi.krestel.mySearchEngine.index.io.IndexFileLinearWriter;
+import de.hpi.krestel.mySearchEngine.index.io.IndexFileRandomReader;
+import de.hpi.krestel.mySearchEngine.index.term.Term;
+import de.hpi.krestel.mySearchEngine.index.term.TermOccurrence;
+
+public class MockIndexFileHandlerImpl implements IndexFileLinearReader<String, Term, TermOccurrence, Integer>,
+IndexFileLinearWriter<String, Term, TermOccurrence, Integer>, IndexFileRandomReader<String, Term, TermOccurrence, Integer> {
 	private final List<Term> terms;
 	private int index = 0;
 	private String id;
@@ -19,22 +26,22 @@ public class MockIndexFileHandlerImpl implements IndexFileLinearReader, IndexFil
 	public void close() throws IOException {}
 
 	@Override
-	public String getFilename() {
+	public String getFileName() {
 		return id;
 	}
 
 	@Override
-	public Term readTerm(long fileOffset) throws IOException {
+	public Term readList(long fileOffset) throws IOException {
 		return terms.get((int) fileOffset);
 	}
 
 	@Override
-	public Term readNextTerm() throws IOException {
+	public Term readNextList() throws IOException {
 		return index < terms.size() ? terms.get(index++) : null;
 	}
-
+	
 	@Override
-	public long storeTerm(Term term) throws IOException {
+	public long storeList(Term term) throws IOException {
 		terms.add(term);
 		return terms.indexOf(term);
 	}
