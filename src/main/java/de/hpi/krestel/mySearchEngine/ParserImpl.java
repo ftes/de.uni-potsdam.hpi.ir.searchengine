@@ -18,6 +18,7 @@ public class ParserImpl extends Parser {
 	public static final int N_THREADS = 4;
 	
 	private static final Pattern redirect = Pattern.compile("\\A#REDIRECT \\[\\[.*\\]\\]\\z");
+	private TitleIndex titleIndex = new TitleIndex();
 	
 	public ParserImpl(InputStream in) throws XMLStreamException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		super(in);
@@ -124,6 +125,7 @@ public class ParserImpl extends Parser {
 							buffer.add(page);
 							buffer.notifyAll();
 						}
+						titleIndex.addTitle(page.getTitle(), page.getId());
 					}
 				} else if (tag.equals("revision")) {
 					inRevision = false;
@@ -166,6 +168,11 @@ public class ParserImpl extends Parser {
 		
 		pageIndex.exportFile(pageIndexFile);
 		pageWriter.close();
+	}
+	
+	@Override
+	public TitleIndex getTitleIndex() {
+		return titleIndex;
 	}
 
 }

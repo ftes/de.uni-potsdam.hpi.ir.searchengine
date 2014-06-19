@@ -68,8 +68,12 @@ public class SearchEngineFAP extends SearchEngine {
 		new File(stemmedPartialDir).mkdirs();
 		new File(unstemmedPartialDir).mkdirs();
 		try {
-			new ParserImpl(in).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
-			new IndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
+			Parser parser = new ParserImpl(in);
+			parser.parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
+			TitleIndex titleIndex = parser.getTitleIndex();
+			
+			IndexMerger merger = new IndexMergerImpl(titleIndex);
+			merger.merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
 					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
 		} catch (NumberFormatException | ClassNotFoundException
 				| InstantiationException | IllegalAccessException

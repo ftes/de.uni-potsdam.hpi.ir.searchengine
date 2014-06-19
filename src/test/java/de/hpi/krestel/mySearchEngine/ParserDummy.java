@@ -40,4 +40,9 @@ public class ParserDummy extends Parser {
 		index.store(sIndexDirectory);
 	}
 
+	@Override
+	public TitleIndex getTitleIndex() {
+		return new TitleIndex();
+	}
+
 }
