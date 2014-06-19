@@ -50,7 +50,7 @@ public class Tokenizer {
 			token = token.toLowerCase();
 			token = removeNonAToZOrUmlauts.matcher(token).replaceAll("");
 
-			if (token.length() > SeekList.MAX_TERM_LENGTH) {
+			if (token.length() > SeekList.MAX_WORD_LENGTH) {
 				continue;
 			}
 			

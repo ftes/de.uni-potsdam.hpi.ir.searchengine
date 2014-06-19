@@ -1,9 +1,16 @@
 package de.hpi.krestel.mySearchEngine.util;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.EOFException;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
+
+import de.hpi.krestel.mySearchEngine.index.io.SeekList;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 
 public class Util {
 	public static class Pair<A, B> {
@@ -136,5 +143,31 @@ public class Util {
 	
 	public static <T extends Comparable<T>> T min(T one, T two) {
 		return one.compareTo(two) < 0 ? one : two;
+	}
+
+	public static String readString(DataInput in) throws EOFException, IOException {
+		String termString = "";
+		char c = ' ';
+		try {
+			c = in.readChar();
+		} catch (EOFException e) {
+			return null;
+		}
+		int i = 0;
+		while (i < SeekList.MAX_WORD_LENGTH && c != '\0') {
+			termString += c;
+			c = in.readChar();
+			i++;
+		}
+		return termString;
+	}
+
+	public static int writeString(DataOutput out, String value) throws WordLengthException, IOException {
+		if (value.length() >= SeekList.MAX_WORD_LENGTH) {
+			throw new WordLengthException(value);
+		}
+		out.writeChars(value);
+		out.writeChar('\0');
+		return value.length() * 2 + 2; // every char written as 2-byte val
 	}
 }

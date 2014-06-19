@@ -8,7 +8,7 @@ import java.util.Set;
 
 import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
 import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 
 public class PrefixQuery implements BooleanSetOperation<Integer> {
 	private final TermMainIndexImpl stemmedIndex;
@@ -25,7 +25,7 @@ public class PrefixQuery implements BooleanSetOperation<Integer> {
 	}
 
 	@Override
-	public List<Integer> execute(int topK) throws IOException, TermLengthException {
+	public List<Integer> execute(int topK) throws IOException, WordLengthException {
 		Set<Integer> result = new HashSet<>();
 		for (String term : terms) {
 			try {

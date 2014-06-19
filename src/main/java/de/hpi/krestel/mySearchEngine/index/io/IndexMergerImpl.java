@@ -17,7 +17,7 @@ import de.hpi.krestel.mySearchEngine.index.IndexListFactory;
 import de.hpi.krestel.mySearchEngine.index.IndexListSlot;
 import de.hpi.krestel.mySearchEngine.index.IndexListSlotComparator;
 import de.hpi.krestel.mySearchEngine.index.TitleIndex;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 import de.hpi.krestel.mySearchEngine.util.Log;
 import de.hpi.krestel.mySearchEngine.util.Log.Level;
 
@@ -105,7 +105,7 @@ V extends Comparable<V>> implements IndexMerger<K, L, S, V> {
 			long offset = mainIndexHandler.storeList(combinedList);
 			try {
 				seekList.storeKeyOffset(key, offset);
-			} catch (TermLengthException e) {
+			} catch (WordLengthException e) {
 				Log.log(Level.ERROR, "Did not store term offset in seeklist because it exceeded max length: " + key);
 				e.printStackTrace();
 			}

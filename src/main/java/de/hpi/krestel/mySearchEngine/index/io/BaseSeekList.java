@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 import de.hpi.krestel.mySearchEngine.util.Util;
 
 /**
@@ -47,7 +47,7 @@ public abstract class BaseSeekList<K extends Comparable<K>> implements SeekList<
 	}
 	
 	@Override
-	public long getKeyOffsetInIndex(K key) throws TermLengthException, KeyNotFoundException, IOException {
+	public long getKeyOffsetInIndex(K key) throws WordLengthException, KeyNotFoundException, IOException {
 		return getOffsetAtPosition(binarySearch(key, 0, numberOfTerms-1, false));
 	}
 	
@@ -117,7 +117,7 @@ public abstract class BaseSeekList<K extends Comparable<K>> implements SeekList<
 	}
 	
 	@Override
-	public void storeKeyOffset(K key, long offset) throws IOException, TermLengthException {
+	public void storeKeyOffset(K key, long offset) throws IOException, WordLengthException {
 		//write term
 		file.seek(fileSize);
 		keyValueFileHandler.writeKey(file, key);

@@ -9,7 +9,7 @@ import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
 import de.hpi.krestel.mySearchEngine.parse.Tokenizer;
 import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
 import de.hpi.krestel.mySearchEngine.search.QueryProcessingException;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 
 public class TermQuery implements BooleanSetOperation<Integer> {
 	private final TermMainIndexImpl index;
@@ -26,7 +26,7 @@ public class TermQuery implements BooleanSetOperation<Integer> {
 	}
 
 	@Override
-	public List<Integer> execute(int topK) throws IOException, TermLengthException {
+	public List<Integer> execute(int topK) throws IOException, WordLengthException {
 		try {
 			return new ArrayList<Integer>(index.getList(token).getDocumentIds());
 		} catch (KeyNotFoundException e) {

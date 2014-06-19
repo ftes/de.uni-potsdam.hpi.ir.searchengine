@@ -56,7 +56,7 @@ public class RankedQuery implements SearchOperation<Integer> {
 	}
 
 	@Override
-	public List<Integer> execute(int topK) throws IOException, TermLengthException,
+	public List<Integer> execute(int topK) throws IOException, WordLengthException,
 			QueryProcessingException {		
 		Map<String, Term> terms = new HashMap<>();
 		for (String token : tokens) {

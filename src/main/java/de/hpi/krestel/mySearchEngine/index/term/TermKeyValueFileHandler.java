@@ -6,8 +6,7 @@ import java.io.EOFException;
 import java.io.IOException;
 
 import de.hpi.krestel.mySearchEngine.index.io.KeyValueFileHandler;
-import de.hpi.krestel.mySearchEngine.index.io.SeekList;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 
 public class TermKeyValueFileHandler implements
 		KeyValueFileHandler<String, Integer> {
@@ -22,7 +21,7 @@ public class TermKeyValueFileHandler implements
 			return null;
 		}
 		int i = 0;
-		while (i < SeekList.MAX_TERM_LENGTH && c != '\0') {
+		while (i < TermSeekListImpl.MAX_WORD_LENGTH && c != '\0') {
 			termString += c;
 			c = in.readChar();
 			i++;
@@ -32,8 +31,8 @@ public class TermKeyValueFileHandler implements
 
 	@Override
 	public int writeKey(DataOutput out, String key) throws IOException {
-		if (key.length() >= SeekList.MAX_TERM_LENGTH) {
-			throw new TermLengthException(key);
+		if (key.length() >= TermSeekListImpl.MAX_WORD_LENGTH) {
+			throw new WordLengthException(key);
 		}
 		out.writeChars(key);
 		out.writeChar('\0');

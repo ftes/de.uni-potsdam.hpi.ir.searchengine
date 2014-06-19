@@ -6,7 +6,7 @@ import de.hpi.krestel.mySearchEngine.index.io.IndexFileHandlerFactory;
 import de.hpi.krestel.mySearchEngine.index.io.IndexFileRandomReader;
 import de.hpi.krestel.mySearchEngine.index.io.SeekList;
 import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 
 /**
  * This class represents the main index that is used for searching. It is backed by one
@@ -37,11 +37,11 @@ V extends Comparable<V>> {
 	 * @param term The term (e.g. tokenized form of a word)
 	 * @return the term object or null if non was found
 	 * @throws IOException 
-	 * @throws TermLengthException 
+	 * @throws WordLengthException 
 	 * @throws KeyNotFoundException 
 	 * @throws Exception 
 	 */
-	public L getList(K key) throws IOException, TermLengthException, KeyNotFoundException {
+	public L getList(K key) throws IOException, WordLengthException, KeyNotFoundException {
 		// find offset
 		long offset = seeklist.getKeyOffsetInIndex(key);
 		// find term

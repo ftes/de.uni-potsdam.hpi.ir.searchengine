@@ -39,7 +39,7 @@ public class PseudoRelevanceFeedback implements SearchOperation<Integer> {
 	
 	@Override
 	public List<Integer> execute(int topK) throws IOException,
-			TermLengthException, QueryProcessingException {
+			WordLengthException, QueryProcessingException {
 		//only use the top prf documents for expanding the query
 		List<Integer> docIds = new RankedQuery(stemmedIndex, pageIndex, queryString).execute(prf);
 		

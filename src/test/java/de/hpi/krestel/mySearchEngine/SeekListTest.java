@@ -10,11 +10,11 @@ import org.junit.Test;
 import de.hpi.krestel.mySearchEngine.index.io.SeekList;
 import de.hpi.krestel.mySearchEngine.index.term.TermSeekListImpl;
 import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 
 public class SeekListTest {
 	@Test
-	public void testWritingAndReading() throws IOException, TermLengthException, KeyNotFoundException {
+	public void testWritingAndReading() throws IOException, WordLengthException, KeyNotFoundException {
 		String fileName = "seekListTest.dat";
 		
 		SeekList<String> seekList = new TermSeekListImpl(fileName);

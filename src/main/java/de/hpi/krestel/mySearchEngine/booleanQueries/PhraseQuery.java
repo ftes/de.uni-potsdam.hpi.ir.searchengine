@@ -15,7 +15,7 @@ import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
 import de.hpi.krestel.mySearchEngine.index.term.TermOccurrence;
 import de.hpi.krestel.mySearchEngine.parse.Tokenizer;
 import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 
 public class PhraseQuery implements BooleanSetOperation<Integer> {
 	public static final String SYMBOL = "´";
@@ -36,7 +36,7 @@ public class PhraseQuery implements BooleanSetOperation<Integer> {
 	 * afterward in the same respective documents, and so on.
 	 */
 	@Override
-	public List<Integer> execute(int topK) throws IOException, TermLengthException {
+	public List<Integer> execute(int topK) throws IOException, WordLengthException {
 		SortedSet<TermOccurrence> occurrencesOfPreviousToken = null;
 		for (String token : tokens) {
 			SortedSet<TermOccurrence> occurrences = null;

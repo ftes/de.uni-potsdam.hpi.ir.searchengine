@@ -5,7 +5,7 @@ import java.util.Set;
 
 import de.hpi.krestel.mySearchEngine.index.PartialIndex;
 import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 
 /**
  * The seeklist is a second-level index structure on top of the main {@link PartialIndex}.
@@ -33,9 +33,9 @@ public interface SeekList<K extends Comparable<K>> {
 	 * The maximum length of a term, which is enforced to ensure equal size slots in
 	 * the seeklist file, so that binary search can be performed.
 	 */
-	int MAX_TERM_LENGTH = 50;
+	int MAX_WORD_LENGTH = 50;
 	int BYTES_PER_CHAR = 2;
-	int BYTES_PER_TERM = MAX_TERM_LENGTH * BYTES_PER_CHAR;
+	int BYTES_PER_TERM = MAX_WORD_LENGTH * BYTES_PER_CHAR;
 	int BYTES_PER_OFFSET = 8;
 	
 	/**
@@ -49,7 +49,7 @@ public interface SeekList<K extends Comparable<K>> {
 	 * @param term The term (e.g. tokenized form of a word)
 	 * @return The byte offset within the index file of the line pertaining to this {@code term}.
 	 */
-	long getKeyOffsetInIndex(K key) throws IOException, TermLengthException, KeyNotFoundException;
+	long getKeyOffsetInIndex(K key) throws IOException, WordLengthException, KeyNotFoundException;
 
 	/**
 	 * Adds the term data to the seeklist by appending it to the file.
@@ -57,7 +57,7 @@ public interface SeekList<K extends Comparable<K>> {
 	 * @param term
 	 * @param offset The byte offset of the data for this {@code term} within the index file
 	 */
-	void storeKeyOffset(K key, long offset) throws IOException, TermLengthException;
+	void storeKeyOffset(K key, long offset) throws IOException, WordLengthException;
 
 	/**
 	 * Close the file backing the seeklist and clean up.

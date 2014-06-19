@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import de.hpi.krestel.mySearchEngine.index.io.IndexFileLinearWriter;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 import de.hpi.krestel.mySearchEngine.util.Log;
 import de.hpi.krestel.mySearchEngine.util.Log.Level;
 
@@ -68,7 +68,7 @@ S extends IndexListSlot<V>, V extends Comparable<V>> {
 		for (L list : map.values()) {
 			try {
 				writer.storeList(list);
-			} catch (TermLengthException e) {
+			} catch (WordLengthException e) {
 				Log.log(Level.DEBUG, e.getMessage());
 			}
 		}

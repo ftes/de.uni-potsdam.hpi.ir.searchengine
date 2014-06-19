@@ -6,14 +6,14 @@ import java.util.Map;
 import java.util.Set;
 
 import de.hpi.krestel.mySearchEngine.index.io.SeekList;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 import de.hpi.krestel.mySearchEngine.util.NotImplementedException;
 
 public class MockSeekListImpl implements SeekList<String> {
 	private final Map<String, Long> offsets = new HashMap<>();
 
 	@Override
-	public long getKeyOffsetInIndex(String term) throws TermLengthException {
+	public long getKeyOffsetInIndex(String term) throws WordLengthException {
 		throw new NotImplementedException();
 	}
 

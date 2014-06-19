@@ -13,12 +13,12 @@ import org.junit.Test;
 import de.hpi.krestel.mySearchEngine.index.io.SeekList;
 import de.hpi.krestel.mySearchEngine.index.term.TermSeekListImpl;
 import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
-import de.hpi.krestel.mySearchEngine.search.TermLengthException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 
 public class PrefixSearchTest {
 	@Test
 	public void testWritingAndReading() throws IOException,
-			TermLengthException, KeyNotFoundException {
+			WordLengthException, KeyNotFoundException {
 		String fileName = "prefixTest.dat";
 
 		try {
@@ -49,7 +49,7 @@ public class PrefixSearchTest {
 	}
 	@Test
 	public void test2() throws IOException,
-			TermLengthException, KeyNotFoundException {
+			WordLengthException, KeyNotFoundException {
 		String fileName = "prefixTest.dat";
 
 		try {

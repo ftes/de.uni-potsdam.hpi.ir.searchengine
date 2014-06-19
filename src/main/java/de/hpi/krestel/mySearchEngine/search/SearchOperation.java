@@ -9,9 +9,9 @@ public interface SearchOperation<T> {
 	 * @param topK How many of the top ranked pages to return.
 	 * @return
 	 * @throws IOException
-	 * @throws TermLengthException
+	 * @throws WordLengthException
 	 * @throws QueryProcessingException
 	 */
-	List<T> execute(int topK) throws IOException, TermLengthException, QueryProcessingException;
+	List<T> execute(int topK) throws IOException, WordLengthException, QueryProcessingException;
 	void print(int indent, int step);
 }

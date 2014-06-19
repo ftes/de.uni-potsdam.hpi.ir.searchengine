@@ -7,10 +7,10 @@ import java.io.IOException;
  * @author fredrik
  *
  */
-public class TermLengthException extends IOException {
+public class WordLengthException extends IOException {
 	private static final long serialVersionUID = 1L;
 	
-	public TermLengthException(String term) {
-		super("Term is too long: " + term);
+	public WordLengthException(String term) {
+		super("Word is too long: " + term);
 	}
 }
