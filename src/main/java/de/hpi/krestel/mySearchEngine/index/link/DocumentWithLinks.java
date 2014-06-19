@@ -6,11 +6,11 @@ import de.hpi.krestel.mySearchEngine.index.IndexList;
 
 
 public class DocumentWithLinks extends IndexList<Integer, Link, String> {
-	public DocumentWithLinks(Integer docId) {
-		super(docId);
+	public DocumentWithLinks(Integer linkedToDocId) {
+		super(linkedToDocId);
 	}
 	
-	public DocumentWithLinks(Integer docId, SortedSet<Link> occurrences) {
-		super(docId, occurrences);
+	public DocumentWithLinks(Integer linkedToDocId, SortedSet<Link> links) {
+		super(linkedToDocId, links);
 	}
 }

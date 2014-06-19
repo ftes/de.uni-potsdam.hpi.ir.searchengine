@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import de.hpi.krestel.mySearchEngine.index.PartialIndex;
+import de.hpi.krestel.mySearchEngine.index.TitleIndex;
 import de.hpi.krestel.mySearchEngine.index.io.IndexFileHandlerFactory;
 import de.hpi.krestel.mySearchEngine.index.link.DocumentWithLinks;
 import de.hpi.krestel.mySearchEngine.index.link.Link;
@@ -26,19 +27,21 @@ public class ParserThread extends Thread {
 	private PartialIndex<Integer, DocumentWithLinks, Link, String> linkIndex;
 	private final IndexFileHandlerFactory<String, Term, TermOccurrence, Integer> termFactory;
 	private final IndexFileHandlerFactory<Integer, DocumentWithLinks, Link, String> linkFactory;
+	private final TitleIndex titleIndex;
 	
 	private int n = 0;
 
 	private final Stack<Page> buffer;
 
-	public ParserThread(Stack<Page> buffer, String stemmedPartialDir, String unstemmedPartialDir,
-			String linksPartialDir) {
+	public ParserThread(Stack<Page> buffer, TitleIndex titleIndex, String stemmedPartialDir,
+			String unstemmedPartialDir, String linksPartialDir) {
 		this.buffer = buffer;
 		this.stemmedPartialDir = stemmedPartialDir;
 		this.unstemmedPartialDir = unstemmedPartialDir;
 		this.linksPartialDir = linksPartialDir;
 		this.termFactory = new TermIndexFileHandlerFactory();
 		this.linkFactory = new LinkIndexFileHandlerFactory();
+		this.titleIndex = titleIndex;
 	}
 	
 	private String getFilePath(String dir) {
@@ -82,6 +85,9 @@ public class ParserThread extends Thread {
 			
 			addToTermOccurrenceIndex(page, stemmedIndex, true);
 			addToTermOccurrenceIndex(page, unstemmedIndex, false);
+			if (linkIndex != null) {
+				addToLinkIndex(page);
+			}
 
 			if (writeRequested) {
 				write();
@@ -121,6 +127,23 @@ public class ParserThread extends Thread {
 		for (String token : tokens) {
 			index.addSlotForKey(token, new TermOccurrence(page.getId(), tokenPosition));
 			tokenPosition++;
+		}
+	}
+	
+	private void addToLinkIndex(Page page) {
+		for (Util.Pair<String, String> linkPair : new Tokenizer(page.getText()).getLinks()) {
+			Integer linkedToDocId = titleIndex.getDocId(linkPair.a);
+			if (linkedToDocId == null) {
+				//doc id for title unknown
+//				Log.log(Log.Level.DEBUG, "Unknown title \"" + linkPair.a +
+//						"\" during link index generation");
+				continue;
+			}
+			System.out.println(linkPair);
+			int linkedFromDocId = page.getId();
+			String anchorText = linkPair.b;
+			Link link = new Link(linkedFromDocId, anchorText);
+			linkIndex.addSlotForKey(linkedToDocId, link);
 		}
 	}
 

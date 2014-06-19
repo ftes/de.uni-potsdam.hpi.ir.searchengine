@@ -54,7 +54,7 @@ public class Util {
 		
 		@Override
 		public String toString() {
-			return "Pair: [" + a.toString() + "; " + b.toString() + "]";
+			return "Pair: [" + a + "; " + b + "]";
 		}
 	}
 	

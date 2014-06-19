@@ -1,12 +1,15 @@
 package de.hpi.krestel.mySearchEngine.parse;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.tartarus.snowball.SnowballStemmer;
 import org.tartarus.snowball.ext.germanStemmer;
 
 import de.hpi.krestel.mySearchEngine.index.io.SeekList;
+import de.hpi.krestel.mySearchEngine.util.Util;
 
 public class Tokenizer {
 	private String text;
@@ -68,4 +71,16 @@ public class Tokenizer {
 		return resultTokens;
 	}
 
+	// remove html escape sequencies
+	private static final Pattern links = Pattern.compile("\\[\\[([^\\]\\|]+)\\|?([^\\]]*)\\]\\]");
+	public List<Util.Pair<String, String>> getLinks() {
+		List<Util.Pair<String, String>> result = new ArrayList<>();
+		Matcher matcher = links.matcher(text);
+		while (matcher.find()) {
+			String link = matcher.group(1);
+			String anchorText = matcher.group(2);
+			result.add(new Util.Pair<>(link, anchorText));
+		}
+		return result;
+	}
 }

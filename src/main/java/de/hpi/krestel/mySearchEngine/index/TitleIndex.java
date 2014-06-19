@@ -1,8 +1,8 @@
 package de.hpi.krestel.mySearchEngine.index;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 /**
  * This inmemory index stores for every document title the corresponding document id
@@ -15,7 +15,7 @@ public class TitleIndex {
 	 * This key-sorted map stores the index. Key is the title,
 	 * value the document id
 	 */
-	private Map<String, Integer> map = new TreeMap<>();
+	private final Map<String, Integer> map = new HashMap<>();
 	
 	public TitleIndex() {
 		
@@ -35,7 +35,7 @@ public class TitleIndex {
 	 * @param title
 	 * @return
 	 */
-	public int getDocId(String title) {
+	public Integer getDocId(String title) {
 		return map.get(title);
 	}
 	

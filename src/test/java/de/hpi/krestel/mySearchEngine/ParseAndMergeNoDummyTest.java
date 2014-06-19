@@ -9,7 +9,7 @@ import de.hpi.krestel.mySearchEngine.index.term.Term;
 import de.hpi.krestel.mySearchEngine.index.term.TermIndexMergerImpl;
 import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
 import de.hpi.krestel.mySearchEngine.index.term.TermOccurrence;
-import de.hpi.krestel.mySearchEngine.parse.ParserImpl;
+import de.hpi.krestel.mySearchEngine.parse.TextParserImpl;
 
 public class ParseAndMergeNoDummyTest {
 	public static final String dir = "data";
@@ -33,8 +33,9 @@ public class ParseAndMergeNoDummyTest {
 			file = new File(partialDir);
 			file.mkdir();
 
-			new ParserImpl(this.getClass().getResourceAsStream("/small.xml")).
-				parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, null, pageIndexFile, pageFile);
+			new TextParserImpl(this.getClass().getResourceAsStream("/small.xml"), null,
+					stemmedPartialDir, unstemmedPartialDir, null, pageIndexFile, pageFile).
+				parse();
 			new TermIndexMergerImpl().merge(stemmedSeeklistFile, stemmedPartialDir, stemmedIndexFile);
 			new TermIndexMergerImpl().merge(unstemmedSeeklistFile, unstemmedPartialDir, unstemmedIndexFile);
 

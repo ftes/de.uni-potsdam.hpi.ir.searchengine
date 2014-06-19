@@ -8,9 +8,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.commons.io.FileUtils;
 
 import de.hpi.krestel.mySearchEngine.booleanQueries.QueryParser;
@@ -21,7 +18,8 @@ import de.hpi.krestel.mySearchEngine.index.link.LinkMainIndexImpl;
 import de.hpi.krestel.mySearchEngine.index.term.TermIndexMergerImpl;
 import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
 import de.hpi.krestel.mySearchEngine.parse.Parser;
-import de.hpi.krestel.mySearchEngine.parse.ParserImpl;
+import de.hpi.krestel.mySearchEngine.parse.TextParserImpl;
+import de.hpi.krestel.mySearchEngine.parse.TitleParserImpl;
 import de.hpi.krestel.mySearchEngine.search.NdcgComputer;
 import de.hpi.krestel.mySearchEngine.search.PseudoRelevanceFeedback;
 import de.hpi.krestel.mySearchEngine.search.QueryProcessingException;
@@ -72,9 +70,11 @@ public class SearchEngineFAP extends SearchEngine {
 
 	@Override
 	void index(String directory) {
-		InputStream in = null;
+		InputStream inForTitleIndex = null;
+		InputStream inForTextIndex = null;
 		try {
-			in = new FileInputStream(new File(directory));
+			inForTitleIndex = new FileInputStream(new File(directory));
+			inForTextIndex = new FileInputStream(new File(directory));
 		} catch (FileNotFoundException e2) {
 			e2.printStackTrace();
 			return;
@@ -88,19 +88,18 @@ public class SearchEngineFAP extends SearchEngine {
 		new File(unstemmedPartialDir).mkdirs();
 		new File(linksPartialDir).mkdirs();
 		try {
-			Parser parser = new ParserImpl(in);
-			parser.parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, linksPartialDir, pageIndexFile, pageFile);
-			TitleIndex titleIndex = parser.getTitleIndex();
+			TitleIndex titleIndex = new TitleIndex();
+			new TitleParserImpl(inForTitleIndex, titleIndex).parse();
+			new TextParserImpl(inForTextIndex, titleIndex, stemmedPartialDir,
+					unstemmedPartialDir, linksPartialDir, pageIndexFile, pageFile).parse();
 			
 			TermIndexMergerImpl termMerger = new TermIndexMergerImpl();
 			termMerger.merge(stemmedSeeklistFile, stemmedPartialDir, stemmedIndexFile);
 			termMerger.merge(unstemmedSeeklistFile, unstemmedPartialDir, unstemmedIndexFile);
 			
-			LinkIndexMergerImpl linkMerger = new LinkIndexMergerImpl(titleIndex);
+			LinkIndexMergerImpl linkMerger = new LinkIndexMergerImpl();
 			linkMerger.merge(linkSeeklistFile, linksPartialDir, linkIndexFile);
-		} catch (NumberFormatException | ClassNotFoundException
-				| InstantiationException | IllegalAccessException
-				| XMLStreamException | FactoryConfigurationError | IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
