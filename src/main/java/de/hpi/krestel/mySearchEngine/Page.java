@@ -1,5 +1,10 @@
 package de.hpi.krestel.mySearchEngine;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.hpi.krestel.mySearchEngine.Util.Pair;
+
 /**
  * Representation of a MediaWiki Page
  * @author Alexander
@@ -44,4 +49,7 @@ public class Page {
 		this.id = id;
 	}
 
+	public List<Pair<Integer, String>> getLinks() {
+		return null;
+	}
 }
