@@ -15,8 +15,10 @@ import org.apache.commons.io.FileUtils;
 
 import de.hpi.krestel.mySearchEngine.booleanQueries.QueryParser;
 import de.hpi.krestel.mySearchEngine.index.PageIndex;
+import de.hpi.krestel.mySearchEngine.index.TitleIndex;
 import de.hpi.krestel.mySearchEngine.index.term.TermIndexMergerImpl;
 import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
+import de.hpi.krestel.mySearchEngine.parse.Parser;
 import de.hpi.krestel.mySearchEngine.parse.ParserImpl;
 import de.hpi.krestel.mySearchEngine.search.NdcgComputer;
 import de.hpi.krestel.mySearchEngine.search.PseudoRelevanceFeedback;
@@ -77,8 +79,12 @@ public class SearchEngineFAP extends SearchEngine {
 		new File(stemmedPartialDir).mkdirs();
 		new File(unstemmedPartialDir).mkdirs();
 		try {
-			new ParserImpl(in).parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
-			new TermIndexMergerImpl().merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
+			Parser parser = new ParserImpl(in);
+			parser.parseToPartialIndexes(stemmedPartialDir, unstemmedPartialDir, pageIndexFile, pageFile);
+			TitleIndex titleIndex = parser.getTitleIndex();
+			
+			TermIndexMergerImpl merger = new TermIndexMergerImpl(titleIndex);
+			merger.merge(stemmedSeeklistFile, unstemmedSeeklistFile, stemmedPartialDir, 
 					unstemmedPartialDir, stemmedIndexFile, unstemmedIndexFile);
 		} catch (NumberFormatException | ClassNotFoundException
 				| InstantiationException | IllegalAccessException

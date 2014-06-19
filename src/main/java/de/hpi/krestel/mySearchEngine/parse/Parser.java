@@ -6,6 +6,8 @@ import java.io.InputStream;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
+import de.hpi.krestel.mySearchEngine.index.TitleIndex;
+
 /**
  * This Parser parses a given wikipedia xml file.
  * 
@@ -30,4 +32,10 @@ public abstract class Parser {
 			throws XMLStreamException, ClassNotFoundException,
 			InstantiationException, IllegalAccessException,
 			NumberFormatException, FactoryConfigurationError, IOException;
+	
+	/**
+	 * Gets the title index of the parser
+	 * @return the title index created during parsing or null
+	 */
+	public abstract TitleIndex getTitleIndex();
 }

@@ -44,6 +44,11 @@ public class Util {
 				return false;
 			return true;
 		}
+		
+		@Override
+		public String toString() {
+			return "Pair: [" + a.toString() + "; " + b.toString() + "]";
+		}
 	}
 	
 	public static class PairAComparator <C extends Comparable<C>, T extends Pair<C, ?>> implements Comparator<T> {

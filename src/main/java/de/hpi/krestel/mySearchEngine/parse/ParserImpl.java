@@ -15,6 +15,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import de.hpi.krestel.mySearchEngine.index.PageIndex;
+import de.hpi.krestel.mySearchEngine.index.TitleIndex;
 import de.hpi.krestel.mySearchEngine.index.io.PageIndexWriter;
 import de.hpi.krestel.mySearchEngine.util.Util;
 
@@ -23,6 +24,7 @@ public class ParserImpl extends Parser {
 	
 	private static final Pattern redirect = Pattern.compile("\\A#REDIRECT \\[\\[.*\\]\\]\\z");
 	private static final int maxSeconds = 60;
+	private TitleIndex titleIndex = new TitleIndex();
 	
 	public ParserImpl(InputStream in) throws XMLStreamException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		super(in);
@@ -129,6 +131,7 @@ public class ParserImpl extends Parser {
 							buffer.add(page);
 							buffer.notifyAll();
 						}
+						titleIndex.addTitle(page.getTitle(), page.getId());
 					}
 				} else if (tag.equals("revision")) {
 					inRevision = false;
@@ -171,6 +174,11 @@ public class ParserImpl extends Parser {
 		
 		pageIndex.exportFile(pageIndexFile);
 		pageWriter.close();
+	}
+	
+	@Override
+	public TitleIndex getTitleIndex() {
+		return titleIndex;
 	}
 
 }

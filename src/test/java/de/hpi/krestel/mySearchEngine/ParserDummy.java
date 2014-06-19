@@ -2,6 +2,7 @@ package de.hpi.krestel.mySearchEngine;
 
 import java.io.IOException;
 
+import de.hpi.krestel.mySearchEngine.index.TitleIndex;
 import de.hpi.krestel.mySearchEngine.index.term.TermIndexFileLinearWriterImpl;
 import de.hpi.krestel.mySearchEngine.index.term.TermOccurrence;
 import de.hpi.krestel.mySearchEngine.index.term.TermPartialIndex;
@@ -43,6 +44,11 @@ public class ParserDummy extends Parser {
 			}
 		}
 		index.store(sIndexDirectory);
+	}
+
+	@Override
+	public TitleIndex getTitleIndex() {
+		return new TitleIndex();
 	}
 
 }

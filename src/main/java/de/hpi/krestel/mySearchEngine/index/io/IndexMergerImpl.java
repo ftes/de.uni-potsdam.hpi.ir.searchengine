@@ -16,6 +16,7 @@ import de.hpi.krestel.mySearchEngine.index.IndexListComparator;
 import de.hpi.krestel.mySearchEngine.index.IndexListFactory;
 import de.hpi.krestel.mySearchEngine.index.IndexListSlot;
 import de.hpi.krestel.mySearchEngine.index.IndexListSlotComparator;
+import de.hpi.krestel.mySearchEngine.index.TitleIndex;
 import de.hpi.krestel.mySearchEngine.search.TermLengthException;
 import de.hpi.krestel.mySearchEngine.util.Log;
 import de.hpi.krestel.mySearchEngine.util.Log.Level;
@@ -25,11 +26,18 @@ public abstract class IndexMergerImpl<K extends Comparable<K>, L extends IndexLi
 V extends Comparable<V>> implements IndexMerger<K, L, S, V> {
 	private final IndexFileHandlerFactory<K, L, S, V> indexFileHandlerFactory;
 	private final IndexListFactory<K, L, S, V> indexListFactory;
+	private final TitleIndex titleIndex;
 	
 	public IndexMergerImpl(IndexFileHandlerFactory<K, L, S, V> indexFileHandlerFactory,
 			IndexListFactory<K, L, S, V> indexListFactory) {
+		this(indexFileHandlerFactory, indexListFactory, new TitleIndex());
+	}
+	
+	public IndexMergerImpl(IndexFileHandlerFactory<K, L, S, V> indexFileHandlerFactory,
+			IndexListFactory<K, L, S, V> indexListFactory, TitleIndex titleIndex) {
 		this.indexFileHandlerFactory = indexFileHandlerFactory;
 		this.indexListFactory = indexListFactory;
+		this.titleIndex = titleIndex;
 	}
 	
 	@Override
@@ -102,6 +110,8 @@ V extends Comparable<V>> implements IndexMerger<K, L, S, V> {
 				e.printStackTrace();
 			}
 		}
+		
+		// TODO: rewrite Linklist
 	}
 	
 	/**

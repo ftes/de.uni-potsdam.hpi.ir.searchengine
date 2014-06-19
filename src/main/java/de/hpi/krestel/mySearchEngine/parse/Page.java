@@ -1,5 +1,12 @@
 package de.hpi.krestel.mySearchEngine.parse;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import de.hpi.krestel.mySearchEngine.util.Util.Pair;
+
 /**
  * Representation of a MediaWiki Page
  * @author Alexander
@@ -44,4 +51,24 @@ public class Page {
 		this.id = id;
 	}
 
+	private static final Pattern linkPattern = Pattern.compile("\\[\\[([^\\|\\]]*)\\|?([^\\]]*)?\\]\\]");
+	/**
+	 * Finds all links in the text
+	 * @return A List of Pairs containing (linkText, linkTargetPageTitle)
+	 */
+	public List<Pair<String, String>> getLinks() {
+		List<Pair<String, String>> links = new ArrayList<>();
+		Matcher linkMatcher = linkPattern.matcher(text);
+		while (linkMatcher.find()) {
+			String linkText = linkMatcher.group(1);
+			String linkTargetPageTitle = linkMatcher.group(2);
+			if (linkTargetPageTitle.equals("")) {
+				linkTargetPageTitle = linkText;
+			}
+			Pair<String, String> link = new Pair<String, String>(linkText, linkTargetPageTitle);
+			links.add(link);
+		}
+		
+		return links;
+	}
 }
