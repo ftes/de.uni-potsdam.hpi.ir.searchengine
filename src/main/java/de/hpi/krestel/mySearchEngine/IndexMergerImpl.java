@@ -14,6 +14,17 @@ import de.hpi.krestel.mySearchEngine.Log.Level;
 
 
 public class IndexMergerImpl implements IndexMerger {
+	private TitleIndex titleIndex;
+	
+	@Deprecated
+	public IndexMergerImpl() {
+		this.titleIndex = new TitleIndex();
+	}
+	
+	public IndexMergerImpl(TitleIndex titleIndex) {
+		this.titleIndex = titleIndex;
+	}
+	
 	@Override
 	public void merge(String stemmedSeekListPath, String unstemmedSeekListPath,
 			String stemmedPartialIndexDirectory, String unstemmedPartialIndexDirectory,
@@ -25,6 +36,7 @@ public class IndexMergerImpl implements IndexMerger {
 		
 		merge(stemmedPartialIndexDirectory, stemmedIndexHandler, stemmedSeekList);
 		merge(unstemmedPartialIndexDirectory, unstemmedIndexHandler, unstemmedSeekList);
+		// TODO: rewrite Linklist
 	}
 	
 	private void merge(String partialIndexDirectory, IndexFileLinearWriter indexHandler, SeekList seekList) throws IOException {

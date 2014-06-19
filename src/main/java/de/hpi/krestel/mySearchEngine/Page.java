@@ -23,7 +23,6 @@ public class Page {
 
 	public void setText(String text) {
 		this.text = text;
-		System.out.println(getLinks());
 	}
 
 	public Page() {
