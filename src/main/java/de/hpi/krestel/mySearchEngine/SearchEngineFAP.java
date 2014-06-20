@@ -89,7 +89,9 @@ public class SearchEngineFAP extends SearchEngine {
 		new File(linksPartialDir).mkdirs();
 		try {
 			TitleIndex titleIndex = new TitleIndex();
+			System.out.println("Parsing Titles ...");
 			new TitleParserImpl(inForTitleIndex, titleIndex).parse();
+			System.out.println("Parsing Text ...");
 			new TextParserImpl(inForTextIndex, titleIndex, stemmedPartialDir,
 					unstemmedPartialDir, linksPartialDir, pageIndexFile, pageFile).parse();
 			

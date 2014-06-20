@@ -57,7 +57,7 @@ public class TextParserImpl extends BaseParser {
 			numArticles++;
 			if (numArticles % printInterval == 0) {
 				long elapsed = new Date().getTime() - start.getTime();
-				int eta = (int) ((elapsed / numArticles) * 3.3e6 / 1000 / 60 / 60);
+				int eta = (int) ((elapsed / (float) numArticles) * (3.3e6-numArticles) / 1000 / 60 / 60);
 				System.out.printf("%d articles, %d seconds, ETA: %d hours\n", numArticles, (int) elapsed / 1000, eta);
 				
 				if (maxSeconds != -1 && elapsed > maxSeconds * 1000) {

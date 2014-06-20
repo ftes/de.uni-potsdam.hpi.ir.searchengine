@@ -139,7 +139,7 @@ public class ParserThread extends Thread {
 //						"\" during link index generation");
 				continue;
 			}
-			System.out.println(linkPair);
+			// System.out.println(linkPair);
 			int linkedFromDocId = page.getId();
 			String anchorText = linkPair.b;
 			Link link = new Link(linkedFromDocId, anchorText);
