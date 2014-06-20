@@ -12,6 +12,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.tartarus.snowball.SnowballStemmer;
 import org.tartarus.snowball.ext.germanStemmer;
 
+import de.hpi.krestel.mySearchEngine.parse.Page;
+import de.hpi.krestel.mySearchEngine.util.Util;
+
 public class WikipediaExport {
 	public static void main(String[] args) throws XMLStreamException,
 			FileNotFoundException, ClassNotFoundException,

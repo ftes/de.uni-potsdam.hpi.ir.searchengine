@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.hpi.krestel.mySearchEngine.MainIndex;
-import de.hpi.krestel.mySearchEngine.QueryProcessingException;
-import de.hpi.krestel.mySearchEngine.RankedQuery;
-import de.hpi.krestel.mySearchEngine.SearchOperation;
-import de.hpi.krestel.mySearchEngine.PageIndex;
+import de.hpi.krestel.mySearchEngine.index.PageIndex;
+import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
+import de.hpi.krestel.mySearchEngine.search.QueryProcessingException;
+import de.hpi.krestel.mySearchEngine.search.RankedQuery;
+import de.hpi.krestel.mySearchEngine.search.SearchOperation;
 
 public class QueryParser {
 	private static final Map<String, Class<?>> BINARY_OPS;
@@ -24,11 +24,11 @@ public class QueryParser {
 	private static final Pattern PATTERN = Pattern.compile("AND|BUT NOT|OR");
 
 	private final String queryString;
-	private final MainIndex stemmedIndex;
-	private final MainIndex unstemmedIndex;
+	private final TermMainIndexImpl stemmedIndex;
+	private final TermMainIndexImpl unstemmedIndex;
 	private final PageIndex titleIndex;
 	
-	public QueryParser(MainIndex stemmedIndex, MainIndex unstemmedIndex, PageIndex titleIndex, String queryString) {
+	public QueryParser(TermMainIndexImpl stemmedIndex, TermMainIndexImpl unstemmedIndex, PageIndex titleIndex, String queryString) {
 		this.stemmedIndex = stemmedIndex;
 		this.unstemmedIndex = unstemmedIndex;
 		this.queryString = queryString;

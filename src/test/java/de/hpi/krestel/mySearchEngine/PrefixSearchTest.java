@@ -1,6 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,53 +10,58 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import de.hpi.krestel.mySearchEngine.index.io.SeekList;
+import de.hpi.krestel.mySearchEngine.index.term.TermSeekListImpl;
+import de.hpi.krestel.mySearchEngine.search.KeyNotFoundException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
+
 public class PrefixSearchTest {
 	@Test
 	public void testWritingAndReading() throws IOException,
-			TermLengthException, TermNotFoundException {
+			WordLengthException, KeyNotFoundException {
 		String fileName = "prefixTest.dat";
 
 		try {
-			SeekList seekList = new SeekListImpl(fileName);
-			seekList.storeTermOffset("aab", 1);
-			seekList.storeTermOffset("abb", 2);
-			seekList.storeTermOffset("abbaa", 3);
-			seekList.storeTermOffset("abbklf", 4);
-			seekList.storeTermOffset("abbklff", 5);
-			seekList.storeTermOffset("abc", 6);
-			seekList.storeTermOffset("ba", 7);
-			seekList.storeTermOffset("bbb", 8);
-			seekList.storeTermOffset("bc", 9);
+			SeekList<String> seekList = new TermSeekListImpl(fileName);
+			seekList.storeKeyOffset("aab", 1);
+			seekList.storeKeyOffset("abb", 2);
+			seekList.storeKeyOffset("abbaa", 3);
+			seekList.storeKeyOffset("abbklf", 4);
+			seekList.storeKeyOffset("abbklff", 5);
+			seekList.storeKeyOffset("abc", 6);
+			seekList.storeKeyOffset("ba", 7);
+			seekList.storeKeyOffset("bbb", 8);
+			seekList.storeKeyOffset("bc", 9);
 
-			Set<String> result = seekList.getTermsBeginningWith("abb");
+			Set<String> result = seekList.getKeysBeginningWith("abb");
 			assertEquals(4, result.size());
 			assertTrue(result.containsAll(Arrays.asList("abb", "abbaa",
 					"abbklf", "abbklff")));
 
-			assertEquals(3, seekList.getTermsBeginningWith("b").size());
+			assertEquals(3, seekList.getKeysBeginningWith("b").size());
 
-			assertEquals(0, seekList.getTermsBeginningWith("c").size());
-			assertEquals(0, seekList.getTermsBeginningWith("aaaa").size());
-			assertEquals(0, seekList.getTermsBeginningWith("aaa").size());
+			assertEquals(0, seekList.getKeysBeginningWith("c").size());
+			assertEquals(0, seekList.getKeysBeginningWith("aaaa").size());
+			assertEquals(0, seekList.getKeysBeginningWith("aaa").size());
 		} finally {
 			new File(fileName).delete();
 		}
 	}
 	@Test
 	public void test2() throws IOException,
-			TermLengthException, TermNotFoundException {
+			WordLengthException, KeyNotFoundException {
 		String fileName = "prefixTest.dat";
 
 		try {
-			SeekList seekList = new SeekListImpl(fileName);
-			seekList.storeTermOffset("anja", 1);
-			seekList.storeTermOffset("anna", 2);
-			seekList.storeTermOffset("anton", 3);
-			seekList.storeTermOffset("ars", 4);
-			seekList.storeTermOffset("artikel", 5);
-			seekList.storeTermOffset("bee", 6);
+			SeekList<String> seekList = new TermSeekListImpl(fileName);
+			seekList.storeKeyOffset("anja", 1);
+			seekList.storeKeyOffset("anna", 2);
+			seekList.storeKeyOffset("anton", 3);
+			seekList.storeKeyOffset("ars", 4);
+			seekList.storeKeyOffset("artikel", 5);
+			seekList.storeKeyOffset("bee", 6);
 
-			Set<String> result = seekList.getTermsBeginningWith("art");
+			Set<String> result = seekList.getKeysBeginningWith("art");
 			assertEquals(1, result.size());
 			assertTrue(result.containsAll(Arrays.asList("artikel")));
 		} finally {

@@ -2,8 +2,9 @@ package de.hpi.krestel.mySearchEngine.booleanQueries;
 
 import java.io.IOException;
 import java.util.List;
-import de.hpi.krestel.mySearchEngine.QueryProcessingException;
-import de.hpi.krestel.mySearchEngine.TermLengthException;
+
+import de.hpi.krestel.mySearchEngine.search.QueryProcessingException;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
 
 public abstract class BinaryBooleanSetOperation<T> implements BooleanSetOperation<T> {
 	private final BooleanSetOperation<T> left;
@@ -15,7 +16,7 @@ public abstract class BinaryBooleanSetOperation<T> implements BooleanSetOperatio
 	}
 	
 	@Override
-	public List<T> execute(int topK) throws IOException, TermLengthException, QueryProcessingException {
+	public List<T> execute(int topK) throws IOException, WordLengthException, QueryProcessingException {
 		List<T> l = left.execute(topK);
 		List<T> r = right.execute(topK);
 		return processResult(l, r);

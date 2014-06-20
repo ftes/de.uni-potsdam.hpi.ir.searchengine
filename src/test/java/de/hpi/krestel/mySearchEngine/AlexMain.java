@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 
+import de.hpi.krestel.mySearchEngine.parse.Tokenizer;
+import de.hpi.krestel.mySearchEngine.search.SnippetGenerator;
+
 public class AlexMain {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLStreamException {

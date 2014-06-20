@@ -5,16 +5,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class MockSeekListImpl implements SeekList {
+import de.hpi.krestel.mySearchEngine.index.io.SeekList;
+import de.hpi.krestel.mySearchEngine.search.WordLengthException;
+import de.hpi.krestel.mySearchEngine.util.NotImplementedException;
+
+public class MockSeekListImpl implements SeekList<String> {
 	private final Map<String, Long> offsets = new HashMap<>();
 
 	@Override
-	public long getTermOffsetInIndex(String term) throws TermLengthException {
+	public long getKeyOffsetInIndex(String term) throws WordLengthException {
 		throw new NotImplementedException();
 	}
 
 	@Override
-	public void storeTermOffset(String term, long offset) {
+	public void storeKeyOffset(String term, long offset) {
 		offsets.put(term, offset);
 	}
 	
@@ -26,7 +30,7 @@ public class MockSeekListImpl implements SeekList {
 	public void close() {}
 
 	@Override
-	public Set<String> getTermsBeginningWith(String prefix) throws IOException {
+	public Set<String> getKeysBeginningWith(String prefix) throws IOException {
 		return null;
 	}
 

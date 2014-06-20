@@ -1,5 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
+import de.hpi.krestel.mySearchEngine.search.SnippetGenerator;
+
 public class SnippetGeneratorTest {
 
 	public static void main(String[] args) {
@@ -12,12 +14,12 @@ public class SnippetGeneratorTest {
 					+ "* [http://www.abc.net.au/rn/arts/atoday/stories/s353584.htm Artikel über Smithee von ABC Online (englisch)]";
 		
 		
-		String text2 = "In einer neuen Trilogie setzt er sich mit unterschiedlichen Kulturen auseinander: "
-						+ "* ''[[Sinn und Sinnlichkeit (1995)|Sinn und Sinnlichkeit]]'' ist die Verfilmung eines Romans der englischen Schriftstellerin [[Jane Austen]] "
-						+ "* ''[[Der Eissturm]]'' spielt in den USA der 1970er Jahre "
-						+ "* ''[[Ride with the Devil]]'' ist im [[Sezessionskrieg|amerikanischen Bürgerkrieg]] angesiedelt";
+//		String text2 = "In einer neuen Trilogie setzt er sich mit unterschiedlichen Kulturen auseinander: "
+//						+ "* ''[[Sinn und Sinnlichkeit (1995)|Sinn und Sinnlichkeit]]'' ist die Verfilmung eines Romans der englischen Schriftstellerin [[Jane Austen]] "
+//						+ "* ''[[Der Eissturm]]'' spielt in den USA der 1970er Jahre "
+//						+ "* ''[[Ride with the Devil]]'' ist im [[Sezessionskrieg|amerikanischen Bürgerkrieg]] angesiedelt";
 		String query = "dort";
-		String query2 = "roman";
+//		String query2 = "roman";
 		SnippetGenerator sg = new SnippetGenerator(text, query);
 		System.out.println(sg.generate());
 	}
