@@ -19,7 +19,14 @@ public class SnippetGenerator {
 	}
 	
 	public String generate() {
+		SnowballStemmer stemmer = new germanStemmer();
+		
 		String[] queryTerms = userQuery.toLowerCase().split("[\\s.]");
+		for (int i = 0; i < queryTerms.length; i++) {
+			stemmer.setCurrent(queryTerms[i]);
+			stemmer.stem();
+			queryTerms[i] = stemmer.getCurrent();
+		}
 		
 		// before splitting document on whitespaces, remove wikipedia markup
 		document = cleanWikiFormat(document); // bold, italic, wiki internal links
@@ -27,8 +34,6 @@ public class SnippetGenerator {
 		document = removeCurlyBraces(document);
 		
 		String[] doc = document.split("[\\s]");
-		
-		SnowballStemmer stemmer = new germanStemmer();
 		
 		boolean foundMatch = false;
 		int addAfter = SNIPPET_SIZE / 2;
