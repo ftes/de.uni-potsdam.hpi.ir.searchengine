@@ -5,7 +5,7 @@ import java.util.SortedSet;
 import de.hpi.krestel.mySearchEngine.index.IndexListFactory;
 
 public class LinkIndexListFactory implements
-		IndexListFactory<Integer, DocumentWithLinks, Link, String> {
+		IndexListFactory<Integer, DocumentWithLinks, Link, Integer> {
 
 	@Override
 	public DocumentWithLinks createList(Integer key) {
@@ -13,7 +13,7 @@ public class LinkIndexListFactory implements
 	}
 
 	@Override
-	public Link createSlot(int docId, String value) {
+	public Link createSlot(int docId, Integer value) {
 		return new Link(docId, value);
 	}
 	

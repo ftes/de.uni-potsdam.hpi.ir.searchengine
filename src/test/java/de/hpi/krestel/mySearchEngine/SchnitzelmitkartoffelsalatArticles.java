@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class CountArticles {
+public class SchnitzelmitkartoffelsalatArticles {
 
 	public static void main(String[] args) throws IOException {
 		String fileSource = "O:/huge.xml";
@@ -15,22 +15,25 @@ public class CountArticles {
         int lines = 0;
         int articles = 0;
         String idLine = "";
+        String titleLine = "";
         while((line = br.readLine()) != null) {
-        	if (line.contains("<page>")) {
-        		articles++;
-        		if (articles % 100000 == 0) {
-        			System.out.println("Article = " + articles + " at " + lines);
-        		}
+        	if (line.contains("<title>")) {
+        		titleLine = line;
         	}
         	if (line.contains("<id>")) {
         		idLine = line;
         	}
         	if (line.contains("<title>Schnitzelmitkartoffelsalat</title>")) {
+        		System.out.println("================0000===================");
         		System.out.println("Schnitzelmitkartoffelsalat is Article nr.:" + articles);
         		System.out.println("-------------------> id: " + idLine);
+        		System.out.println("================0000===================");
         	}
         	if (line.contains("[[Schnitzelmitkartoffelsalat")) {
-        		System.out.println("Link in article with id:" + idLine.trim());
+        		System.out.println("=============================");
+        		System.out.println(titleLine.trim());
+        		System.out.println(line.trim());
+        		System.out.println("=============================");
         	}
         	lines++; 
         }

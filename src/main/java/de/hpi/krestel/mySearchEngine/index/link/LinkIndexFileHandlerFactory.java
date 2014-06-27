@@ -10,22 +10,22 @@ import de.hpi.krestel.mySearchEngine.index.io.IndexFileRandomReader;
 import de.hpi.krestel.mySearchEngine.index.io.SeekList;
 
 public class LinkIndexFileHandlerFactory implements
-		IndexFileHandlerFactory<Integer, DocumentWithLinks, Link, String> {
+		IndexFileHandlerFactory<Integer, DocumentWithLinks, Link, Integer> {
 
 	@Override
-	public IndexFileLinearReader<Integer, DocumentWithLinks, Link, String>
+	public IndexFileLinearReader<Integer, DocumentWithLinks, Link, Integer>
 	createLinearReader(String fileName) throws IOException {
 		return new LinkIndexFileLinearReaderImpl(fileName);
 	}
 
 	@Override
-	public IndexFileRandomReader<Integer, DocumentWithLinks, Link, String>
+	public IndexFileRandomReader<Integer, DocumentWithLinks, Link, Integer>
 	createRandomReader(String fileName) throws IOException {
 		return new LinkIndexFileRandomReaderImpl(fileName);
 	}
 
 	@Override
-	public IndexFileLinearWriter<Integer, DocumentWithLinks, Link, String> createLinearWriter(String fileName)
+	public IndexFileLinearWriter<Integer, DocumentWithLinks, Link, Integer> createLinearWriter(String fileName)
 	throws IOException{
 		return new LinkIndexFileLinearWriterImpl(fileName);
 	}
@@ -36,7 +36,7 @@ public class LinkIndexFileHandlerFactory implements
 	}
 	
 	@Override
-	public PartialIndex<Integer, DocumentWithLinks, Link, String> createPartialIndex(
+	public PartialIndex<Integer, DocumentWithLinks, Link, Integer> createPartialIndex(
 			String fileName) throws IOException {
 		return new LinkPartialIndex(createLinearWriter(fileName));
 	}

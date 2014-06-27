@@ -24,9 +24,9 @@ public class ParserThread extends Thread {
 	private final String linksPartialDir;
 	private PartialIndex<String, Term, TermOccurrence, Integer> unstemmedIndex;
 	private PartialIndex<String, Term, TermOccurrence, Integer> stemmedIndex;
-	private PartialIndex<Integer, DocumentWithLinks, Link, String> linkIndex;
+	private PartialIndex<Integer, DocumentWithLinks, Link, Integer> linkIndex;
 	private final IndexFileHandlerFactory<String, Term, TermOccurrence, Integer> termFactory;
-	private final IndexFileHandlerFactory<Integer, DocumentWithLinks, Link, String> linkFactory;
+	private final IndexFileHandlerFactory<Integer, DocumentWithLinks, Link, Integer> linkFactory;
 	private final TitleIndex titleIndex;
 	
 	private int n = 0;
@@ -132,6 +132,7 @@ public class ParserThread extends Thread {
 	
 	private void addToLinkIndex(Page page) {
 		for (Util.Pair<String, String> linkPair : new Tokenizer(page.getText()).getLinks()) {
+			int linkedFromDocId = page.getId();
 			Integer linkedToDocId = titleIndex.getDocId(linkPair.a);
 			if (linkedToDocId == null) {
 				//doc id for title unknown
@@ -140,9 +141,8 @@ public class ParserThread extends Thread {
 				continue;
 			}
 			// System.out.println(linkPair);
-			int linkedFromDocId = page.getId();
-			String anchorText = linkPair.b;
-			Link link = new Link(linkedFromDocId, anchorText);
+			// System.out.println("-> added link from: " + linkedFromDocId + " to: " + "linkedToDocId: " + linkedToDocId);
+			Link link = new Link(linkedFromDocId, linkedToDocId);
 			linkIndex.addSlotForKey(linkedToDocId, link);
 		}
 	}

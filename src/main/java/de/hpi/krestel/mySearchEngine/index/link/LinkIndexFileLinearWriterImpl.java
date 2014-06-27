@@ -6,7 +6,7 @@ import de.hpi.krestel.mySearchEngine.index.io.BaseIndexFileLinearWriter;
 
 
 public class LinkIndexFileLinearWriterImpl
-extends BaseIndexFileLinearWriter<Integer, DocumentWithLinks, Link, String> {
+extends BaseIndexFileLinearWriter<Integer, DocumentWithLinks, Link, Integer> {
 	public LinkIndexFileLinearWriterImpl(String fileName) throws IOException {
 		super(fileName, new LinkKeyValueFileHandler());
 	}

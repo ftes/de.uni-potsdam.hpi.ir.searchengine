@@ -5,7 +5,7 @@ import java.io.IOException;
 import de.hpi.krestel.mySearchEngine.index.io.BaseIndexFileLinearReader;
 
 public class LinkIndexFileLinearReaderImpl extends
-		BaseIndexFileLinearReader<Integer, DocumentWithLinks, Link, String> {
+		BaseIndexFileLinearReader<Integer, DocumentWithLinks, Link, Integer> {
 
 	public LinkIndexFileLinearReaderImpl(
 			String filename) throws IOException {

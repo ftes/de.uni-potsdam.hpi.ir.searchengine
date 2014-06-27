@@ -5,7 +5,7 @@ import java.util.SortedSet;
 import de.hpi.krestel.mySearchEngine.index.IndexList;
 
 
-public class DocumentWithLinks extends IndexList<Integer, Link, String> {
+public class DocumentWithLinks extends IndexList<Integer, Link, Integer> {
 	public DocumentWithLinks(Integer linkedToDocId) {
 		super(linkedToDocId);
 	}

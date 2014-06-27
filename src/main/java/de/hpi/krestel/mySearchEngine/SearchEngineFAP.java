@@ -20,6 +20,7 @@ import de.hpi.krestel.mySearchEngine.index.term.TermMainIndexImpl;
 import de.hpi.krestel.mySearchEngine.parse.Parser;
 import de.hpi.krestel.mySearchEngine.parse.TextParserImpl;
 import de.hpi.krestel.mySearchEngine.parse.TitleParserImpl;
+import de.hpi.krestel.mySearchEngine.search.LinkToQuery;
 import de.hpi.krestel.mySearchEngine.search.NdcgComputer;
 import de.hpi.krestel.mySearchEngine.search.PseudoRelevanceFeedback;
 import de.hpi.krestel.mySearchEngine.search.QueryProcessingException;
@@ -52,6 +53,7 @@ public class SearchEngineFAP extends SearchEngine {
 	
 	public static final String pageFile = dir + File.separator + "pages.dat";
 	public static final String pageIndexFile = dir + File.separator + "pagesIndex.dat";
+	public static final String titleIndexFile = dir + File.separator + "titleIndex.dat";
 	
 	public static final String stemmedPartialDir = partialDir + File.separator + "stemmed";
 	public static final String unstemmedPartialDir = partialDir + File.separator + "unstemmed";
@@ -61,6 +63,7 @@ public class SearchEngineFAP extends SearchEngine {
 	private TermMainIndexImpl unstemmedMainIndex;
 	private LinkMainIndexImpl linkMainIndex;
 	private PageIndex pageIndex;
+	private TitleIndex titleIndex;
 	
 	// Replace 'Y' with your search engine name
 	public SearchEngineFAP() {
@@ -91,6 +94,7 @@ public class SearchEngineFAP extends SearchEngine {
 			TitleIndex titleIndex = new TitleIndex();
 			System.out.println("Parsing Titles ...");
 			new TitleParserImpl(inForTitleIndex, titleIndex).parse();
+			titleIndex.exportFile(titleIndexFile);
 			System.out.println("Parsing Text ...");
 			new TextParserImpl(inForTextIndex, titleIndex, stemmedPartialDir,
 					unstemmedPartialDir, linksPartialDir, pageIndexFile, pageFile).parse();
@@ -115,6 +119,8 @@ public class SearchEngineFAP extends SearchEngine {
 			linkMainIndex = new LinkMainIndexImpl(linkIndexFile, linkSeeklistFile);
 			pageIndex = new PageIndex();
 			pageIndex.importFile(pageIndexFile, pageFile);
+			titleIndex = new TitleIndex();
+			titleIndex.importFile(titleIndexFile);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -126,7 +132,11 @@ public class SearchEngineFAP extends SearchEngine {
 	ArrayList<String> search(String query, int topK, int prf) {
 		try {
 			SearchOperation<Integer> op;
-			if (prf > 0) {
+			if (query.matches("(?i)LINKTO\\s.*")) {
+				op = new LinkToQuery(linkMainIndex, titleIndex, query);
+				// for snippet generation
+				query = query.toLowerCase().replaceFirst("linkto", "").trim();
+			} else if (prf > 0) {
 				op = new PseudoRelevanceFeedback(stemmedMainIndex, pageIndex, query, prf);
 			} else {
 				op = new QueryParser( stemmedMainIndex, unstemmedMainIndex, pageIndex, query).parse();

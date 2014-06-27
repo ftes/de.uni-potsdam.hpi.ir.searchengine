@@ -7,19 +7,19 @@ import java.io.IOException;
 
 import de.hpi.krestel.mySearchEngine.index.io.KeyValueFileHandler;
 import de.hpi.krestel.mySearchEngine.search.WordLengthException;
-import de.hpi.krestel.mySearchEngine.util.Util;
 
 public class LinkKeyValueFileHandler implements
-		KeyValueFileHandler<Integer, String> {
+		KeyValueFileHandler<Integer, Integer> {
 
 	@Override
-	public String readValue(DataInput in) throws EOFException, IOException {
-		return Util.readString(in);
+	public Integer readValue(DataInput in) throws EOFException, IOException {
+		return in.readInt();
 	}
 
 	@Override
-	public int writeValue(DataOutput out, String value) throws WordLengthException, IOException {
-		return Util.writeString(out, value);
+	public int writeValue(DataOutput out, Integer value) throws WordLengthException, IOException {
+		out.writeInt(value);
+		return 4;
 	}
 
 	@Override
